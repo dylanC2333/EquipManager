@@ -25,6 +25,9 @@ public class IndexController {
     @Autowired
     private SysUserService sysUserService;
 
+    //admin 的token为
+    // eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAKtWKi5NUrJScgwN8dANDXYNUtJRSq0oULIyNDcytrAwMTIw0VEqLU4t8kwBqjJUgnDyEnNTgdzElNzMPKVaADfyVExEAAAA.bfLFBHwQjgTZjMh3ukEVXOT-TJpo0se8Sv-_ku8GJqMI6Hnbl-tv_pO6OdxVHjfKTS4fyZITUlGqEuUqMYKBGQ
+
    @PostMapping("login")
    public Result login(@RequestBody LoginVo loginVo) {
 
@@ -57,6 +60,7 @@ public class IndexController {
     public Result info(HttpServletRequest request) {
        //获取请求头token字符串
        String token = request.getHeader("token");
+       System.out.println(token);
        //从token字符串获取用户名称id
        String username = JwtHelper.getUsername(token);
        //根据用户获取用过户信息（基本信息 和 菜单权限 和按钮权限）

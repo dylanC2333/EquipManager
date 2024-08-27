@@ -58,7 +58,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return baseMapper.selectOne(queryWrapper);
     }
 
-    //根据用户获取用过户信息（基本信息 和 菜单权限 和 按钮权限）
+    //根据用户获取用户信息（基本信息 和 菜单权限 和 按钮权限）
     @Override
     public Map<String, Object> getUserInfo(String username) {
         // 根据username查询用户基本信息

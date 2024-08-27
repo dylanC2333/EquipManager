@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.system.mapper.SysEquipmentMaintenanceMapper">
+
+    <resultMap id="SysEquipmentMaintenance" type="com.atguigu.system.entity.SysEquipmentMaintenance" autoMapping="true"></resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,employee_id,equipment_id,maintenance_time,before_use_status,remarks,maintenance_status
+    </sql>
+
+    <select id="selectPage" resultMap="SysEquipmentMaintenance">
+        select <include refid="columns" />
+        from sys_equipment_maintenance
+        <where>
+            <if test="vo.keyword != null and vo.keyword != ''">
+                and (equipment_id like CONCAT('%',#{vo.keyword},'%'))
+            </if>
+            <if test="vo.startTime != null and vo.startTime != ''">
+                and maintenance_time >= #{vo.startTime}
+            </if>
+            <if test="vo.endTime != null and vo.endTime != ''">
+                and maintenance_time &lt;= #{vo.endTime}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+
+</mapper>

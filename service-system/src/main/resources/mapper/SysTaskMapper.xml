@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.system.mapper.SysTaskMapper">
+
+    <resultMap id="SysTaskMap" type="com.atguigu.system.entity.SysTask" autoMapping="true"></resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,task_code,start_time,end_time,location
+    </sql>
+
+    <select id="selectPage" resultMap="SysTaskMap">
+        select <include refid="columns" />
+        from sys_task
+        <where>
+            <if test="vo.keyword != null and vo.keyword != ''">
+                and (task_code like CONCAT('%',#{vo.keyword},'%') or  location like CONCAT('%',#{vo.keyword},'%'))
+            </if>
+            <if test="vo.startTime != null and vo.startTime != ''">
+                and start_time &lt;= #{vo.startTime}
+            </if>
+            <if test="vo.endTime != null and vo.endTime != ''">
+                and end_time >= #{vo.endTime}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+</mapper>
