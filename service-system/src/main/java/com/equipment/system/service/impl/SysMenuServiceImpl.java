@@ -8,7 +8,7 @@ import com.equipment.model.system.SysRoleMenu;
 import com.equipment.model.system.SysUserRole;
 import com.equipment.model.vo.AssignMenuVo;
 import com.equipment.model.vo.RouterVo;
-import com.equip.system.exception.EquipException;
+import com.equipment.system.exception.EquipException;
 import com.equipment.system.mapper.SysMenuMapper;
 import com.equipment.system.mapper.SysRoleMenuMapper;
 import com.equipment.system.mapper.SysUserRoleMapper;
