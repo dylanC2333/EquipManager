@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.common.result.Result;
 import com.equipment.model.system.Employee;
 import com.equipment.model.vo.EmployeeQueryVo;
-import com.equip.system.tools.NamingUtils;
+import com.equipment.common.utils.NamingUtils;
 import com.equipment.system.service.EmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

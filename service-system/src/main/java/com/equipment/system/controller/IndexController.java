@@ -4,7 +4,7 @@ import com.equipment.common.result.Result;
 import com.equipment.common.utils.JwtHelper;
 import com.equipment.model.system.SysUser;
 import com.equipment.model.vo.LoginVo;
-import com.equip.system.exception.EquipException;
+import com.equipment.system.exception.EquipException;
 import com.equipment.system.service.SysUserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

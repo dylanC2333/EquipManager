@@ -30,7 +30,7 @@ public class SysRoleController {
     @ApiOperation("查询所有接口")
     @GetMapping("findAll")
     public Result<List<SysRole>> findAll(){
-        // TODO 模拟异常效果 ArithmeticException
+        // 模拟异常效果 ArithmeticException
 //        try{
 //            int i= 10/0;
 //        }catch (Exception e){

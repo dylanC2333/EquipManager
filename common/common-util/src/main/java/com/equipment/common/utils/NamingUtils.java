@@ -1,4 +1,4 @@
-package com.equipment.system.tools;
+package com.equipment.common.utils;
 
 
 public class NamingUtils {
