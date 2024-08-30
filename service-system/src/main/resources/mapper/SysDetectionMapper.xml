@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.SysDetectionMapper">
+
+    <resultMap id="SysDetectionMap" type="com.equipment.model.system.SysDetection" autoMapping="true"></resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+        id,employee_id,task_id,start_time,end_time,detection_location
+    </sql>
+
+    <select id="selectPage" resultMap="SysDetectionMap">
+        select <include refid="columns" />
+        from sys_detection
+        <where>
+            <if test="vo.keyword != null and vo.keyword != ''">
+                and (task_id like CONCAT('%',#{vo.keyword},'%') or  employee_id like CONCAT('%',#{vo.keyword},'%'))
+            </if>
+            <if test="vo.startTime != null and vo.startTime != ''">
+                and start_time >= #{vo.startTime}
+            </if>
+            <if test="vo.endTime != null and vo.endTime != ''">
+                and end_time &lt;= #{vo.endTime}
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

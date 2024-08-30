@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.EmployeeMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.Employee">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="employeeCode" column="employee_code" jdbcType="CHAR"/>
+            <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+            <result property="telephone" column="telephone" jdbcType="CHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,employee_code,employee_name,
+        telephone,create_time,update_time,
+        is_deleted
+    </sql>
+
+</mapper>
