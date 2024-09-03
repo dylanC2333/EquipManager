@@ -130,7 +130,13 @@
           <el-input v-model="sysEquipUse.employeeUseName" />
         </el-form-item>
         <el-form-item label="地点">
-          <el-input v-model="sysEquipUse.location" />
+          <el-cascader
+            size="large"
+            :options="pcTextArr"
+            v-model="selectedLocations"
+            filterable
+            @change="handleLocationChange">
+          </el-cascader>
         </el-form-item>
         <el-form-item label="设备使用前情况">
           <el-input v-model="sysEquipUse.preUseEquipmentStatus" />
@@ -162,6 +168,14 @@
 </template>
 <script>
 import api from "@/api/system/equipmentUse";
+import {
+  provinceAndCityData,
+  pcTextArr,
+  regionData,
+  pcaTextArr,
+  codeToText,
+  TextToCode,
+} from "element-china-area-data";
 export default {
   data() {
     return {
@@ -175,12 +189,23 @@ export default {
       sysEquipUse: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      pcTextArr,//省市二级地址，纯汉字
+      selectedLocations:[]// 选中的省市地址数据
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
+    // 地址选择变化调用
+    handleLocationChange(value){
+      // console.log(value);
+      this.sysEquipUse.location = ""
+      this.sysEquipUse.location += value[0];
+      this.sysEquipUse.location += value[1];
+    },
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
@@ -224,6 +249,43 @@ export default {
       this.dialogVisible = true;
       api.getEquipUseId(id).then((response) => {
         this.sysEquipUse = response.data;
+
+        // 地址数据回显格式分割转换
+        // 针对不同的情况进行匹配
+        let province, city, address;
+        address = this.sysEquipUse.location;
+        // 判断是否是直辖市（例如，北京市，上海市等）
+        if (address.includes("北京市") || address.includes("上海市") || 
+            address.includes("天津市") || address.includes("重庆市")) {
+            let matchArray = address.match(/(.*?市)(.*)/);
+            if (matchArray) {
+                province = matchArray[0];  // 北京市、上海市等
+                city = matchArray[1];      // 直辖市下属的区县
+            }
+        } 
+        // 判断是否是自治区（如“广西壮族自治区南宁市”）
+        else if (address.includes("自治区")) {
+            let matchArray = address.match(/(.*?自治区)(.*?市)/);
+            if (matchArray) {
+                province = matchArray[1];  // 广西壮族自治区等
+                city = matchArray[2];      // 南宁市
+            }
+        } 
+        // 普通省份处理
+        else {
+            let matchArray = address.match(/(.*?省)(.*?市)/);
+            if (matchArray) {
+                province = matchArray[1];  // 省
+                city = matchArray[2];      // 市
+            }
+        }
+        // 处理完成放入级联选择器数据模型
+        if (province && city) {
+          console.log(province);
+          console.log(city);
+          this.selectedLocations = [province, city];
+          console.log(this.selectedLocations);
+        }
       });
     },
     //添加或修改
@@ -266,11 +328,12 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysEquipUse = {};
+      this.selectedLocations = [];
     },
      // 根据id删除数据
      removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -308,6 +371,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
+          // console.log(response.data.records)
         });
     },
   },
