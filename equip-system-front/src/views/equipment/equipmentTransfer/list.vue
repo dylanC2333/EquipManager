@@ -132,7 +132,13 @@
           <el-input v-model="sysEquipTransfer.receiverEmployeeId" />
         </el-form-item>
         <el-form-item label="交接地点">
-          <el-input v-model="sysEquipTransfer.transferLocation" />
+          <el-cascader
+            size="large"
+            :options="pcTextArr"
+            v-model="selectedLocations"
+            filterable
+            @change="handleLocationChange">
+          </el-cascader>
         </el-form-item>
         <el-form-item label="交接类型">
           <el-input v-model="sysEquipTransfer.transferType" />
@@ -161,6 +167,7 @@
 </template>
 <script>
 import api from "@/api/system/equipmentTransfer";
+import {  pcTextArr } from "element-china-area-data";
 export default {
   data() {
     return {
@@ -174,12 +181,22 @@ export default {
       sysEquipTransfer: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      pcTextArr,
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
+    // 地址选择变化时调用
+    handleLocationChange(value){
+      this.sysEquipTransfer.transferLocation = ""
+      this.sysEquipTransfer.transferlocation += value[0];
+      this.sysEquipTransfer.transferLocation += value[1];
+    },
+
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
@@ -218,13 +235,56 @@ export default {
         });
       });
     },
+
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
       api.getEquipTransferId(id).then((response) => {
         this.sysEquipTransfer = response.data;
+        this.selectedLocations = this.locationSplit(this.sysEquipTransfer.transferLocation);
       });
     },
+
+
+    // 地址数据回显格式分割转换
+    locationSplit(address){
+        // console.log("locationSplit in")
+        // 针对不同的情况进行匹配
+        let province, city
+        // 判断是否是直辖市（例如，北京市，上海市等）
+        if (address.includes("北京市") || address.includes("上海市") || 
+            address.includes("天津市") || address.includes("重庆市")) {
+            let matchArray = address.match(/(.*?市)(.*)/);
+            if (matchArray) {
+                province = matchArray[0];  // 北京市、上海市等
+                city = matchArray[1];      // 直辖市下属的区县
+            }
+        } 
+        // 判断是否是自治区（如“广西壮族自治区南宁市”）
+        else if (address.includes("自治区")) {
+            let matchArray = address.match(/(.*?自治区)(.*?市)/);
+            if (matchArray) {
+                province = matchArray[1];  // 广西壮族自治区等
+                city = matchArray[2];      // 南宁市
+            }
+        } 
+        // 普通省份处理
+        else {
+            let matchArray = address.match(/(.*?省)(.*?市)/);
+            if (matchArray) {
+                province = matchArray[1];  // 省
+                city = matchArray[2];      // 市
+            }
+        }
+        // 处理完成放入级联选择器数据模型
+        if (province && city) {
+          // console.log(province);
+          // console.log(city);
+          return [province, city];
+          // console.log(this.selectedLocations);
+        }
+    },    
+
     //添加或修改
     saveOrUpdate() {
       if (!this.sysEquipTransfer.id) {
@@ -265,6 +325,7 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysEquipTransfer = {};
+      this.selectedLocations = [];
     },
     // 根据id删除数据
     removeDataById(id) {

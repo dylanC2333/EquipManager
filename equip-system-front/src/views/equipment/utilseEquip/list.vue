@@ -198,6 +198,7 @@ export default {
     this.fetchData();
   },
   methods: {
+
     // 地址选择变化调用
     handleLocationChange(value){
       // console.log(value);
@@ -211,6 +212,7 @@ export default {
       console.log(selection);
       this.multipleSelection = selection;
     },
+
     // 批量删除
     batchRemove() {
       if (this.multipleSelection.length === 0) {
@@ -244,16 +246,22 @@ export default {
         });
       });
     },
+
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
       api.getEquipUseId(id).then((response) => {
         this.sysEquipUse = response.data;
+        this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
+      });
+    },
 
-        // 地址数据回显格式分割转换
+    
+    // 地址数据回显格式分割转换
+    locationSplit(address){
+        // console.log("locationSplit in")
         // 针对不同的情况进行匹配
-        let province, city, address;
-        address = this.sysEquipUse.location;
+        let province, city
         // 判断是否是直辖市（例如，北京市，上海市等）
         if (address.includes("北京市") || address.includes("上海市") || 
             address.includes("天津市") || address.includes("重庆市")) {
@@ -281,13 +289,13 @@ export default {
         }
         // 处理完成放入级联选择器数据模型
         if (province && city) {
-          console.log(province);
-          console.log(city);
-          this.selectedLocations = [province, city];
-          console.log(this.selectedLocations);
+          // console.log(province);
+          // console.log(city);
+          return [province, city];
+          // console.log(this.selectedLocations);
         }
-      });
     },
+
     //添加或修改
     saveOrUpdate() {
       if (!this.sysEquipUse.id) {
@@ -372,6 +380,7 @@ export default {
           this.list = response.data.records;
           this.total = response.data.total;
           // console.log(response.data.records)
+          // console.log(pcTextArr);
         });
     },
   },

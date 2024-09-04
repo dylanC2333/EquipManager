@@ -121,8 +121,14 @@
         <el-form-item label="任务结束时间">
           <el-input v-model="sysTask.endTime" />
         </el-form-item>
-        <el-form-item label="任务地点">
-          <el-input v-model="sysTask.location" />
+        <el-form-item label="任务地点（省份）">
+          <el-select v-model="sysTask.location" placeholder="请选择">
+          <el-option
+            v-for="item in pcTextArr"
+            :key="item.value"
+            :value="item.value">
+          </el-option>
+        </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -145,6 +151,9 @@
 </template>
 <script>
 import api from "@/api/system/task";
+import {
+  pcTextArr,
+} from "element-china-area-data";
 export default {
   data() {
     return {
@@ -158,6 +167,8 @@ export default {
       sysTask: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+      
+      pcTextArr,//省市二级数据纯文字
     };
   },
   created() {
@@ -280,7 +291,6 @@ export default {
     //条件分页查询
     fetchData(pageNum = 1) {
       this.page = pageNum;
-
       if (this.createTimes && this.createTimes.length == 2) {
         this.searchObj.startTime = this.createTimes[0];
         this.searchObj.endTime = this.createTimes[1];
@@ -291,6 +301,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
+          // console.log(this.list);
         });
     },
   },
