@@ -129,6 +129,14 @@
         <el-form-item label="操作人">
           <el-input v-model="sysEquipUse.employeeUseName" />
         </el-form-item>
+        <el-form-item label="使用日期">
+          <el-date-picker
+            v-model="sysEquipUse.equipmentUseTime"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="地点">
           <el-cascader
             size="large"
@@ -198,6 +206,13 @@ export default {
     this.fetchData();
   },
   methods: {
+
+    // 日期选择器强制更新方法
+    dateChange(){
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
+    },
 
     // 地址选择变化调用
     handleLocationChange(value){
@@ -332,12 +347,15 @@ export default {
         this.fetchData();
       });
     },
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquipUse = {};
       this.selectedLocations = [];
+      this.sysEquipUse.equipmentUseTime =  new Date();
     },
+    
      // 根据id删除数据
      removeDataById(id) {
       // debugger
