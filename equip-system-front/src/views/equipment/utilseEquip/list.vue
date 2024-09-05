@@ -116,20 +116,21 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="设备名称">
+        <el-form-item label="设备名称"  prop = "equipmentName">
           <el-input v-model="sysEquipUse.equipmentName" />
         </el-form-item>
-        <el-form-item label="管理编码">
+        <el-form-item label="管理编码"  prop = "equipmentId">
           <el-input v-model="sysEquipUse.equipmentId" />
         </el-form-item>
-        <el-form-item label="任务单号">
+        <el-form-item label="任务单号"  prop = "taskId">
           <el-input v-model="sysEquipUse.taskId" />
         </el-form-item>
-        <el-form-item label="操作人">
+        <el-form-item label="操作人"  prop = "employeeUseName">
           <el-input v-model="sysEquipUse.employeeUseName" />
         </el-form-item>
-        <el-form-item label="使用日期">
+        <el-form-item label="使用日期"  prop = "equipmentUseTime">
           <el-date-picker
             v-model="sysEquipUse.equipmentUseTime"
             type="date"
@@ -137,22 +138,21 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="地点">
+        <el-form-item label="地点"  prop = "location">
           <el-cascader
-            size="large"
             :options="pcTextArr"
             v-model="selectedLocations"
             filterable
             @change="handleLocationChange">
           </el-cascader>
         </el-form-item>
-        <el-form-item label="设备使用前情况">
+        <el-form-item label="设备使用前情况"  prop = "preUseEquipmentStatus">
           <el-input v-model="sysEquipUse.preUseEquipmentStatus" />
         </el-form-item>
-        <el-form-item label="维护保养情况">
+        <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
           <el-input v-model="sysEquipUse.maintenanceStatus" />
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注"  prop = "remarks">
           <el-input v-model="sysEquipUse.remarks" />
         </el-form-item>
       </el-form>
@@ -199,7 +199,34 @@ export default {
       createTimes: [],
 
       pcTextArr,//省市二级地址，纯汉字
-      selectedLocations:[]// 选中的省市地址数据
+      selectedLocations:[],// 选中的省市地址数据
+
+      rules:{// 表单校验规则
+        equipmentName: [
+          { required : true , message : "必填" },
+        ],
+        equipmentId : [
+          { required : true , message : "必填" },
+        ],
+        taskId :[
+          { required : true , message : "必填" },
+        ],
+        employeeUseName : [
+          { required : true , message : "必填" },
+        ],
+        equipmentUseTime : [
+          { required : true , message : "必填" },
+        ],
+        location:[
+          { required : true , message : "必填" },
+        ],
+        preUseEquipmentStatus : [
+          { required : true , message : "必填" },
+        ],
+        maintenanceStatus : [
+          { required : true , message : "必填" },
+        ]
+      },
     };
   },
   created() {
@@ -313,11 +340,19 @@ export default {
 
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipUse.id) {
-        this.saveEquipUse();
-      } else {
-        this.updateEquipUse();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipUse.id) {
+            this.saveEquipUse();
+          } else {
+            this.updateEquipUse();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
+      
     },
     //修改方法
     updateEquipUse() {
