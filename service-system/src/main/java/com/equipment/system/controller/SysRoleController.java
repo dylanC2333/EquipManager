@@ -49,7 +49,7 @@ public class SysRoleController {
 
     // 3 条件分页查询
     // 参数：page当前页，limit每页记录
-    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
+//    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
     public Result<IPage<SysRole>> findPageQueryRole(
@@ -71,14 +71,14 @@ public class SysRoleController {
     }
 
     // 4 添加角色
-    @PreAuthorize("hasAnyAuthority('bnt.sysRole.add')")
+//    @PreAuthorize("hasAnyAuthority('bnt.sysRole.add')")
     @ApiOperation("添加角色")
     @PostMapping("save")
     public Result<Void> saveSysRole(@RequestBody SysRole sysRole){
         return sysRoleService.save(sysRole) ? Result.ok():Result.fail();
     }
     // 5 修改角色bnt.sysRole.update
-    @PreAuthorize("hasAnyAuthority('bnt.sysRole.update')")
+//    @PreAuthorize("hasAnyAuthority('bnt.sysRole.update')")
     @ApiOperation("修改角色")
     @PutMapping("update")
     public Result<Void> updateById(@RequestBody SysRole sysRole){
@@ -86,7 +86,7 @@ public class SysRoleController {
         return Result.ok();
     }
     // 6 根据id查询
-    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
+//    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
     @ApiOperation("查询角色")
     @GetMapping("get/{id}")
     public Result<SysRole> get(@PathVariable String id){
@@ -94,7 +94,7 @@ public class SysRoleController {
         return Result.ok(role);
     }
     // 7 根据id批量删除
-    @PreAuthorize("hasAnyAuthority('bnt.sysRole.remove')")
+//    @PreAuthorize("hasAnyAuthority('bnt.sysRole.remove')")
     @ApiOperation("根据id列表删除")
     @DeleteMapping("batchRemove")
     public Result<Void> batchRemove(@RequestBody List<String> ids){
