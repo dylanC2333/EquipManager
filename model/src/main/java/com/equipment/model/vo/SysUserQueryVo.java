@@ -22,13 +22,9 @@ public class SysUserQueryVo implements Serializable {
 	private String createTimeBegin;
 	private String createTimeEnd;
 
-	private Long roleId;
-	private Long postId;
-	private Long deptId;
+	private String username;
+	private String name;
 
-	public String getKeyword(){ return keyword;}
-
-	public void setKeyword(String keyword){ this.keyword = keyword;}
 
 }
 

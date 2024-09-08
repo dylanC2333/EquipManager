@@ -53,4 +53,14 @@ export default{
             method: 'delete',
         })
     },
+
+    // 根据字段信息查询用户
+    getUserQuery(roleName){
+        return request({
+            // 接口路径
+            url: `${api_name}query/${roleName}`,
+            // 提交方式
+            method: 'get',
+        })
+    }
 }

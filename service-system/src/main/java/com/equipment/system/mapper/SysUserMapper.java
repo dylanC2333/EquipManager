@@ -3,7 +3,10 @@ package com.equipment.system.mapper;
 import com.equipment.model.system.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 * @author dylan
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
+    List<SysUser> getUserListByRoleName(@Param("roleName") String roleName);
 }
 
 

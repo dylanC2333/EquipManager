@@ -4,6 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.equipment.system.mapper.SysUserMapper">
 
+    <resultMap id="sysUserMap" type="com.equipment.model.system.SysUser" autoMapping="true">
+    </resultMap>
+
     <resultMap id="BaseResultMap" type="com.equipment.model.system.SysUser">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
@@ -27,4 +30,16 @@
         status,create_time,update_time,
         is_deleted
     </sql>
+    
+    <select id="getUserListByRoleName" resultMap="sysUserMap">
+        select * from sys_user u
+                          inner join sys_user_role ur on ur.user_id = u.id
+                          inner join sys_role r on r.id = ur.role_id
+        where
+            r.role_name = #{roleName}
+          and u.is_deleted = 0
+          and ur.is_deleted = 0
+          and r.is_deleted = 0
+    </select>
+
 </mapper>

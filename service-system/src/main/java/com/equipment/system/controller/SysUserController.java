@@ -96,12 +96,25 @@ public class SysUserController {
         return sysUserService.removeById(id) ? Result.ok() : Result.fail();
     }
 
-   // 6 根据id查询
-   @ApiOperation("查询用户")
-   @GetMapping("get/{id}")
-   public Result<SysUser> get(@PathVariable String id) {
+    // 6 根据id查询
+    @ApiOperation("查询用户")
+    @GetMapping("get/{id}")
+    public Result<SysUser> get(@PathVariable String id) {
        SysUser sysUser = sysUserService.getById(id);
        return Result.ok(sysUser);
-   }
+    }
+
+    // 7 根据角色名称查询用户列表
+    @ApiOperation("根据角色名称查询用户列表")
+    @GetMapping("query/{roleName}")
+    public Result<List<SysUser>> querySysUser(
+            @ApiParam(name = "roleName", value = "角色名称", required = false)
+            @PathVariable String roleName
+    ) {
+        List<SysUser> sysUserList = null;
+        sysUserList = sysUserService.getUserListByRoleName(roleName);
+        return sysUserList != null ? Result.ok(sysUserList):Result.fail();
+    }
+
 }
 

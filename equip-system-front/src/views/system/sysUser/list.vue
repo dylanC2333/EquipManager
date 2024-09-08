@@ -18,7 +18,7 @@
     </div>    
     <!-- 工具条,添加、批量删除 -->
     <div class="tools-div">
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="add"  :disabled="$hasBP('bnt.sysRole.add') == false">添 加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="add"  >添 加</el-button>
       <el-button class="btn-add" size = "mini" @click="batchRemove()"> 批量删除</el-button>
     </div>
 

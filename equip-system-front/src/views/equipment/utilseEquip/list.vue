@@ -128,7 +128,14 @@
           <el-input v-model="sysEquipUse.taskId" />
         </el-form-item>
         <el-form-item label="操作人"  prop = "employeeUseName">
-          <el-input v-model="sysEquipUse.employeeUseName" />
+          <!-- <el-input v-model="sysEquipUse.employeeUseName" /> -->
+          <el-autocomplete
+            class="inline-input"
+            v-model="sysEquipUse.employeeUseName"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入内容"
+            @select="handleSubmit"
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item label="使用日期"  prop = "equipmentUseTime">
           <el-date-picker
@@ -184,6 +191,8 @@ import {
   codeToText,
   TextToCode,
 } from "element-china-area-data";
+// import { getUserQuery } from "@/api/system/user";
+import userapi from "@/api/system/user";
 export default {
   data() {
     return {
@@ -200,6 +209,9 @@ export default {
 
       pcTextArr,//省市二级地址，纯汉字
       selectedLocations:[],// 选中的省市地址数据
+
+      userqueryList:[],
+      userIdList:[],
 
       rules:{// 表单校验规则
         equipmentName: [
@@ -232,7 +244,50 @@ export default {
   created() {
     this.fetchData();
   },
+  mounted() {
+      this.loadUserQuery();
+  },
   methods: {
+    
+    //输入建议主方法
+    querySearch(queryString, cb){
+      var userNameList = this.userNameList;
+      var results = queryString ? userNameList.filter(this.createFilter(queryString)) : userNameList;
+      console.log(results);
+      cb(results);
+    },
+    
+    //输入建议关键词筛选方法
+    createFilter(queryString){
+      const regExp = new RegExp(queryString,'i');
+      return (matchNameList) =>{
+        return (regExp.test(matchNameList.value));
+      };
+
+      // return (matchNameList) =>{
+      //   return (matchNameList.value.toLowerCase().indexOf(queryString.toLowerCase()) == 0);
+      // };
+    },
+
+    // 输入建议数据加载方法
+    loadUserQuery(){
+      userapi.getUserQuery("设备使用人员").then((response) =>{
+        this.userqueryList = response.data;
+        // console.log(this.userqueryList);
+        this.userNameList = this.userqueryList.map((user) => {
+          return {
+            value: user.name,
+            id : user.id,
+          };
+        });
+        // console.log(this.userNameList);
+      });
+    },
+
+    //输入建议提交触发方法
+    handleSubmit(item){
+      // console.log(item);
+    },
 
     // 日期选择器强制更新方法
     dateChange(){

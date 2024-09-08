@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.equipment.model.system.SysUser;
 import com.equipment.model.vo.RouterVo;
 import com.equipment.system.mapper.SysUserMapper;
+import com.equipment.system.mapper.SysUserRoleMapper;
 import com.equipment.system.service.SysMenuService;
 import com.equipment.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     @Autowired
     private SysMenuService sysMenuService;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     @Override
     public SysUser getUserInfoByUserName(String username) {
@@ -50,6 +54,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         //按钮权限数据
         result.put("buttons",permsList);
         return result;
+    }
+
+    @Override
+    public List<SysUser> getUserListByRoleName(String roleName) {
+        List<SysUser> sysUserList = null;
+        sysUserList = sysUserMapper.getUserListByRoleName(roleName);
+        return sysUserList;
     }
 }
 

@@ -38,4 +38,10 @@ public class SysUserMapperTest {
         System.out.print(pageModel.getRecords());
     }
 
+    @Test
+    public void getUserListByRoleName(){
+        List<SysUser> list = null;
+        list = sysUserService.getUserListByRoleName("设备使用人员");
+        System.out.println(list);
+    }
 }

@@ -4,6 +4,7 @@ package com.equipment.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.equipment.model.system.SysUser;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,4 +18,6 @@ public interface SysUserService extends IService<SysUser> {
     SysUser getUserInfoByUserName(String username);
 
     Map<String, Object> getUserInfo(String username);
+
+    List<SysUser> getUserListByRoleName(String roleName);
 }
