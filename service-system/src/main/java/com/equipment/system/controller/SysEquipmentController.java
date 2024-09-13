@@ -1,6 +1,7 @@
 package com.equipment.system.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.model.system.SysMenu;
 import com.equipment.model.system.SysRole;
@@ -63,8 +64,14 @@ public class SysEquipmentController {
                                     SysEquipQueryVo sysEquipQueryVo){
         //创建page对象
         Page<SysEquipment> pageParam = new Page<>(page,limit);
+        //构造查询条件
+        LambdaQueryWrapper<SysEquipment> queryWrapper = new LambdaQueryWrapper<>();
+        if(sysEquipQueryVo!=null){
+            queryWrapper.like(SysEquipment::getEquipmentName,sysEquipQueryVo.getKeyword())
+                    .or().like(SysEquipment::getEquipmentCode,sysEquipQueryVo.getKeyword());
+        }
         //调用service方法
-        IPage<SysEquipment> pageModel = sysEquipmentService.selectPage(pageParam,sysEquipQueryVo);
+        IPage<SysEquipment> pageModel = sysEquipmentService.page(pageParam,queryWrapper);
         //返回
         return  Result.ok(pageModel);
     }

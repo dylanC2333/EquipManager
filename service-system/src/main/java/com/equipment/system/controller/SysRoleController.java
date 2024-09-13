@@ -1,5 +1,7 @@
 package com.equipment.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.common.result.Result;
@@ -64,8 +66,13 @@ public class SysRoleController {
             SysRoleQueryVo sysRoleQueryVo){
         // 创建page对象
         Page<SysRole> pageParam = new Page<>(page,limit);
+        // 构造查询条件
+        LambdaQueryWrapper<SysRole> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if(sysRoleQueryVo!=null){
+            lambdaQueryWrapper.like(SysRole::getRoleName,sysRoleQueryVo.getRoleName());
+        }
         // 调用service方法
-        IPage<SysRole> pageModel = sysRoleService.selectPage(pageParam,sysRoleQueryVo);
+        IPage<SysRole> pageModel = sysRoleService.page(pageParam,lambdaQueryWrapper);
         // 返回
         return  Result.ok(pageModel);
     }

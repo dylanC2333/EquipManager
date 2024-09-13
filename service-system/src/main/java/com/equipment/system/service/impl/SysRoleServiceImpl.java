@@ -1,13 +1,10 @@
 package com.equipment.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.equipment.model.system.SysRole;
 import com.equipment.model.system.SysUserRole;
 import com.equipment.model.vo.AssignRoleVo;
-import com.equipment.model.vo.SysRoleQueryVo;
 import com.equipment.system.mapper.SysRoleMapper;
 import com.equipment.system.mapper.SysUserRoleMapper;
 import com.equipment.system.service.SysRoleService;
@@ -19,8 +16,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+* @author A
+* @description 针对表【sys_role(角色)】的数据库操作Service实现
+* @createDate 2024-09-13 10:42:39
+*/
 @Service
-public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
+public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
+    implements SysRoleService {
+
 
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
@@ -63,9 +67,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                 sysUserRoleMapper.insert(sysUserRole);
             }
         }
-
-
     }
-
-
 }
+
+
+
+

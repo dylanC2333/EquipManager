@@ -1,20 +1,13 @@
 package com.equipment.system.service;
 
-import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
 import com.equipment.model.system.SysDetection;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author atguigu
- * @since 2024-08-21
- */
+* @author A
+* @description 针对表【sys_detection】的数据库操作Service
+* @createDate 2024-09-13 10:42:39
+*/
 public interface SysDetectionService extends IService<SysDetection> {
 
-    IPage<SysDetection> selectPage(Page<SysDetection> pageParam, SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo);
 }

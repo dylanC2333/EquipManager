@@ -1,6 +1,7 @@
 package com.equipment.system.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.model.vo.SysEquipQueryVo;
 import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
@@ -61,8 +62,15 @@ public class SysDetectionController {
                                      SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo){
         //创建page对象
         Page<SysDetection> pageParam = new Page<>(page,limit);
+        //构造查询条件
+        LambdaQueryWrapper<SysDetection> queryWrapper = new LambdaQueryWrapper();
+        if(sysEquipmentDetectionQueryVo!=null){
+            queryWrapper.like(SysDetection::getEmployeeCode,sysEquipmentDetectionQueryVo.getKeyword())
+                    .or().like(SysDetection::getDetectionLocation,sysEquipmentDetectionQueryVo.getKeyword())
+                    .or().like(SysDetection::getTaskCode,sysEquipmentDetectionQueryVo.getKeyword());
+        }
         //调用service方法
-        IPage<SysDetection> pageModel = sysDetectionService.selectPage(pageParam,sysEquipmentDetectionQueryVo);
+        IPage<SysDetection> pageModel = sysDetectionService.page(pageParam,queryWrapper);
         //返回
         return  Result.ok(pageModel);
     }

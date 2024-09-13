@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
-* @author dylan
+* @author A
 * @description 针对表【sys_menu(菜单表)】的数据库操作Service实现
-* @createDate 2024-08-21 20:45:33
+* @createDate 2024-09-13 10:42:39
 */
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
@@ -39,6 +39,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
 
     @Autowired
     private SysMenuService sysMenuService;
+
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
 

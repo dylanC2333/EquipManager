@@ -1,7 +1,9 @@
 package com.equipment.system.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
+import com.equipment.model.system.SysEquipment;
 import com.equipment.model.vo.SysEquipmentMaintenanceQueryVo;
 import com.equipment.model.vo.SysEquipmentTransferQueryVo;
 import com.equipment.model.system.SysEquipmentMaintenance;
@@ -61,8 +63,15 @@ public class SysEquipmentMaintenanceController {
                                              SysEquipmentMaintenanceQueryVo sysEquipmentMaintenanceQueryVo){
         //创建page对象
         Page<SysEquipmentMaintenance> pageParam = new Page<>(page,limit);
+        // 构造查询条件
+        LambdaQueryWrapper<SysEquipmentMaintenance> queryWrapper = new LambdaQueryWrapper<>();
+        if(sysEquipmentMaintenanceQueryVo!=null){
+            queryWrapper.like(SysEquipmentMaintenance::getEquipmentCode,sysEquipmentMaintenanceQueryVo.getKeyword())
+                    .or().like(SysEquipmentMaintenance::getEmployeeCode,sysEquipmentMaintenanceQueryVo.getKeyword())
+                    .or().like(SysEquipmentMaintenance::getMaintenanceStatus,sysEquipmentMaintenanceQueryVo.getKeyword());
+        }
         //调用service方法
-        IPage<SysEquipmentMaintenance> pageModel = sysEquipmentMaintenanceService.selectPage(pageParam,sysEquipmentMaintenanceQueryVo);
+        IPage<SysEquipmentMaintenance> pageModel = sysEquipmentMaintenanceService.page(pageParam,queryWrapper);
         //返回
         return  Result.ok(pageModel);
     }

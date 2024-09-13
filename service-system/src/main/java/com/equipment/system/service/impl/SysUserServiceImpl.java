@@ -5,18 +5,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.equipment.model.system.SysUser;
 import com.equipment.model.vo.RouterVo;
 import com.equipment.system.mapper.SysUserMapper;
-import com.equipment.system.mapper.SysUserRoleMapper;
 import com.equipment.system.service.SysMenuService;
 import com.equipment.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
-* @author dylan
+* @author A
 * @description 针对表【sys_user(用户表)】的数据库操作Service实现
-* @createDate 2024-08-18 17:38:41
+* @createDate 2024-09-13 10:42:39
 */
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
@@ -62,6 +63,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         sysUserList = sysUserMapper.getUserListByRoleName(roleName);
         return sysUserList;
     }
+
 }
 
 

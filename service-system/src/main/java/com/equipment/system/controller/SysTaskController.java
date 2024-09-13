@@ -1,7 +1,9 @@
 package com.equipment.system.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
+import com.equipment.model.system.SysRole;
 import com.equipment.model.vo.SysTaskQueryVo;
 import com.equipment.model.system.SysTask;
 import com.equipment.system.service.SysTaskService;
@@ -32,7 +34,7 @@ public class SysTaskController {
     //1、查询所有记录
     @ApiOperation("查询所有记录接口")
     @GetMapping("findAll")
-    public Result findAll(){
+    public Result<List<SysTask>> findAll(){
         List<SysTask> list =  sysTaskService.list();
         return Result.ok(list);
     }
@@ -59,9 +61,14 @@ public class SysTaskController {
                                      SysTaskQueryVo sysTaskQueryVo){
         //创建page对象
         Page<SysTask> pageParam = new Page<>(page,limit);
-        //Page<SysTask> page1 = sysTaskService.page(pageParam);
+        // 构建查询条件
+        LambdaQueryWrapper<SysTask> queryWrapper = new LambdaQueryWrapper<>();
+        if(sysTaskQueryVo!=null){
+            queryWrapper.like(SysTask::getTaskCode,sysTaskQueryVo.getKeyword())
+                    .or().like(SysTask::getLocation,sysTaskQueryVo.getKeyword());
+        }
         //调用service方法
-        IPage<SysTask> pageModel = sysTaskService.selectPage(pageParam,sysTaskQueryVo);
+        IPage<SysTask> pageModel = sysTaskService.page(pageParam,queryWrapper);
         //返回
         return  Result.ok(pageModel);
     }

@@ -1,7 +1,9 @@
 package com.equipment.system.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
+import com.equipment.model.system.SysEquipment;
 import com.equipment.model.vo.SysEquipmentIntakeQueryVo;
 import com.equipment.model.vo.SysEquipmentTransferQueryVo;
 import com.equipment.model.system.SysEquipmentTransfer;
@@ -61,8 +63,19 @@ public class SysEquipmentTransferController {
                                            SysEquipmentTransferQueryVo sysEquipmentTransferQueryVo){
         //创建page对象
         Page<SysEquipmentTransfer> pageParam = new Page<>(page,limit);
+        //构造查询条件
+        LambdaQueryWrapper<SysEquipmentTransfer> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if(sysEquipmentTransferQueryVo!=null){
+            lambdaQueryWrapper.like(SysEquipmentTransfer::getEquipmentCode,sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like(SysEquipmentTransfer::getTransferLocation,sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like(SysEquipmentTransfer::getTransferDate,sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like(SysEquipmentTransfer::getDeliverEmployeeCode,sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like(SysEquipmentTransfer::getReceiverEmployeeCode,sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like(SysEquipmentTransfer::getNewTaskCode,sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like(SysEquipmentTransfer::getOldTaskCode,sysEquipmentTransferQueryVo.getKeyword());
+        }
         //调用service方法
-        IPage<SysEquipmentTransfer> pageModel = sysEquipmentTransferService.selectPage(pageParam,sysEquipmentTransferQueryVo);
+        IPage<SysEquipmentTransfer> pageModel = sysEquipmentTransferService.page(pageParam,lambdaQueryWrapper);
         //返回
         return  Result.ok(pageModel);
     }

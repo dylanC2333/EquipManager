@@ -1,16 +1,18 @@
 package com.equipment.system.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.equipment.model.system.SysRole;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.equipment.model.vo.AssignRoleVo;
-import com.equipment.model.vo.SysRoleQueryVo;
 
 import java.util.Map;
 
+/**
+* @author A
+* @description 针对表【sys_role(角色)】的数据库操作Service
+* @createDate 2024-09-13 10:42:39
+*/
 public interface SysRoleService extends IService<SysRole> {
-    // 获取用户的角色数据
+
     Map<String, Object> getRolesByUserId(String userId);
 
     void doAssign(AssignRoleVo assignRoleVo);

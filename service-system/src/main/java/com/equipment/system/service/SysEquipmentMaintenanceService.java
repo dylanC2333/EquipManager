@@ -1,20 +1,13 @@
 package com.equipment.system.service;
 
-import com.equipment.model.vo.SysEquipmentMaintenanceQueryVo;
 import com.equipment.model.system.SysEquipmentMaintenance;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author atguigu
- * @since 2024-08-20
- */
+* @author A
+* @description 针对表【sys_equipment_maintenance】的数据库操作Service
+* @createDate 2024-09-13 10:42:39
+*/
 public interface SysEquipmentMaintenanceService extends IService<SysEquipmentMaintenance> {
 
-    IPage<SysEquipmentMaintenance> selectPage(Page<SysEquipmentMaintenance> pageParam, SysEquipmentMaintenanceQueryVo sysEquipmentMaintenanceQueryVo);
 }
