@@ -14,7 +14,7 @@ public class CustomUser extends User {
     private SysUser sysUser;
 
     public CustomUser(SysUser sysUser, Collection<? extends GrantedAuthority> authorities) {
-        super(sysUser.getUsername(), sysUser.getPassword(), authorities);
+        super(sysUser.getUserCode(), sysUser.getPassword(), authorities);
         this.sysUser = sysUser;
     }
 

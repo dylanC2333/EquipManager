@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.equipment.model.base.BaseEntity;
 import lombok.Data;
@@ -61,6 +62,14 @@ public class SysMenu extends BaseEntity implements Serializable {
      * 状态(0:禁止,1:正常)
      */
     private Integer status;
+
+    // 下级列表
+    @TableField(exist = false)
+    private List<SysMenu> children;
+
+    //是否选中
+    @TableField(exist = false)
+    private boolean Select;
 
 
     @TableField(exist = false)

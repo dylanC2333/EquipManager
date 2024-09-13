@@ -49,7 +49,7 @@ public class IndexController {
         }
 
         //根据userid和username生成token字符串，通过map返回
-        String token = JwtHelper.createToken(sysUser.getId(), sysUser.getUsername());
+        String token = JwtHelper.createToken(sysUser.getId(), sysUser.getUserCode());
 
         Map<String,Object> map = new HashMap<>();
         map.put("token",token);

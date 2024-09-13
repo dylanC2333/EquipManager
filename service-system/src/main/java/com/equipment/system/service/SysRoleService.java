@@ -10,9 +10,6 @@ import com.equipment.model.vo.SysRoleQueryVo;
 import java.util.Map;
 
 public interface SysRoleService extends IService<SysRole> {
-    // 3 条件分页查询
-    IPage<SysRole> selectPage(Page<SysRole> pageParam, SysRoleQueryVo sysRoleQueryVo);
-
     // 获取用户的角色数据
     Map<String, Object> getRolesByUserId(String userId);
 

@@ -76,7 +76,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         List<SysRoleMenu> roleMenus = sysRoleMenuMapper.selectList(new QueryWrapper<SysRoleMenu>().eq("role_id",roleId));
         List<String> roleMenuIds = new ArrayList<>();
         for (SysRoleMenu roleMenu : roleMenus) {
-            roleMenuIds.add(roleMenu.getMenuId());
+            roleMenuIds.add(String.valueOf(roleMenu.getMenuId()));
         }
         //遍历所有权限列表
         for (SysMenu sysMenu : sysMenuList) {
@@ -96,8 +96,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         List<SysRoleMenu> roleMenuList = new ArrayList<>();
         for (String menuId: assignMenuVo.getMenuIdList()){
             SysRoleMenu roleMenu = new SysRoleMenu();
-            roleMenu.setRoleId(assignMenuVo.getRoleId());
-            roleMenu.setMenuId(menuId);
+            roleMenu.setRoleId(Long.valueOf(assignMenuVo.getRoleId()));
+            roleMenu.setMenuId(Long.valueOf(menuId));
             roleMenuList.add(roleMenu);
         }
         //批量插入
@@ -156,6 +156,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         }
         List<String> menuIdList = sysRoleMenuList.stream()
                 .map(SysRoleMenu::getMenuId)
+                .map(String::valueOf)
                 .distinct()
                 .collect(Collectors.toList());
         sysMenuList = baseMapper.selectList(new QueryWrapper<SysMenu>().in("id", menuIdList));

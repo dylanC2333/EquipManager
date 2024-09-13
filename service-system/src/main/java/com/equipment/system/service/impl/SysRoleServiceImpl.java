@@ -24,12 +24,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
-    // 3 条件分页查询
-    @Override
-    public IPage<SysRole> selectPage(Page<SysRole> pageParam, SysRoleQueryVo sysRoleQueryVo) {
-        IPage<SysRole> pageModel = baseMapper.selectPage(pageParam,sysRoleQueryVo);
-        return pageModel;
-    }
 
     @Override
     public Map<String, Object> getRolesByUserId(String userId) {
@@ -43,7 +37,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<String> userRoleIds = new ArrayList<>();
         // 获取用户已分配的角色id
         for (SysUserRole sysUserRole : userRolesList) {
-            userRoleIds.add(sysUserRole.getRoleId());
+            userRoleIds.add(String.valueOf(sysUserRole.getRoleId()));
         }
         // 创建返回的Map
         Map<String, Object> returnMap = new HashMap<>();
@@ -63,8 +57,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         for (String roleId : roleIdList) {
             if(roleId != null){
                 SysUserRole sysUserRole = new SysUserRole();
-                sysUserRole.setUserId(assignRoleVo.getUserId());
-                sysUserRole.setRoleId(roleId);
+                sysUserRole.setUserId(Long.valueOf(assignRoleVo.getUserId()));
+                sysUserRole.setRoleId(Long.valueOf(roleId));
                 //保存
                 sysUserRoleMapper.insert(sysUserRole);
             }
