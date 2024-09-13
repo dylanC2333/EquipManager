@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.equipment.system.mapper.SysTaskMapper">
 
-    <resultMap id="SysTaskMap" type="com.equipment.model.system.SysTask" autoMapping="true"></resultMap>
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.SysTask">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="startDate" column="start_date" jdbcType="DATE"/>
+            <result property="endDate" column="end_date" jdbcType="DATE"/>
+            <result property="location" column="location" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
 
-    <!-- 用于select查询公用抽取的列 -->
-    <sql id="columns">
-        id,task_code,start_time,end_time,location
+    <sql id="Base_Column_List">
+        id,task_code,start_date,
+        end_date,location,is_deleted,
+        create_time,update_time
     </sql>
-
-    <select id="selectPage" resultMap="SysTaskMap">
-        select <include refid="columns" />
-        from sys_task
-        <where>
-            <if test="vo.keyword != null and vo.keyword != ''">
-                and (task_code like CONCAT('%',#{vo.keyword},'%') or  location like CONCAT('%',#{vo.keyword},'%'))
-            </if>
-            <if test="vo.startTime != null and vo.startTime != ''">
-                and start_time &lt;= #{vo.startTime}
-            </if>
-            <if test="vo.endTime != null and vo.endTime != ''">
-                and end_time >= #{vo.endTime}
-            </if>
-        </where>
-        order by id desc
-    </select>
-
 </mapper>

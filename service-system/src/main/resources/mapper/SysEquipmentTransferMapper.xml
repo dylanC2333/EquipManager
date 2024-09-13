@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.equipment.system.mapper.SysEquipmentTransferMapper">
 
-    <resultMap id="SysEquipmentTransferMap" type="com.equipment.model.system.SysEquipmentTransfer" autoMapping="true"></resultMap>
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.SysEquipmentTransfer">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="oldTaskCode" column="old_task_code" jdbcType="VARCHAR"/>
+            <result property="newTaskCode" column="new_task_code" jdbcType="VARCHAR"/>
+            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="deliverEmployeeCode" column="deliver_employee_code" jdbcType="VARCHAR"/>
+            <result property="receiverEmployeeCode" column="receiver_employee_code" jdbcType="VARCHAR"/>
+            <result property="transferDate" column="transfer_date" jdbcType="DATE"/>
+            <result property="transferLocation" column="transfer_location" jdbcType="VARCHAR"/>
+            <result property="transferType" column="transfer_type" jdbcType="VARCHAR"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
 
-    <!-- 用于select查询公用抽取的列 -->
-    <sql id="columns">
-        id,old_task_id,new_task_id,equipment_id,deliver_employee_id,receiver_employee_id,transfer_time,transfer_location,transfer_type,remarks
+    <sql id="Base_Column_List">
+        id,old_task_code,new_task_code,
+        equipment_code,deliver_employee_code,receiver_employee_code,
+        transfer_date,transfer_location,transfer_type,
+        remarks,create_time,update_time,
+        is_deleted
     </sql>
-
-    <select id="selectPage" resultMap="SysEquipmentTransferMap">
-        select <include refid="columns" />
-        from sys_equipment_transfer
-        <where>
-            <if test="vo.keyword != null and vo.keyword != ''">
-                and (old_task_id like CONCAT('%',#{vo.keyword},'%') or  new_task_id like CONCAT('%',#{vo.keyword},'%') or equipment_id like CONCAT('%',#{vo.keyword},'%'))
-            </if>
-            <if test="vo.startTime != null and vo.startTime != ''">
-                and transfer_time >= #{vo.startTime}
-            </if>
-            <if test="vo.endTime != null and vo.endTime != ''">
-                and transfer_time &lt;= #{vo.endTime}
-            </if>
-        </where>
-        order by id desc
-    </select>
-
 </mapper>

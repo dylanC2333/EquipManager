@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.equipment.system.mapper.SysDetectionMapper">
 
-    <resultMap id="SysDetectionMap" type="com.equipment.model.system.SysDetection" autoMapping="true"></resultMap>
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.SysDetection">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="employeeCode" column="employee_code" jdbcType="CHAR"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="startDate" column="start_date" jdbcType="DATE"/>
+            <result property="endDate" column="end_date" jdbcType="DATE"/>
+            <result property="detectionLocation" column="detection_location" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
 
-    <!-- 用于select查询公用抽取的列 -->
-    <sql id="columns">
-        id,employee_id,task_id,start_time,end_time,detection_location
+    <sql id="Base_Column_List">
+        id,employee_code,task_code,
+        start_date,end_date,detection_location,
+        is_deleted,create_time,update_time
     </sql>
-
-    <select id="selectPage" resultMap="SysDetectionMap">
-        select <include refid="columns" />
-        from sys_detection
-        <where>
-            <if test="vo.keyword != null and vo.keyword != ''">
-                and (task_id like CONCAT('%',#{vo.keyword},'%') or  employee_id like CONCAT('%',#{vo.keyword},'%'))
-            </if>
-            <if test="vo.startTime != null and vo.startTime != ''">
-                and start_time >= #{vo.startTime}
-            </if>
-            <if test="vo.endTime != null and vo.endTime != ''">
-                and end_time &lt;= #{vo.endTime}
-            </if>
-        </where>
-        order by id desc
-    </select>
 </mapper>
