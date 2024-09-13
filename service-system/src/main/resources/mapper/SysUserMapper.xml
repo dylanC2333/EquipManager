@@ -40,6 +40,7 @@
           and u.is_deleted = 0
           and ur.is_deleted = 0
           and r.is_deleted = 0
+        order by convert(u.name using gbk) asc;
     </select>
 
 </mapper>
