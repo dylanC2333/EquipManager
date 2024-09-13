@@ -54,16 +54,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             String token = request.getHeader("token");
             logger.info("token:"+token);
             if (!StringUtils.isEmpty(token)) {
-                String useruame = JwtHelper.getUsername(token);
-                logger.info("useruame:"+useruame);
-                if (!StringUtils.isEmpty(useruame)) {
-                    String authoritiesString = (String) redisTemplate.opsForValue().get(useruame);
+                String userCode = JwtHelper.getUserCode(token);
+                logger.info("userCode:"+userCode);
+                if (!StringUtils.isEmpty(userCode)) {
+                    String authoritiesString = (String) redisTemplate.opsForValue().get(userCode);
                     List<Map> mapList = JSON.parseArray(authoritiesString, Map.class);
                     List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     for (Map map : mapList) {
                         authorities.add(new SimpleGrantedAuthority((String)map.get("authority")));
                     }
-                    return new UsernamePasswordAuthenticationToken(useruame, null, authorities);
+                    return new UsernamePasswordAuthenticationToken(userCode, null, authorities);
                     // return new UsernamePasswordAuthenticationToken(useruame, null, Collections.emptyList());
                 }
             }

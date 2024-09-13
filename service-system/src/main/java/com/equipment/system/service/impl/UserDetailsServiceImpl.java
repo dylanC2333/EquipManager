@@ -25,8 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser sysUser = sysUserService.getUserInfoByUserName(username);
+    // 这个方法实现类名字不能改，因为是对于库里写好的service接口的实现
+    public UserDetails loadUserByUsername(String userCode) throws UsernameNotFoundException {
+        SysUser sysUser = sysUserService.getUserInfoByUserCode(userCode);
         if (sysUser == null) {
             throw new UsernameNotFoundException("用户不存在");
         }

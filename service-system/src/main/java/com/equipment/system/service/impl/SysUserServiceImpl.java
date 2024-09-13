@@ -29,17 +29,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     @Autowired
     private SysUserMapper sysUserMapper;
 
+
     @Override
-    public SysUser getUserInfoByUserName(String username) {
+    public SysUser getUserInfoByUserCode(String userCode) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
+        queryWrapper.eq("user_code", userCode);
         return baseMapper.selectOne(queryWrapper);
     }
 
     @Override
-    public Map<String, Object> getUserInfo(String username) {
+    public Map<String, Object> getUserInfo(String userCode) {
         //根据username查询用户基本信息
-        SysUser user = getUserInfoByUserName(username);
+        SysUser user = getUserInfoByUserCode(userCode);
         //根据username查询菜单权限
         List<RouterVo> routerVoList = sysMenuService.getUserMenuList(user.getId());
         //根据username查询按钮权限
@@ -47,7 +48,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
 
         Map<String, Object> result = new HashMap<>();
-        result.put("name", username);
+        result.put("name", userCode);
         result.put("avatar","https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
         result.put("roles","[admin]");
         //菜单权限数据

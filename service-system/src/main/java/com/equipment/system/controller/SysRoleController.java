@@ -68,7 +68,7 @@ public class SysRoleController {
         Page<SysRole> pageParam = new Page<>(page,limit);
         // 构造查询条件
         LambdaQueryWrapper<SysRole> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if(sysRoleQueryVo!=null){
+        if(sysRoleQueryVo.getRoleName() !=null){
             lambdaQueryWrapper.like(SysRole::getRoleName,sysRoleQueryVo.getRoleName());
         }
         // 调用service方法
@@ -84,14 +84,17 @@ public class SysRoleController {
     public Result<Void> saveSysRole(@RequestBody SysRole sysRole){
         return sysRoleService.save(sysRole) ? Result.ok():Result.fail();
     }
+
     // 5 修改角色bnt.sysRole.update
 //    @PreAuthorize("hasAnyAuthority('bnt.sysRole.update')")
     @ApiOperation("修改角色")
     @PutMapping("update")
     public Result<Void> updateById(@RequestBody SysRole sysRole){
+        System.out.println(sysRole);
         sysRoleService.updateById(sysRole);
         return Result.ok();
     }
+
     // 6 根据id查询
 //    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
     @ApiOperation("查询角色")

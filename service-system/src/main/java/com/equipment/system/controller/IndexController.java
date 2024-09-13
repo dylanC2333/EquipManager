@@ -28,8 +28,8 @@ public class IndexController {
     // login
     @PostMapping("login")
     public Result<Map<String,Object>> login(@RequestBody LoginVo loginVo) {
-        // 根据username查询数据
-        SysUser sysUser = sysUserService.getUserInfoByUserName(loginVo.getUsername());
+        // 根据userCode查询数据
+        SysUser sysUser = sysUserService.getUserInfoByUserCode(loginVo.getUsername());
 
         //如果查询为空
         if (sysUser == null){
@@ -61,11 +61,11 @@ public class IndexController {
         // 获取请求头token字符串
         String token = request.getHeader("token");
 
-        //从token字符串获取用户名称（id）
-        String username = JwtHelper.getUsername(token);
+        //从token字符串获取用户编号（id）
+        String userCode = JwtHelper.getUserCode(token);
 
         //根据用户名称获取用户信息（基本信息 和 菜单权限 和 按钮权限）
-        Map<String,Object> map = sysUserService.getUserInfo(username);
+        Map<String,Object> map = sysUserService.getUserInfo(userCode);
         return Result.ok(map);
     }
     /**

@@ -44,12 +44,13 @@ export default{
     },
     // 修改方法
     update(role){
+        console.log(role);
         return request({
             // 接口路径
             url: `${api_name}update`,
             // 提交方式
             method: 'put',
-            date: role
+            date: role ,
         })
     },
     //批量删除

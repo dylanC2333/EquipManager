@@ -51,6 +51,7 @@
 
       <el-table-column prop="roleName" label="角色名称" sortable/>
       <el-table-column prop="roleCode" label="角色编码" sortable/>
+      <el-table-column prop="description" label="角色描述" sortable/>
       <el-table-column prop="createTime" label="创建时间" width="160" sortable/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -79,6 +80,9 @@
         <el-form-item label="角色编码">
           <el-input v-model="sysRole.roleCode"/>
         </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="sysRole.description"/>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="adddialogVisible = false" size="small" icon="el-icon-refresh-right">取 消</el-button>
@@ -95,17 +99,15 @@
         <el-form-item label="角色编码">
           <el-input v-model="sysRole.roleCode"/>
         </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="sysRole.description"/>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editdialogVisible = false" size="small" icon="el-icon-refresh-right">取 消</el-button>
         <el-button type="primary" icon="el-icon-check" @click="updateRole()" size="small">确 定</el-button>
       </span>
     </el-dialog>
-
-
-
-  
-
   </div>
 
 </template>
@@ -217,12 +219,12 @@ export default{
           // 弹出框
           this.editdialogVisible = true
           api.getRoleId(id).then(response =>{
-            
-            this.sysRole = response.data
+            this.sysRole = response.data;
           });
         },
         //修改的方法
         updateRole() {
+          console.log(this.sysRole);
           api.update(this.sysRole)
             .then(response =>{
               //提示

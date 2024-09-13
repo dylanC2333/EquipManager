@@ -12,9 +12,9 @@ import java.util.Map;
 * @createDate 2024-09-13 10:42:39
 */
 public interface SysUserService extends IService<SysUser> {
-    SysUser getUserInfoByUserName(String username);
+    SysUser getUserInfoByUserCode(String userCode);
 
-    Map<String, Object> getUserInfo(String username);
+    Map<String, Object> getUserInfo(String userCode);
 
     List<SysUser> getUserListByRoleName(String roleName);
 }
