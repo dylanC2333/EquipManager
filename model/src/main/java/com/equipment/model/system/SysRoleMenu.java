@@ -1,26 +1,33 @@
 package com.equipment.model.system;
 
-import com.equipment.model.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.Date;
+
+import com.equipment.model.base.BaseEntity;
 import lombok.Data;
 
+/**
+ * 角色菜单
+ * @TableName sys_role_menu
+ */
+@TableName(value ="sys_role_menu")
 @Data
-@ApiModel(description = "角色菜单")
-@TableName("sys_role_menu")
-public class SysRoleMenu extends BaseEntity {
-	
-	private static final long serialVersionUID = 1L;
+public class SysRoleMenu extends BaseEntity implements Serializable {
 
-	@ApiModelProperty(value = "角色id")
-	@TableField("role_id")
-	private String roleId;
+    /**
+     * 
+     */
+    private Long roleId;
 
-	@ApiModelProperty(value = "菜单id")
-	@TableField("menu_id")
-	private String menuId;
+    /**
+     * 
+     */
+    private Long menuId;
 
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }
-

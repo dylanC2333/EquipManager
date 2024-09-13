@@ -2,10 +2,7 @@ package com.equipment.system.controller;
 
 
 import com.equipment.common.result.Result;
-import com.equipment.model.vo.SysEquipmentExportQueryVo;
 import com.equipment.model.vo.SysEquipmentIntakeQueryVo;
-import com.equipment.model.system.SysEquipmentIntake;
-import com.equipment.system.service.SysEquipmentIntakeService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;

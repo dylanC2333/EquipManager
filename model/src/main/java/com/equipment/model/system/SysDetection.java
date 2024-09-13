@@ -3,64 +3,45 @@ package com.equipment.model.system;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.time.LocalDate;
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
+import java.util.Date;
+
+import com.equipment.model.base.BaseEntity;
 import lombok.Data;
 
 /**
- * <p>
  * 
- * </p>
- *
- * @author atguigu
- * @since 2024-08-21
+ * @TableName sys_detection
  */
+@TableName(value ="sys_detection")
 @Data
-@ApiModel(description = "设备检测")
-@TableName("sys_detection")
-public class SysDetection implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 目测id
-     */
-    @TableId(type = IdType.AUTO)
-    private String id;
-
+public class SysDetection extends BaseEntity implements Serializable  {
     /**
      * 员工id
      */
-    @TableField("employee_id")
-    private String employeeId;
+    private String employeeCode;
 
     /**
      * 任务id
      */
-    @TableField("task_id")
-    private String taskId;
+    private String taskCode;
 
     /**
      * 目测开始时间
      */
-    @TableField("start_time")
-    private LocalDate startTime;
+    private Date startDate;
 
     /**
      * 目测结束时间
      */
-    @TableField("end_time")
-    private LocalDate endTime;
+    private Date endDate;
 
     /**
      * 目测地点
      */
-    @TableField("detection_location")
     private String detectionLocation;
 
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

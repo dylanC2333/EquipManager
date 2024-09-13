@@ -1,89 +1,67 @@
 package com.equipment.model.system;
 
-import java.time.LocalDate;
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
+import java.util.Date;
+
+import com.equipment.model.base.BaseEntity;
 import lombok.Data;
 
 /**
- * <p>
  * 
- * </p>
- *
- * @author atguigu
- * @since 2024-08-19
+ * @TableName sys_equipment_transfer
  */
+@TableName(value ="sys_equipment_transfer")
 @Data
-@ApiModel(description = "设备交接")
-@TableName("sys_equipment_transfer")
-public class SysEquipmentTransfer implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 设备交接id
-     */
-    @TableId(type = IdType.AUTO)
-    private String id;
-
+public class SysEquipmentTransfer extends BaseEntity implements Serializable {
     /**
      * 旧任务id
      */
-    @TableField("old_task_id")
-    private String oldTaskId;
+    private String oldTaskCode;
 
     /**
      * 新任务id
      */
-    @TableField("new_task_id")
-    private String newTaskId;
+    private String newTaskCode;
 
     /**
      * 设备id
      */
-    @TableField("equipment_id")
-    private String equipmentId;
+    private String equipmentCode;
 
     /**
      * 交付员工id
      */
-    @TableField("deliver_employee_id")
-    private String deliverEmployeeId;
+    private String deliverEmployeeCode;
 
     /**
      * 接受员工id
      */
-    @TableField("receiver_employee_id")
-    private String receiverEmployeeId;
+    private String receiverEmployeeCode;
 
     /**
      * 交接日期
      */
-    @TableField("transfer_time")
-    private LocalDate transferTime;
+    private Date transferDate;
 
     /**
      * 交接地点
      */
-    @TableField("transfer_location")
     private String transferLocation;
 
     /**
      * 交接类型（虚拟/真实）
      */
-    @TableField("transfer_type")
     private String transferType;
 
     /**
      * 备注
      */
-    @TableField("remarks")
     private String remarks;
 
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

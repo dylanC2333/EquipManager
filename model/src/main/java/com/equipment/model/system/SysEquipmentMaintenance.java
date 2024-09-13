@@ -3,70 +3,50 @@ package com.equipment.model.system;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.time.LocalDate;
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
+import java.util.Date;
+
+import com.equipment.model.base.BaseEntity;
 import lombok.Data;
 
 /**
- * <p>
  * 
- * </p>
- *
- * @author atguigu
- * @since 2024-08-20
+ * @TableName sys_equipment_maintenance
  */
+@TableName(value ="sys_equipment_maintenance")
 @Data
-@ApiModel(description = "设备保养")
-@TableName("sys_equipment_maintenance")
-public class SysEquipmentMaintenance implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 保养id
-     */
-    @TableId(type = IdType.AUTO)
-    private String id;
-
+public class SysEquipmentMaintenance extends BaseEntity implements Serializable {
     /**
      * 员工id
      */
-    @TableField("employee_id")
-    private String employeeId;
+    private String employeeCode;
 
     /**
      * 设备id
      */
-    @TableField("equipment_id")
-    private String equipmentId;
+    private String equipmentCode;
 
     /**
      * 保养时间
      */
-    @TableField("maintenance_time")
-    private LocalDate maintenanceTime;
+    private Date maintenanceDate;
 
     /**
      * 设备使用前状态
      */
-    @TableField("before_use_status")
     private String beforeUseStatus;
 
     /**
      * 备注
      */
-    @TableField("remarks")
     private String remarks;
 
     /**
      * 设备维护保养状态
      */
-    @TableField("maintenance_status")
     private String maintenanceStatus;
 
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

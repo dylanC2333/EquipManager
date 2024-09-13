@@ -1,48 +1,33 @@
 package com.equipment.model.system;
 
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
+import java.util.Date;
+
+import com.equipment.model.base.BaseEntity;
 import lombok.Data;
 
 /**
- * <p>
  * 
- * </p>
- *
- * @author atguigu
- * @since 2024-07-28
+ * @TableName sys_equipment
  */
+@TableName(value ="sys_equipment")
 @Data
-@ApiModel(description = "设备")
-@TableName("sys_equipment")
-public class SysEquipment implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 设备id
-     */
-    @TableId(type = IdType.AUTO)
-    private String id;
+public class SysEquipment extends BaseEntity implements Serializable {
 
     /**
      * 设备编码
      */
-    @TableField("equipment_code")
     private String equipmentCode;
 
     /**
      * 设备名称
      */
-    @TableField("equipment_name")
     private String equipmentName;
 
-
-
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

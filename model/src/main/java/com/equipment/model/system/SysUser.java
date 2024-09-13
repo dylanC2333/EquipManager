@@ -1,67 +1,53 @@
 package com.equipment.model.system;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
+import java.util.Date;
 
 import com.equipment.model.base.BaseEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
-//@Data：Lombok 注解，自动生成 getter、setter、equals、hashCode、toString 等方法。
-
+/**
+ * 用户表
+ * @TableName sys_user
+ */
+@TableName(value ="sys_user")
 @Data
-@ApiModel(description = "用户")
-@TableName("sys_user")
-public class SysUser extends BaseEntity {
-	
-	private static final long serialVersionUID = 1L;
+public class SysUser extends BaseEntity implements Serializable {
 
-	@ApiModelProperty(value = "用户名")
-	@TableField("username")
-	private String username;
+    /**
+     * 员工编号
+     */
+    private String userCode;
 
-	@ApiModelProperty(value = "密码")
-	@TableField("password")
-	private String password;
+    /**
+     * 密码
+     */
+    private String password;
 
-	@ApiModelProperty(value = "姓名")
-	@TableField("name")
-	private String name;
+    /**
+     * 员工姓名
+     */
+    private String userName;
 
-	@ApiModelProperty(value = "手机")
-	@TableField("phone")
-	private String phone;
+    /**
+     * 手机
+     */
+    private String phone;
 
-	@ApiModelProperty(value = "头像地址")
-	@TableField("head_url")
-	private String headUrl;
+    /**
+     * 描述
+     */
+    private String description;
 
-	@ApiModelProperty(value = "部门id")
-	@TableField("dept_id")
-	private Long deptId;
+    /**
+     * 状态（1：正常 0：停用）
+     */
+    private Integer status;
 
-	@ApiModelProperty(value = "岗位id")
-	@TableField("post_id")
-	private Long postId;
-
-	@ApiModelProperty(value = "描述")
-	@TableField("description")
-	private String description;
-
-	@ApiModelProperty(value = "状态（1：正常 0：停用）")
-	@TableField("status")
-	private Integer status;
-
-	@TableField(exist = false)
-	private List<SysRole> roleList;
-	//岗位
-	@TableField(exist = false)
-	private String postName;
-	//部门
-	@TableField(exist = false)
-	private String deptName;
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }
-

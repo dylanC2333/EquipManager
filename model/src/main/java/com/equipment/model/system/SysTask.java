@@ -1,59 +1,43 @@
 package com.equipment.model.system;
 
-import java.time.LocalDate;
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
+import java.util.Date;
+
+import com.equipment.model.base.BaseEntity;
 import lombok.Data;
 
 /**
- * <p>
  * 
- * </p>
- *
- * @author atguigu
- * @since 2024-07-28
+ * @TableName sys_task
  */
+@TableName(value ="sys_task")
 @Data
-@ApiModel(description = "任务")
-@TableName("sys_task")
-public class SysTask implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 任务id
-     */
-    @TableId(type = IdType.AUTO)
-    private String id;
+public class SysTask extends BaseEntity implements Serializable {
 
     /**
      * 任务编码
      */
-    @TableField("task_code")
     private String taskCode;
 
     /**
      * 任务开始时间
      */
-    @TableField("start_time")
-    private LocalDate startTime;
+    private Date startDate;
 
     /**
      * 任务结束时间
      */
-    @TableField("end_time")
-    private LocalDate endTime;
+    private Date endDate;
 
     /**
      * 任务地点
      */
-    @TableField("location")
     private String location;
 
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }
