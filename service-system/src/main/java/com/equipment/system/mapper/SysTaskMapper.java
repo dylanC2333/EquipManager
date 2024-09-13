@@ -1,23 +1,18 @@
 package com.equipment.system.mapper;
 
-import com.equipment.model.vo.SysEquipQueryVo;
-import com.equipment.model.vo.SysTaskQueryVo;
 import com.equipment.model.system.SysTask;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Param;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author atguigu
- * @since 2024-07-28
- */
+* @author A
+* @description 针对表【sys_task】的数据库操作Mapper
+* @createDate 2024-09-13 10:42:39
+* @Entity com.equip.system.domain.SysTask
+*/
 public interface SysTaskMapper extends BaseMapper<SysTask> {
 
-    IPage<SysTask> selectPage(Page<SysTask> pageParam, @Param("vo") SysTaskQueryVo sysTaskQueryVo);
-
 }
+
+
+
+

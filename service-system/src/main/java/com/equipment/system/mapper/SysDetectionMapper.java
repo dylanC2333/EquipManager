@@ -1,22 +1,18 @@
 package com.equipment.system.mapper;
 
-import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
-import com.equipment.model.vo.SysEquipmentExportQueryVo;
 import com.equipment.model.system.SysDetection;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Param;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author atguigu
- * @since 2024-08-21
- */
+* @author A
+* @description 针对表【sys_detection】的数据库操作Mapper
+* @createDate 2024-09-13 10:42:39
+* @Entity com.equip.system.domain.SysDetection
+*/
 public interface SysDetectionMapper extends BaseMapper<SysDetection> {
 
-    IPage<SysDetection> selectPage(Page<SysDetection> pageParam, @Param("vo") SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo);
 }
+
+
+
+

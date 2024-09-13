@@ -1,18 +1,18 @@
 package com.equipment.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysRole;
-import com.equipment.model.vo.SysRoleQueryVo;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-@Repository
-@Mapper
+/**
+* @author A
+* @description 针对表【sys_role(角色)】的数据库操作Mapper
+* @createDate 2024-09-13 10:42:39
+* @Entity com.equip.system.domain.SysRole
+*/
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    //条件分页查询
-    IPage<SysRole> selectPage(Page<SysRole> pageParam,@Param("vo") SysRoleQueryVo sysRoleQueryVo);
 }
+
+
+
+
