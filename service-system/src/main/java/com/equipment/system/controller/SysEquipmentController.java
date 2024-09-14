@@ -66,7 +66,7 @@ public class SysEquipmentController {
         Page<SysEquipment> pageParam = new Page<>(page,limit);
         //构造查询条件
         LambdaQueryWrapper<SysEquipment> queryWrapper = new LambdaQueryWrapper<>();
-        if(sysEquipQueryVo!=null){
+        if(sysEquipQueryVo.getKeyword() != null){
             queryWrapper.like(SysEquipment::getEquipmentName,sysEquipQueryVo.getKeyword())
                     .or().like(SysEquipment::getEquipmentCode,sysEquipQueryVo.getKeyword());
         }

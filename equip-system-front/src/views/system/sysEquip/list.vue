@@ -57,7 +57,7 @@
       </el-table-column>
 
       <el-table-column prop="equipmentName" label="设备名称" />
-      <el-table-column prop="equipmentCode" label="设备编码" />
+      <el-table-column prop="equipmentCode" label="设备编号" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -80,13 +80,14 @@
 
     <!-- 分页组件 -->
     <el-pagination
-      :current-page="page"
-      :total="total"
-      :page-size="limit"
-      style="padding: 30px 0; text-align: center"
-      layout="total, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
       @current-change="fetchData"
-    />
+      :current-page="page"
+      :page-sizes="[1, 5, 10, 50, 100]"
+      :page-size="limit"
+      style="padding: 30px 0; text-align: center;"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"/>
 
     <!-- 添加、修改 弹框 -->
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
@@ -142,6 +143,13 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 每页显示记录数改变时调用
+      handleSizeChange(currentLimit){
+      this.limit = currentLimit;
+      this.fetchData();
+      //console.log(this.limit);
+    },
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);

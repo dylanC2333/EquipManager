@@ -68,7 +68,7 @@
       @size-change="handleSizeChange"
       @current-change="fetchData"
       :current-page="page"
-      :page-sizes="[1, 5, 10, 20, 50, 100]"
+      :page-sizes="[1, 5, 10, 50, 100]"
       :page-size="limit"
       style="padding: 30px 0; text-align: center;"
       layout="total, sizes, prev, pager, next, jumper"
