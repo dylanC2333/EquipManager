@@ -50,7 +50,7 @@ export default{
             url: `${api_name}update`,
             // 提交方式
             method: 'put',
-            date: role ,
+            data: role ,
         })
     },
     //批量删除

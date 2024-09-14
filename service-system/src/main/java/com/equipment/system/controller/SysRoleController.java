@@ -91,8 +91,7 @@ public class SysRoleController {
     @PutMapping("update")
     public Result<Void> updateById(@RequestBody SysRole sysRole){
         System.out.println(sysRole);
-        sysRoleService.updateById(sysRole);
-        return Result.ok();
+        return sysRoleService.updateById(sysRole) ? Result.ok():Result.fail();
     }
 
     // 6 根据id查询

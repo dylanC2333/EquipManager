@@ -1,4 +1,4 @@
-package com.equipment.system.config;//package com.equip.system.config;
+//package com.equipment.system.config;
 //
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

@@ -62,14 +62,17 @@
       </el-table-column>
     </el-table>
 
+
     <!-- 分页组件 -->
     <el-pagination
+      @size-change="handleSizeChange"
       @current-change="fetchData"
       :current-page="page"
-      :total="total"
+      :page-sizes="[1, 5, 10, 20, 50, 100]"
       :page-size="limit"
       style="padding: 30px 0; text-align: center;"
-      layout="total, prev, pager, next, jumper"/>
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"/>
 
     <!-- 添加弹框 -->
     <el-dialog title="添加角色" :visible.sync="adddialogVisible" width="40%" >
@@ -140,7 +143,12 @@ export default{
 
     },
     methods:{//具体方法
-        //表格排序自定义方法
+        // 每页显示记录数改变时调用
+        handleSizeChange(currentLimit){
+          this.limit = currentLimit;
+          this.fetchData();
+          //console.log(this.limit);
+        },
 
         // 分配权限跳转方法
         showAssignAuth(row){
@@ -206,7 +214,7 @@ export default{
             return api.branchRemove(idList)
           }).then(response => {
             this.fetchData()
-            this.$message.success(response.massage)
+            this.$message.success(response.message)
           }).catch(error =>{
             if (error == 'cancel'){
               this.$message.info('取消删除')
@@ -220,6 +228,8 @@ export default{
           this.editdialogVisible = true
           api.getRoleId(id).then(response =>{
             this.sysRole = response.data;
+            console.log(response.data)
+            console.log(response)
           });
         },
         //修改的方法
