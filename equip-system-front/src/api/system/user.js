@@ -53,6 +53,16 @@ export default{
             method: 'delete',
         })
     },
+    //批量删除
+    branchRemove(idList){
+        return request({
+            // 接口路径
+            url: `${api_name}batchRemove`,
+            // 提交方式
+            method: 'delete',
+            data: idList
+        })
+    },
 
     // 根据字段信息查询用户
     getUserQuery(roleName){

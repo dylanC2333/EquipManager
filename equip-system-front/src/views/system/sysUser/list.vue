@@ -46,8 +46,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="username" label="用户名" sortable="custom"/>
-      <el-table-column prop="name" label="姓名" sortable="custom"/>
+      <el-table-column prop="userCode" label="用户编号" sortable="custom"/>
+      <el-table-column prop="userName" label="用户姓名" sortable="custom"/>
+      <el-table-column prop="description" label="用户详情" sortable="custom"/>
       <el-table-column prop="phone" label="电话号码" sortable="custom"/>
       <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
@@ -76,16 +77,19 @@
         <!-- 添加弹框 -->
         <el-dialog title="添加用户" :visible.sync="dialogAddVisible" width="40%" >
       <el-form ref="dataForm" :model="sysUser" label-width="150px" size="small" style="padding-right: 40px;">
-        <el-form-item label="用户名">
-          <el-input v-model="sysUser.username"/>
+        <el-form-item label="用户姓名">
+          <el-input v-model="sysUser.userName"/>
+        </el-form-item>
+        <el-form-item label="用户编号">
+          <el-input v-model="sysUser.userCode"/>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="sysUser.password"/>
         </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="sysUser.name"/>
+        <el-form-item label="用户详情">
+          <el-input v-model="sysUser.description"/>
         </el-form-item>
-        <el-form-item label="员工电话">
+        <el-form-item label="电话号码">
           <el-input v-model="sysUser.phone"/>
         </el-form-item>
       </el-form>
@@ -98,16 +102,19 @@
     <!-- 修改弹框 -->
     <el-dialog title="修改用户" :visible.sync="dialogEditVisible" width="40%" >
       <el-form ref="dataForm" :model="sysUser" label-width="150px" size="small" style="padding-right: 40px;">
-        <el-form-item label="用户名">
-          <el-input v-model="sysUser.username"/>
+        <el-form-item label="用户姓名">
+          <el-input v-model="sysUser.userName"/>
         </el-form-item>
-        <el-form-item label="密码" v-if="!sysUser.id" prop="password">
+        <el-form-item label="用户编号">
+          <el-input v-model="sysUser.userCode"/>
+        </el-form-item>
+        <el-form-item label="密码"  v-if="!sysUser.id" prop="password">
           <el-input v-model="sysUser.password" type="password"/>
         </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="sysUser.name"/>
+        <el-form-item label="用户详情">
+          <el-input v-model="sysUser.description"/>
         </el-form-item>
-        <el-form-item label="员工电话">
+        <el-form-item label="电话号码">
           <el-input v-model="sysUser.phone"/>
         </el-form-item>
       </el-form>
@@ -309,6 +316,40 @@ export default{
             this.fetchData()
         })
       },
+      //多选选项发生变化时调用
+      handleSelectionChange(selection){
+        // console.log(selection)
+        this.multipleSelect = selection
+      },      
+
+      //批量删除batchRemove
+      batchRemove(){
+        if (this.multipleSelect.length == 0){
+          this.$message.warning('请选择要删除的记录！')
+          return
+        }
+        this.$confirm('此操作将永久删除选中角色, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+        }).then(()=>{
+          //确定后，调用ajax
+          //遍历selection，将id放入id列表
+          var idList = []
+          this.multipleSelect.forEach(item => {
+            idList.push(item.id)              
+          });
+          // 调用api
+          return api.branchRemove(idList)
+        }).then(response => {
+          this.fetchData()
+          this.$message.success(response.message)
+        }).catch(error =>{
+          if (error == 'cancel'){
+            this.$message.info('取消删除')
+          }
+        })
+      },
 
       // 重置表单
       resetData() {
@@ -329,9 +370,9 @@ export default{
           api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)
               .then(response =>{
                   console.log(response);
-                  console.log(this.searchObj);
-                  console.log(this.column);
-                  console.log(this.sortorder);
+                  // console.log(this.searchObj);
+                  // console.log(this.column);
+                  // console.log(this.sortorder);
                   //先用控制台输出查看参数如何对应。
                   //每页数据列表
                   this.list = response.data.records

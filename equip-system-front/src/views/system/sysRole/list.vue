@@ -155,37 +155,6 @@ export default{
           this.$router.push('/system/assignAuth?id='+row.id+'&roleName='+row.roleName);
         },
 
-        // /**
-        //  * 表格排序事件处理函数
-        //  * @param {object} {column,prop,order} 列数据|排序字段|排序方式
-        //  */
-        //  onSortChange({ prop, order }) {
-        //     this.tableData.sort(this.compare(prop,order));
-        // },
-
-        // /**
-        //  * 排序比较
-        //  * @param {string} propertyName 排序的属性名
-        //  * @param {string} sort ascending(升序)/descending(降序)
-        //  * @return {function}
-        //  */
-        // compare (propertyName, sort) {
-        //     return function (obj1, obj2) {
-        //         var value1 = obj1[propertyName]
-        //         var value2 = obj2[propertyName]
-        //         if (typeof value1 === 'string' && typeof value2 === 'string') {
-        //             const res = value1.localeCompare(value2, 'zh')
-        //             return sort === 'ascending' ? res : -res
-        //         } else {
-        //             if (value1 <= value2) {
-        //                 return sort === 'ascending' ? -1 : 1
-        //             } else if (value1 > value2) {
-        //                 return sort === 'ascending' ? 1 : -1
-        //             }
-        //         }
-        //     }
-        // },
-
 
         //多选选项发生变化时调用
         handleSelectionChange(selection){

@@ -46,7 +46,7 @@ public class SysUserController {
             @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
             SysUserQueryVo sysUserQueryVo,
 
-            @ApiParam(name = "column", value = "字段", required = false)
+            @ApiParam(name = "column", value = "字段{ascending,descending}", required = false)
             @PathVariable String column,
 
             @ApiParam(name = "order", value = "排序方式", required = false)
@@ -55,8 +55,8 @@ public class SysUserController {
         Page<SysUser> pageParam = new Page<>(page, limit);
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         if (sysUserQueryVo.getKeyword() != null) {
-            queryWrapper.like("username", sysUserQueryVo.getKeyword())
-                    .or().like("name", sysUserQueryVo.getKeyword())
+            queryWrapper.like("user_code", sysUserQueryVo.getKeyword())
+                    .or().like("user_name", sysUserQueryVo.getKeyword())
                     .or().like("phone", sysUserQueryVo.getKeyword())
                     .or().like("description", sysUserQueryVo.getKeyword());
         }
@@ -114,6 +114,13 @@ public class SysUserController {
         List<SysUser> sysUserList = null;
         sysUserList = sysUserService.getUserListByRoleName(roleName);
         return sysUserList != null ? Result.ok(sysUserList):Result.fail();
+    }
+
+    // 8 根据id批量删除
+    @ApiOperation("根据id列表删除")
+    @DeleteMapping("batchRemove")
+    public Result<Void> batchRemove(@RequestBody List<String> ids){
+        return sysUserService.removeByIds(ids)?Result.ok():Result.fail();
     }
 
 }
