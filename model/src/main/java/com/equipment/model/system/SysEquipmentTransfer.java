@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.equipment.model.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -45,6 +46,7 @@ public class SysEquipmentTransfer extends BaseEntity implements Serializable {
     /**
      * 交接日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date transferDate;
 
     /**

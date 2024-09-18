@@ -3,6 +3,7 @@ package com.equipment.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
+import com.equipment.model.system.SysEquipmentStock;
 import com.equipment.model.vo.SysEquipmentTransferQueryVo;
 import com.equipment.model.system.SysEquipmentTransfer;
 import com.equipment.system.service.SysEquipmentTransferService;
@@ -34,7 +35,7 @@ public class SysEquipmentTransferController {
     //1、查询所有记录
     @ApiOperation("查询所有记录接口")
     @GetMapping("findAll")
-    public Result findAll(){
+    public Result<List<SysEquipmentTransfer>> findAll(){
         List<SysEquipmentTransfer> list =  sysEquipmentTransferService.list();
         return Result.ok(list);
     }
@@ -42,7 +43,7 @@ public class SysEquipmentTransferController {
     //2、物理删除接口
     @ApiOperation("根据id物理删除接口")
     @DeleteMapping("remove/{id}")
-    public Result removeEquipTransfer(@PathVariable Long id){
+    public Result<Void> removeEquipTransfer(@PathVariable Long id){
         //调用方法删除
         boolean isSuccess = sysEquipmentTransferService.removeById(id);
         if(isSuccess ){
@@ -56,14 +57,14 @@ public class SysEquipmentTransferController {
     //page表示当前页 limit每页记录
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result fingPageQueryEquipTransfer(@PathVariable Long page,
+    public Result<IPage<SysEquipmentTransfer>> findPageQueryEquipTransfer(@PathVariable Long page,
                                            @PathVariable Long limit,
                                            SysEquipmentTransferQueryVo sysEquipmentTransferQueryVo){
         //创建page对象
         Page<SysEquipmentTransfer> pageParam = new Page<>(page,limit);
         //构造查询条件
         LambdaQueryWrapper<SysEquipmentTransfer> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if(sysEquipmentTransferQueryVo!=null){
+        if(sysEquipmentTransferQueryVo.getKeyword() !=null){
             lambdaQueryWrapper.like(SysEquipmentTransfer::getEquipmentCode,sysEquipmentTransferQueryVo.getKeyword())
                     .or().like(SysEquipmentTransfer::getTransferLocation,sysEquipmentTransferQueryVo.getKeyword())
                     .or().like(SysEquipmentTransfer::getTransferDate,sysEquipmentTransferQueryVo.getKeyword())
@@ -81,7 +82,7 @@ public class SysEquipmentTransferController {
     //4、添加设备
     @ApiOperation("添加设备入库记录")
     @PostMapping("save")
-    public Result saveEquipTransfer(@RequestBody SysEquipmentTransfer sysEquipmentTransfer){
+    public Result<Void> saveEquipTransfer(@RequestBody SysEquipmentTransfer sysEquipmentTransfer){
         boolean isSuccess = sysEquipmentTransferService.save(sysEquipmentTransfer);
 
         if(isSuccess){
@@ -93,30 +94,24 @@ public class SysEquipmentTransferController {
 
     //5、根据id查询
     @ApiOperation("根据id查询设备入库记录")
-    @GetMapping("fingEquipTransferById/{id}")
-    public Result fingEquipTransferById(@PathVariable String id) {
+    @GetMapping("findEquipTransferById/{id}")
+    public Result<SysEquipmentTransfer> findEquipTransferById(@PathVariable String id) {
         SysEquipmentTransfer sysEquipmentTransfer = sysEquipmentTransferService.getById(id);
         return Result.ok(sysEquipmentTransfer);
     }
 
-    //6、修改-最终修改
-    @ApiOperation("最终修改")
-    @PostMapping("update")
-    public Result updateEquipTransfer(@RequestBody SysEquipmentTransfer sysEquipmentTransfer){
-        boolean isSuccess = sysEquipmentTransferService.updateById(sysEquipmentTransfer);
-        if(isSuccess){
-            return Result.ok();
-        }  else {
-            return Result.fail();
-        }
+    //8 修改设备出入库记录
+    @ApiOperation("修改设备出入库记录")
+    @PutMapping("update")
+    public Result<Void> updateById(@RequestBody SysEquipmentTransfer sysEquipmentTransfer) {
+        return sysEquipmentTransferService.updateById(sysEquipmentTransfer) ? Result.ok() : Result.fail();
     }
 
     //7、批量删除
     @ApiOperation("物理批量删除")
     @DeleteMapping("batchRemove")
-    public Result batchRemove(@RequestBody List<Long> ids){
-        sysEquipmentTransferService.removeByIds(ids);
-        return Result.ok();
+    public Result<Void> batchRemove(@RequestBody List<Long> ids){
+        return sysEquipmentTransferService.removeByIds(ids) ? Result.ok() : Result.fail();
     }
 
 }

@@ -22,6 +22,7 @@ export default{
           method: 'delete'
         })
     },
+
     //3、添加
     saveEquipTransfer(equipTrans) {
         return request({
@@ -30,6 +31,7 @@ export default{
           data: equipTrans
         })
     },
+    
     //4、根据id查询
     getEquipTransferId(id) {
         return request({
@@ -37,14 +39,16 @@ export default{
             method: 'get'
         })
     },
+    
     //5、修改方法
     update(equipTrans){
         return request({
             url: `${api_name}/update`,
-            method: 'post',
+            method: 'put',
             data: equipTrans
         })
     },
+    
     //6、批量删除
     batchRemove(idList) {
         return request({

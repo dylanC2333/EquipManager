@@ -67,13 +67,12 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
-      <el-table-column prop="oldTaskId" label="旧任务编号" />
-      <el-table-column prop="newTaskId" label="新任务编号" />
-      <el-table-column prop="equipmentId" label="设备编号" />
-      <el-table-column prop="deliverEmployeeId" label="交付员工编号" />
-      <el-table-column prop="receiverEmployeeId" label="接收员工编号" />
-      <el-table-column prop="transferTime" label="交接时间" />
+      <el-table-column prop="oldTaskCode" label="旧任务编号" />
+      <el-table-column prop="newTaskCode" label="新任务编号" />
+      <el-table-column prop="equipmentCode" label="设备编号" />
+      <el-table-column prop="deliverEmployeeCode" label="交付员工编号" />
+      <el-table-column prop="receiverEmployeeCode" label="接收员工编号" />
+      <el-table-column prop="transferDate" label="交接时间" />
       <el-table-column prop="transferLocation" label="交接地点" />
       <el-table-column prop="transferType" label="交接类型" />
       <el-table-column prop="remarks" label="备注" />
@@ -117,19 +116,22 @@
         style="padding-right: 40px"
       >
         <el-form-item label="旧任务编号">
-          <el-input v-model="sysEquipTransfer.oldTaskId" />
+          <el-input v-model="sysEquipTransfer.oldTaskCode" />
         </el-form-item>
         <el-form-item label="新任务编号">
-          <el-input v-model="sysEquipTransfer.newTaskId" />
+          <el-input v-model="sysEquipTransfer.newTaskCode" />
         </el-form-item>
         <el-form-item label="设备编号">
-          <el-input v-model="sysEquipTransfer.equipmentId" />
+          <el-input v-model="sysEquipTransfer.equipmentCode" />
         </el-form-item>
         <el-form-item label="交付员工编号">
-          <el-input v-model="sysEquipTransfer.deliverEmployeeId" />
+          <el-input v-model="sysEquipTransfer.deliverEmployeeCode" />
         </el-form-item>
         <el-form-item label="接收员工编号">
-          <el-input v-model="sysEquipTransfer.receiverEmployeeId" />
+          <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
+        </el-form-item>
+        <el-form-item label="交接日期">
+          <el-input v-model="sysEquipTransfer.transferDate" />
         </el-form-item>
         <el-form-item label="交接地点">
           <el-cascader
