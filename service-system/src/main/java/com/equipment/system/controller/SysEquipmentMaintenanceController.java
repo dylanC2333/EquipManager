@@ -4,6 +4,7 @@ package com.equipment.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.model.system.SysEquipment;
+import com.equipment.model.system.SysEquipmentTransfer;
 import com.equipment.model.vo.SysEquipmentMaintenanceQueryVo;
 import com.equipment.model.vo.SysEquipmentTransferQueryVo;
 import com.equipment.model.system.SysEquipmentMaintenance;
@@ -36,15 +37,15 @@ public class SysEquipmentMaintenanceController {
     //1、查询所有记录
     @ApiOperation("查询所有记录接口")
     @GetMapping("findAll")
-    public Result findAll(){
+    public Result<List<SysEquipmentMaintenance>> findAll(){
         List<SysEquipmentMaintenance> list =  sysEquipmentMaintenanceService.list();
         return Result.ok(list);
     }
 
-    //2、物理删除接口
-    @ApiOperation("根据id物理删除接口")
+    //2、删除接口
+    @ApiOperation("根据id删除接口")
     @DeleteMapping("remove/{id}")
-    public Result removeEquipMaintenance(@PathVariable Long id){
+    public Result<Void> removeEquipMaintenance(@PathVariable Long id){
         //调用方法删除
         boolean isSuccess = sysEquipmentMaintenanceService.removeById(id);
         if(isSuccess ){
@@ -58,14 +59,14 @@ public class SysEquipmentMaintenanceController {
     //page表示当前页 limit每页记录
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result fingPageQueryEquipMaintenance(@PathVariable Long page,
+    public Result<IPage<SysEquipmentMaintenance>> findPageQueryEquipMaintenance(@PathVariable Long page,
                                              @PathVariable Long limit,
                                              SysEquipmentMaintenanceQueryVo sysEquipmentMaintenanceQueryVo){
         //创建page对象
         Page<SysEquipmentMaintenance> pageParam = new Page<>(page,limit);
         // 构造查询条件
         LambdaQueryWrapper<SysEquipmentMaintenance> queryWrapper = new LambdaQueryWrapper<>();
-        if(sysEquipmentMaintenanceQueryVo!=null){
+        if(sysEquipmentMaintenanceQueryVo.getKeyword() !=null){
             queryWrapper.like(SysEquipmentMaintenance::getEquipmentCode,sysEquipmentMaintenanceQueryVo.getKeyword())
                     .or().like(SysEquipmentMaintenance::getEmployeeCode,sysEquipmentMaintenanceQueryVo.getKeyword())
                     .or().like(SysEquipmentMaintenance::getMaintenanceStatus,sysEquipmentMaintenanceQueryVo.getKeyword());
@@ -79,7 +80,7 @@ public class SysEquipmentMaintenanceController {
     //4、添加设备
     @ApiOperation("添加设备入库记录")
     @PostMapping("save")
-    public Result saveEquipMaintenance(@RequestBody SysEquipmentMaintenance sysEquipmentMaintenance){
+    public Result<Void> saveEquipMaintenance(@RequestBody SysEquipmentMaintenance sysEquipmentMaintenance){
         boolean isSuccess = sysEquipmentMaintenanceService.save(sysEquipmentMaintenance);
 
         if(isSuccess){
@@ -91,30 +92,24 @@ public class SysEquipmentMaintenanceController {
 
     //5、根据id查询
     @ApiOperation("根据id查询设备入库记录")
-    @GetMapping("fingEquipMaintenanceById/{id}")
-    public Result fingEquipMaintenanceById(@PathVariable String id) {
+    @GetMapping("findEquipMaintenanceById/{id}")
+    public Result<SysEquipmentMaintenance> findEquipMaintenanceById(@PathVariable String id) {
         SysEquipmentMaintenance sysEquipmentMaintenance = sysEquipmentMaintenanceService.getById(id);
         return Result.ok(sysEquipmentMaintenance);
     }
 
-    //6、修改-最终修改
-    @ApiOperation("最终修改")
-    @PostMapping("update")
-    public Result updateEquipMaintenance(@RequestBody SysEquipmentMaintenance sysEquipmentMaintenance){
-        boolean isSuccess = sysEquipmentMaintenanceService.updateById(sysEquipmentMaintenance);
-        if(isSuccess){
-            return Result.ok();
-        }  else {
-            return Result.fail();
-        }
+    //8 修改设备出入库记录
+    @ApiOperation("修改设备出入库记录")
+    @PutMapping("update")
+    public Result<Void> updateById(@RequestBody SysEquipmentMaintenance sysEquipmentMaintenance) {
+        return sysEquipmentMaintenanceService.updateById(sysEquipmentMaintenance) ? Result.ok() : Result.fail();
     }
 
     //7、批量删除
     @ApiOperation("物理批量删除")
     @DeleteMapping("batchRemove")
-    public Result batchRemove(@RequestBody List<Long> ids){
-        sysEquipmentMaintenanceService.removeByIds(ids);
-        return Result.ok();
+    public Result<Void> batchRemove(@RequestBody List<Long> ids){
+        return sysEquipmentMaintenanceService.removeByIds(ids) ? Result.ok() : Result.fail();
     }
 
 }

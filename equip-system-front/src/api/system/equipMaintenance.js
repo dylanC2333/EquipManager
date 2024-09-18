@@ -33,7 +33,7 @@ export default{
     //4、根据id查询
     getEquipMainId(id) {
         return request({
-            url: `${api_name}/fingEquipMaintenanceById/${id}`,
+            url: `${api_name}/findEquipMaintenanceById/${id}`,
             method: 'get'
         })
     },
@@ -41,7 +41,7 @@ export default{
     update(equipMain){
         return request({
             url: `${api_name}/update`,
-            method: 'post',
+            method: 'put',
             data: equipMain
         })
     },

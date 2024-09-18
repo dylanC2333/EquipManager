@@ -35,7 +35,7 @@ export default{
     //4、根据id查询
     getEquipTransferId(id) {
         return request({
-            url: `${api_name}/fingEquipTransferById/${id}`,
+            url: `${api_name}/findEquipTransferById/${id}`,
             method: 'get'
         })
     },

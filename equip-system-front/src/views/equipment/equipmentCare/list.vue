@@ -68,9 +68,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="employeeId" label="员工编号" />
-      <el-table-column prop="equipmentId" label="设备编号" />
-      <el-table-column prop="maintenanceTime" label="保养时间" />
+      <el-table-column prop="employeeCode" label="员工编号" />
+      <el-table-column prop="equipmentCode" label="设备编号" />
+      <el-table-column prop="maintenanceDate" label="保养日期" />
       <el-table-column prop="beforeUseStatus" label="设备使用前状态" />
       <el-table-column prop="maintenanceStatus" label="设备维护保养状态" />
       <el-table-column prop="remarks" label="备注" />
@@ -114,10 +114,13 @@
         style="padding-right: 40px"
       >
         <el-form-item label="员工编号">
-          <el-input v-model="sysEquipMain.employeeId" />
+          <el-input v-model="sysEquipMain.employeeCode" />
         </el-form-item>
         <el-form-item label="设备编号">
-          <el-input v-model="sysEquipMain.equipmentId" />
+          <el-input v-model="sysEquipMain.equipmentCode" />
+        </el-form-item>
+        <el-form-item label="保养日期">
+          <el-input v-model="sysEquipMain.maintenanceDate" />
         </el-form-item>
         <el-form-item label="设备使用前状态">
           <el-input v-model="sysEquipMain.beforeUseStatus" />

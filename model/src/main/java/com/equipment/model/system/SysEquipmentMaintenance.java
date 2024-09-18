@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.equipment.model.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -30,6 +31,7 @@ public class SysEquipmentMaintenance extends BaseEntity implements Serializable 
     /**
      * 保养时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date maintenanceDate;
 
     /**
