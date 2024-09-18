@@ -67,11 +67,10 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
-      <el-table-column prop="employeeId" label="目测人id" />
-      <el-table-column prop="taskId" label="任务单号" />
-      <el-table-column prop="startTime" label="开始日期" />
-      <el-table-column prop="endTime" label="结束日期" />
+      <el-table-column prop="employeeCode" label="目测人编号" />
+      <el-table-column prop="taskCode" label="任务单号" />
+      <el-table-column prop="startDate" label="开始日期" />
+      <el-table-column prop="endDate" label="结束日期" />
       <el-table-column prop="detectionLocation" label="任务地点" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -96,13 +95,14 @@
 
     <!-- 分页组件 -->
     <el-pagination
-      :current-page="page"
-      :total="total"
-      :page-size="limit"
-      style="padding: 30px 0; text-align: center"
-      layout="total, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
       @current-change="fetchData"
-    />
+      :current-page="page"
+      :page-sizes="[1, 5, 10, 50, 100]"
+      :page-size="limit"
+      style="padding: 30px 0; text-align: center;"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"/>
 
     <!-- 添加、修改 弹框 -->
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
@@ -114,16 +114,16 @@
         style="padding-right: 40px"
       >
         <el-form-item label="目测人id">
-          <el-input v-model="sysEquipDetction.employeeId" />
+          <el-input v-model="sysEquipDetction.employeeCode" />
         </el-form-item>
         <el-form-item label="任务单号">
-          <el-input v-model="sysEquipDetction.taskId" />
+          <el-input v-model="sysEquipDetction.taskCode" />
         </el-form-item>
         <el-form-item label="开始日期">
-          <el-input v-model="sysEquipDetction.startTime" />
+          <el-input v-model="sysEquipDetction.startDate" />
         </el-form-item>
         <el-form-item label="结束日期">
-          <el-input v-model="sysEquipDetction.endTime" />
+          <el-input v-model="sysEquipDetction.endDate" />
         </el-form-item>
         <el-form-item label="任务地点">
           <el-input v-model="sysEquipDetction.detectionLocation" />

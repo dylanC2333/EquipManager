@@ -3,7 +3,7 @@ package com.equipment.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
-import com.equipment.model.vo.SysEquipQueryVo;
+import com.equipment.model.system.SysEquipmentStock;
 import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
 import com.equipment.model.system.SysDetection;
 import com.equipment.system.service.SysDetectionService;
@@ -35,7 +35,7 @@ public class SysDetectionController {
     //1、查询所有记录
     @ApiOperation("查询所有记录接口")
     @GetMapping("findAll")
-    public Result findAll(){
+    public Result<List<SysDetection>> findAll(){
         List<SysDetection> list =  sysDetectionService.list();
         return Result.ok(list);
     }
@@ -43,7 +43,7 @@ public class SysDetectionController {
     //2、物理删除接口
     @ApiOperation("物理删除接口")
     @DeleteMapping("remove/{id}")
-    public Result removeEquip(@PathVariable Long id){
+    public Result<Void> removeEquip(@PathVariable Long id){
         //调用方法删除
         boolean isSuccess = sysDetectionService.removeById(id);
         if(isSuccess ){
@@ -57,14 +57,14 @@ public class SysDetectionController {
     //page表示当前页 limit每页记录
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result fingPageQueryEquip(@PathVariable Long page,
+    public Result<IPage<SysDetection>> findPageQueryEquip(@PathVariable Long page,
                                      @PathVariable Long limit,
                                      SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo){
         //创建page对象
         Page<SysDetection> pageParam = new Page<>(page,limit);
         //构造查询条件
         LambdaQueryWrapper<SysDetection> queryWrapper = new LambdaQueryWrapper();
-        if(sysEquipmentDetectionQueryVo!=null){
+        if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
             queryWrapper.like(SysDetection::getEmployeeCode,sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like(SysDetection::getDetectionLocation,sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like(SysDetection::getTaskCode,sysEquipmentDetectionQueryVo.getKeyword());
@@ -78,7 +78,7 @@ public class SysDetectionController {
     //4、添加设备
     @ApiOperation("添加设备检测")
     @PostMapping("save")
-    public Result saveEquip(@RequestBody SysDetection sysDetection){
+    public Result<Void> saveEquip(@RequestBody SysDetection sysDetection){
         boolean isSuccess = sysDetectionService.save(sysDetection);
 
         if(isSuccess){
@@ -90,30 +90,24 @@ public class SysDetectionController {
 
     //5、根据id查询
     @ApiOperation("根据id查询设备检测")
-    @GetMapping("fingDetectionById/{id}")
-    public Result fingDetectionById(@PathVariable String id) {
+    @GetMapping("findDetectionById/{id}")
+    public Result<SysDetection> findDetectionById(@PathVariable String id) {
         SysDetection sysDetection = sysDetectionService.getById(id);
         return Result.ok(sysDetection);
     }
 
-    //6、修改-最终修改
-    @ApiOperation("最终修改")
-    @PostMapping("update")
-    public Result updateEquip(@RequestBody SysDetection sysDetection){
-        boolean isSuccess = sysDetectionService.updateById(sysDetection);
-        if(isSuccess){
-            return Result.ok();
-        }  else {
-            return Result.fail();
-        }
+    //6 修改设备出入库记录
+    @ApiOperation("修改设备出入库记录")
+    @PutMapping("update")
+    public Result<Void> updateById(@RequestBody SysDetection sysDetection) {
+        return sysDetectionService.updateById(sysDetection) ? Result.ok() : Result.fail();
     }
 
     //7、批量删除
     @ApiOperation("物理批量删除")
     @DeleteMapping("batchRemove")
-    public Result batchRemove(@RequestBody List<Long> ids){
-        sysDetectionService.removeByIds(ids);
-        return Result.ok();
+    public Result<Void> batchRemove(@RequestBody List<Long> ids){
+        return sysDetectionService.removeByIds(ids) ? Result.ok() : Result.fail();
     }
 }
 

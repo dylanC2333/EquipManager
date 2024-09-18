@@ -33,7 +33,7 @@ export default{
     //4、根据id查询
     getEquipDetctionId(id) {
         return request({
-            url: `${api_name}/fingDetectionById/${id}`,
+            url: `${api_name}/findDetectionById/${id}`,
             method: 'get'
         })
     },
@@ -41,7 +41,7 @@ export default{
     update(equipDet){
         return request({
             url: `${api_name}/update`,
-            method: 'post',
+            method: 'put',
             data: equipDet
         })
     },

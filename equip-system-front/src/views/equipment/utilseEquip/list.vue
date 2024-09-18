@@ -100,13 +100,14 @@
 
     <!-- 分页组件 -->
     <el-pagination
-      :current-page="page"
-      :total="total"
-      :page-size="limit"
-      style="padding: 30px 0; text-align: center"
-      layout="total, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
       @current-change="fetchData"
-    />
+      :current-page="page"
+      :page-sizes="[1, 5, 10, 50, 100]"
+      :page-size="limit"
+      style="padding: 30px 0; text-align: center;"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"/>
 
     <!-- 添加、修改 弹框 -->
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.equipment.model.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -30,11 +31,13 @@ public class SysDetection extends BaseEntity implements Serializable  {
     /**
      * 目测开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
     /**
      * 目测结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     /**

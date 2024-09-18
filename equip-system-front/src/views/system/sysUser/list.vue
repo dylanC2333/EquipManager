@@ -157,7 +157,7 @@ export default{
             list:[],//角色列表
             total:0,//总记录数
             page:1,//当前页
-            limit:5,//每页显示记录数
+            limit:10,//每页显示记录数
             searchObj:{},//条件查询封装对象
             column:null,//排序字段
             sortorder:null,//升降序条件
