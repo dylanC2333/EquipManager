@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
       <div style="padding: 20px 20px 0 20px;">
-        授权角色：{{ $route.query.roleName }}
+        授权角色：{{ $route.query.keyword }}
       </div>
       <el-tree
         style="margin: 20px 0"
@@ -22,7 +22,7 @@
     import api from '@/api/system/menu'
     export default {
       name: 'roleAuth',
-  
+
       data() {
         return {
           loading: false, // 用来标识是否正在保存请求中的标识, 防止重复提交
@@ -33,11 +33,11 @@
           },
         };
       },
-  
+
       created() {
         this.fetchData()
       },
-  
+
       methods: {
         /*
         初始化
@@ -52,7 +52,7 @@
             this.$refs.tree.setCheckedKeys(checkedIds)
           })
         },
-  
+
         /*
         得到所有选中的id列表
         */
@@ -66,7 +66,7 @@
             return pre
           }, initArr)
         },
-  
+
         /*
         保存权限列表
         */
@@ -92,4 +92,3 @@
       }
     };
   </script>
-  

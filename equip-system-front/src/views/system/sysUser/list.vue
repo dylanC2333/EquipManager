@@ -5,8 +5,8 @@
       <el-form label-width="70px" size="small">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="查询">
-              <el-input style="width: 100%" v-model="searchObj.keyword" placeholder="查询" @keyup.enter.native="fetchData()"></el-input>
+            <el-form-item label="关键字">
+              <el-input style="width: 100%" v-model="searchObj.keyword" placeholder="用户姓名/用户编号/电话/用户详情" @keyup.enter.native="fetchData()"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -15,7 +15,7 @@
           <el-button icon="el-icon-refresh" size="mini" @click="resetData">重置</el-button>
         </el-row>
       </el-form>
-    </div>    
+    </div>
     <!-- 工具条,添加、批量删除 -->
     <div class="tools-div">
       <el-button type="success" icon="el-icon-plus" size="mini" @click="add"  >添 加</el-button>
@@ -48,8 +48,8 @@
 
       <el-table-column prop="userCode" label="用户编号" sortable="custom"/>
       <el-table-column prop="userName" label="用户姓名" sortable="custom"/>
-      <el-table-column prop="description" label="用户详情" sortable="custom"/>
-      <el-table-column prop="phone" label="电话号码" sortable="custom"/>
+      <el-table-column prop="description" label="用户详情" />
+      <el-table-column prop="phone" label="电话号码" />
       <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -98,7 +98,7 @@
         <el-button type="primary" icon="el-icon-check" @click="saveUser()" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    
+
     <!-- 修改弹框 -->
     <el-dialog title="修改用户" :visible.sync="dialogEditVisible" width="40%" >
       <el-form ref="dataForm" :model="sysUser" label-width="150px" size="small" style="padding-right: 40px;">
@@ -134,7 +134,7 @@
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
           <div style="margin: 15px 0;"></div>
           <el-checkbox-group v-model="userRoleIds" @change="handleCheckedChange">
-            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.roleName}}</el-checkbox>
+            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.keyword}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -149,7 +149,7 @@
 </template>
 <script>
 import roleApi from '@/api/system/role'
-import api from '@/api/system/user' 
+import api from '@/api/system/user'
 export default{
     data(){
             //定义数据模型
@@ -169,7 +169,7 @@ export default{
             sysUser:{},//封装添加表单数据。
             multipleSelect:[],//批量删除选中的记录列表
 
-            dialogRoleVisible:false,//分配角色弹出框、
+            dialogRoleVisible:false,//分配角色弹出框
             allRoles:[], //所有角色列表
             userRoleIds:[], // 用户的角色ID的列表
             isIndeterminate: false,// 是否是不确定的
@@ -247,7 +247,7 @@ export default{
 
 
       //修改-数据回显
-      edit(id){      
+      edit(id){
           // 弹出框
           this.dialogEditVisible = true
           api.getUserId(id).then(response =>{
@@ -271,7 +271,7 @@ export default{
             this.fetchData()
           })
       },
-      
+
       //添加方法
       saveUser(){
         console.log(this.sysUser)
@@ -320,7 +320,7 @@ export default{
       handleSelectionChange(selection){
         // console.log(selection)
         this.multipleSelect = selection
-      },      
+      },
 
       //批量删除batchRemove
       batchRemove(){
@@ -337,7 +337,7 @@ export default{
           //遍历selection，将id放入id列表
           var idList = []
           this.multipleSelect.forEach(item => {
-            idList.push(item.id)              
+            idList.push(item.id)
           });
           // 调用api
           return api.branchRemove(idList)
@@ -360,7 +360,7 @@ export default{
           this.fetchData()
       },
 
-        
+
       //获取数据列表
       fetchData(pageNum=1){
           // pageNum页数赋值

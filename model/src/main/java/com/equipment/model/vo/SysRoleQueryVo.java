@@ -16,14 +16,14 @@ public class SysRoleQueryVo implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String roleName;
+	private String keyword;
 
-	public String getRoleName() {
-		return roleName;
+	public String getKeyword() {
+		return keyword;
 	}
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 }
 

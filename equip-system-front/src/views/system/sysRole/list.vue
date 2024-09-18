@@ -6,8 +6,8 @@
         <el-form label-width="70px" size="small">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="角色名称">
-                <el-input style="width: 100%" v-model="searchObj.roleName" placeholder="角色名称"></el-input>
+              <el-form-item label="关键字">
+                <el-input style="width: 100%" v-model="searchObj.keyword" placeholder="角色名称/角色编码/角色描述"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -22,7 +22,7 @@
         <el-button type="success" icon = "el-icon-plus" size = "mini" @click="add"> 添 加</el-button>
         <el-button class="btn-add" size = "mini" @click="batchRemove()"> 批量删除</el-button>
     </div>
-      
+
 
     <!-- 表格 -->
     <el-table
@@ -49,10 +49,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="roleName" label="角色名称" sortable/>
-      <el-table-column prop="roleCode" label="角色编码" sortable/>
-      <el-table-column prop="description" label="角色描述" sortable/>
-      <el-table-column prop="createTime" label="创建时间" width="160" sortable/>
+      <el-table-column prop="roleName" label="角色名称" sortable="custom"/>
+      <el-table-column prop="roleCode" label="角色编码" sortable="custom"/>
+      <el-table-column prop="description" label="角色描述" />
+      <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(scope.row.id)" title="修改"/>
@@ -78,7 +78,7 @@
     <el-dialog title="添加角色" :visible.sync="adddialogVisible" width="40%" >
       <el-form ref="dataForm" :model="sysRole" label-width="150px" size="small" style="padding-right: 40px;">
         <el-form-item label="角色名称">
-          <el-input v-model="sysRole.roleName"/>
+          <el-input v-model="sysRole.keyword"/>
         </el-form-item>
         <el-form-item label="角色编码">
           <el-input v-model="sysRole.roleCode"/>
@@ -97,7 +97,7 @@
     <el-dialog title="修改角色" :visible.sync="editdialogVisible" width="40%" >
       <el-form ref="dataForm" :model="sysRole" label-width="150px" size="small" style="padding-right: 40px;">
         <el-form-item label="角色名称">
-          <el-input v-model="sysRole.roleName"/>
+          <el-input v-model="sysRole.keyword"/>
         </el-form-item>
         <el-form-item label="角色编码">
           <el-input v-model="sysRole.roleCode"/>
@@ -129,6 +129,8 @@ export default{
             page:1,//当前页
             limit:10,//每页显示记录数
             searchObj:{},//条件查询封装对象
+            column:null,//排序字段
+            sortorder:null,//升降序条件
 
             adddialogVisible:false ,//添加弹出框
             editdialogVisible:false,//修改弹出框
@@ -152,7 +154,7 @@ export default{
 
         // 分配权限跳转方法
         showAssignAuth(row){
-          this.$router.push('/system/assignAuth?id='+row.id+'&roleName='+row.roleName);
+          this.$router.push('/system/assignAuth?id='+row.id+'&keyword='+row.keyword);
         },
 
 
@@ -177,7 +179,7 @@ export default{
             //遍历selection，将id放入id列表
             var idList = []
             this.multipleSelect.forEach(item => {
-              idList.push(item.id)              
+              idList.push(item.id)
             });
             // 调用api
             return api.branchRemove(idList)
@@ -192,7 +194,7 @@ export default{
         },
 
         // 修改-数据回显
-        edit(id){      
+        edit(id){
           // 弹出框
           this.editdialogVisible = true
           api.getRoleId(id).then(response =>{
@@ -261,10 +263,21 @@ export default{
           })
         },
 
+        // 表格排序
+        onSortChange({prop,order}){
+          this.column = prop;
+          this.sortorder = order;
+          // console.log(this.column)
+          // console.log(this.sortorder)
+          this.fetchData()
+        },
+
         //重置
         resetData(){
-        //清空表单          
+        //清空表单
         this.searchObj = {}
+        this.column = null
+        this.sortorder = null
         //查询所有数据
         this.fetchData()
         },
@@ -275,7 +288,7 @@ export default{
             //页数赋值
             this.page = pageNum
             //ajax
-            api.getPageList(this.page,this.limit,this.searchObj)
+            api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)
                 .then(response => {
                     console.log(response)
                     // 每页数据列表

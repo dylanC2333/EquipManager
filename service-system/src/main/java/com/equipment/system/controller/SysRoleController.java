@@ -1,10 +1,10 @@
 package com.equipment.system.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.common.result.Result;
+import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.system.SysRole;
 import com.equipment.model.vo.AssignRoleVo;
 import com.equipment.model.vo.SysRoleQueryVo;
@@ -13,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class SysRoleController {
     // 参数：page当前页，limit每页记录
 //    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
     @ApiOperation("条件分页查询")
-    @GetMapping("{page}/{limit}")
+    @GetMapping("{page}/{limit}/{column}/{order}")
     public Result<IPage<SysRole>> findPageQueryRole(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
@@ -63,16 +62,33 @@ public class SysRoleController {
             @PathVariable int limit,
 
             @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
-            SysRoleQueryVo sysRoleQueryVo){
+            SysRoleQueryVo sysRoleQueryVo,
+
+            @ApiParam(name = "column", value = "字段{ascending,descending}", required = false)
+            @PathVariable String column,
+
+            @ApiParam(name = "order", value = "排序方式", required = false)
+            @PathVariable String order
+    ){
         // 创建page对象
         Page<SysRole> pageParam = new Page<>(page,limit);
         // 构造查询条件
-        LambdaQueryWrapper<SysRole> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if(sysRoleQueryVo.getRoleName() !=null){
-            lambdaQueryWrapper.like(SysRole::getRoleName,sysRoleQueryVo.getRoleName());
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        if(sysRoleQueryVo.getKeyword() !=null){
+            queryWrapper.like("role_code",sysRoleQueryVo.getKeyword())
+                    .or().like("role_name",sysRoleQueryVo.getKeyword())
+                    .or().like("description",sysRoleQueryVo.getKeyword());
+        }
+        if (column != null && order != null) {
+            String field = NamingUtils.camelToUnderline(column);
+            if (order.equals("ascending")) {
+                queryWrapper.orderByAsc(field);
+            } else {
+                queryWrapper.orderByDesc(field);
+            }
         }
         // 调用service方法
-        IPage<SysRole> pageModel = sysRoleService.page(pageParam,lambdaQueryWrapper);
+        IPage<SysRole> pageModel = sysRoleService.page(pageParam, queryWrapper);
         // 返回
         return  Result.ok(pageModel);
     }

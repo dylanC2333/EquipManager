@@ -3,11 +3,11 @@ import request from '@/utils/request'
 const api_name = '/admin/system/sysRole/'
 
 export default{
-    // 分页查询
-    getPageList(page,limit,searchObj){
+    // 分页排序列表查询
+    getPageList(page,limit,searchObj,column,sortorder){
         return request({
             // 接口路径
-            url: `${api_name}${page}/${limit}`,
+            url: `${api_name}${page}/${limit}/${column}/${sortorder}`,
             // 提交方式
             method: 'get',
             // 参数

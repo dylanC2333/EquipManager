@@ -57,8 +57,8 @@ public class SysUserController {
         if (sysUserQueryVo.getKeyword() != null) {
             queryWrapper.like("user_code", sysUserQueryVo.getKeyword())
                     .or().like("user_name", sysUserQueryVo.getKeyword())
-                    .or().like("phone", sysUserQueryVo.getKeyword())
-                    .or().like("description", sysUserQueryVo.getKeyword());
+                    .or().like("description", sysUserQueryVo.getKeyword())
+                    .or().like("phone", sysUserQueryVo.getKeyword());
         }
         if (column != null && order != null) {
             String field = NamingUtils.camelToUnderline(column);
