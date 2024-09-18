@@ -68,12 +68,12 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
+      <el-table-column prop="type" label="出入库类型" />
       <el-table-column prop="equipmentName" label="设备名称" />
-      <el-table-column prop="equipmentId" label="管理编码" />
-      <el-table-column prop="exportTime" label="设备出库日期" />
-      <el-table-column prop="employeeExportName" label="出库人" />
-      <el-table-column prop="taskId" label="任务单号" />
+      <el-table-column prop="equipmentCode" label="管理编号" />
+      <el-table-column prop="equipmentDate" label="设备出库日期" />
+      <el-table-column prop="userName" label="出库人" />
+      <el-table-column prop="taskCode" label="任务单号" />
       <el-table-column prop="warehouseManagerName" label="仓库管理员" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -110,28 +110,35 @@
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
       <el-form
         ref="dataForm"
-        :model="sysEquipExp"
+        :model="sysEquipStock"
         label-width="150px"
         size="small"
         style="padding-right: 40px"
       >
         <el-form-item label="设备名称">
-          <el-input v-model="sysEquipExp.equipmentName" />
+          <el-input v-model="sysEquipStock.equipmentName" />
         </el-form-item>
-        <el-form-item label="管理编码">
-          <el-input v-model="sysEquipExp.equipmentId" />
+        <el-form-item label="管理编号">
+          <el-input v-model="sysEquipStock.equipmentCode" />
+        </el-form-item>
+        <el-form-item label="设备出库日期">
+          <el-input v-model="sysEquipStock.equipmentDate" />
         </el-form-item>
         <el-form-item label="出库人">
-          <el-input v-model="sysEquipExp.employeeExportName" />
+          <el-input v-model="sysEquipStock.userName" />
         </el-form-item>
         <el-form-item label="任务单号">
-          <el-input v-model="sysEquipExp.taskId" />
+          <el-input v-model="sysEquipStock.taskCode" />
         </el-form-item>
         <el-form-item label="仓库管理员">
-          <el-input v-model="sysEquipExp.warehouseManagerName" />
+          <el-input v-model="sysEquipStock.warehouseManagerName" />
+        </el-form-item>
+        <el-form-item label="出入库类型">
+          <el-radio disabled v-model="sysEquipStock.type" label="出库">出库</el-radio>
+          <el-radio disabled v-model="sysEquipStock.type" label="入库">入库</el-radio>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="sysEquipExp.remarks" />
+          <el-input v-model="sysEquipStock.remarks" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -153,7 +160,7 @@
   </div>
 </template>
 <script>
-import api from "@/api/system/equipExp";
+import api from "@/api/system/equipStock";
 export default {
   data() {
     return {
@@ -164,7 +171,7 @@ export default {
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
       dialogVisible: false, //弹框
-      sysEquipExp: {}, //封装添加表单数据
+      sysEquipStock: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
     };
@@ -214,21 +221,21 @@ export default {
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
-      api.getEquipExpId(id).then((response) => {
-        this.sysEquipExp = response.data;
+      api.getEquipStockId(id).then((response) => {
+        this.sysEquipStock = response.data;
       });
     },
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipExp.id) {
-        this.saveEquipExp();
+      if (!this.sysEquipStock.id) {
+        this.saveEquipStock();
       } else {
-        this.updateEquipExp();
+        this.updateEquipStock();
       }
     },
     //修改方法
-    updateEquipExp() {
-      api.update(this.sysEquipExp).then((response) => {
+    updateEquipStock() {
+      api.update(this.sysEquipStock).then((response) => {
         //提示
         this.$message({
           type: "success",
@@ -241,8 +248,8 @@ export default {
       });
     },
     //添加
-    saveEquipExp() {
-      api.saveEquipExp(this.sysEquipExp).then((response) => {
+    saveEquipStock() {
+      api.saveEquipStock(this.sysEquipStock).then((response) => {
         //提示
         this.$message({
           type: "success",
@@ -257,7 +264,8 @@ export default {
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
-      this.sysEquipExp = {};
+      this.sysEquipStock = {};
+      this.sysEquipStock.type = "出库"
     },
      // 根据id删除数据
      removeDataById(id) {
@@ -296,10 +304,11 @@ export default {
       }
       // 调用api
       api
-        .getPageList(this.page, this.limit, this.searchObj)
+        .getPageListOut(this.page, this.limit, this.searchObj)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
+          console.log(this.list);
         });
     },
   },
