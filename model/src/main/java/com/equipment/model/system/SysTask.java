@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.equipment.model.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -26,11 +27,13 @@ public class SysTask extends BaseEntity implements Serializable {
     /**
      * 任务开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
     /**
      * 任务结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     /**

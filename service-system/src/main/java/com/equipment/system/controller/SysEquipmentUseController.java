@@ -35,7 +35,7 @@ public class SysEquipmentUseController {
     //1、查询所有记录
     @ApiOperation("查询所有记录接口")
     @GetMapping("findAll")
-    public Result findAll(){
+    public Result<List<SysEquipmentUse>> findAll(){
         List<SysEquipmentUse> list =  sysEquipmentUseService.list();
         return Result.ok(list);
     }
@@ -43,7 +43,7 @@ public class SysEquipmentUseController {
     //2、物理删除接口
     @ApiOperation("根据id物理删除接口")
     @DeleteMapping("remove/{id}")
-    public Result removeEquipIntake(@PathVariable Long id){
+    public Result<Void> removeEquipIntake(@PathVariable Long id){
         //调用方法删除
         boolean isSuccess = sysEquipmentUseService.removeById(id);
         if(isSuccess ){
@@ -57,14 +57,14 @@ public class SysEquipmentUseController {
     //page表示当前页 limit每页记录
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result fingPageQueryEquipIntake(@PathVariable Long page,
+    public Result<IPage<SysEquipmentUse>> fingPageQueryEquipIntake(@PathVariable Long page,
                                            @PathVariable Long limit,
                                            SysEquipmentUseQueryVo sysEquipmentUseQueryVo){
         //创建page对象
         Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
         // 构造查询条件
         LambdaQueryWrapper<SysEquipmentUse> queryWrapper = new LambdaQueryWrapper<>();
-        if(sysEquipmentUseQueryVo!=null){
+        if(sysEquipmentUseQueryVo.getKeyword() !=null){
             queryWrapper.like(SysEquipmentUse::getEquipmentCode,sysEquipmentUseQueryVo.getKeyword())
                     .or().like(SysEquipmentUse::getEmployeeUseCode,sysEquipmentUseQueryVo.getKeyword())
                     .or().like(SysEquipmentUse::getLocation,sysEquipmentUseQueryVo.getKeyword())
@@ -79,7 +79,7 @@ public class SysEquipmentUseController {
     //4、添加设备
     @ApiOperation("添加设备入库记录")
     @PostMapping("save")
-    public Result saveEquipIntake(@RequestBody SysEquipmentUse sysEquipmentUse){
+    public Result<Void> saveEquipIntake(@RequestBody SysEquipmentUse sysEquipmentUse){
         boolean isSuccess = sysEquipmentUseService.save(sysEquipmentUse);
         if(isSuccess){
             return Result.ok();
@@ -91,7 +91,7 @@ public class SysEquipmentUseController {
     //5、根据id查询
     @ApiOperation("根据id查询设备入库记录")
     @GetMapping("fingEquipUseById/{id}")
-    public Result fingEquipUseById(@PathVariable String id) {
+    public Result<SysEquipmentUse> fingEquipUseById(@PathVariable String id) {
         SysEquipmentUse sysEquipmentUse = sysEquipmentUseService.getById(id);
         return Result.ok(sysEquipmentUse);
     }
@@ -99,7 +99,7 @@ public class SysEquipmentUseController {
     //6、修改-最终修改
     @ApiOperation("最终修改")
     @PostMapping("update")
-    public Result updateEquipUse(@RequestBody SysEquipmentUse sysEquipmentUse){
+    public Result<Void> updateEquipUse(@RequestBody SysEquipmentUse sysEquipmentUse){
         boolean isSuccess = sysEquipmentUseService.updateById(sysEquipmentUse);
         if(isSuccess){
             return Result.ok();
@@ -109,9 +109,9 @@ public class SysEquipmentUseController {
     }
 
     //7、批量删除
-    @ApiOperation("物理批量删除")
+    @ApiOperation("批量删除")
     @DeleteMapping("batchRemove")
-    public Result batchRemove(@RequestBody List<Long> ids){
+    public Result<Void> batchRemove(@RequestBody List<Long> ids){
         sysEquipmentUseService.removeByIds(ids);
         return Result.ok();
     }

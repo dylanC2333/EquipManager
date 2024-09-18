@@ -69,10 +69,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="taskCode" label="任务编码" />
-      <el-table-column prop="startTime" label="任务开始时间" />
-      <el-table-column prop="endTime" label="任务结束时间" />
+      <el-table-column prop="taskCode" label="任务编号" />
+      <el-table-column prop="startDate" label="任务开始日期" />
+      <el-table-column prop="endDate" label="任务结束日期" />
       <el-table-column prop="location" label="任务地点" />
+      <el-table-column prop="createTime" label="任务创建时间" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -115,11 +116,11 @@
         <el-form-item label="任务编码">
           <el-input v-model="sysTask.taskCode" />
         </el-form-item>
-        <el-form-item label="任务开始时间">
-          <el-input v-model="sysTask.startTime" />
+        <el-form-item label="任务开始日期">
+          <el-input v-model="sysTask.startDate" />
         </el-form-item>
-        <el-form-item label="任务结束时间">
-          <el-input v-model="sysTask.endTime" />
+        <el-form-item label="任务结束日期">
+          <el-input v-model="sysTask.endDtate" />
         </el-form-item>
         <el-form-item label="任务地点（省份）">
           <el-select v-model="sysTask.location" placeholder="请选择">
@@ -301,7 +302,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
-          // console.log(this.list);
+          console.log(this.list);
         });
     },
   },

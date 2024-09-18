@@ -42,7 +42,7 @@ public class SysTaskController {
     //2、逻辑删除接口
     @ApiOperation("物理删除接口")
     @DeleteMapping("remove/{id}")
-    public Result removeTask(@PathVariable Long id){
+    public Result<Void> removeTask(@PathVariable Long id){
         //调用方法删除
         boolean isSuccess = sysTaskService.removeById(id);
         if(isSuccess ){
@@ -56,14 +56,14 @@ public class SysTaskController {
     //page表示当前页 limit每页记录
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result fingPageQueryTask(@PathVariable Long page,
+    public Result<IPage<SysTask>> fingPageQueryTask(@PathVariable Long page,
                                      @PathVariable Long limit,
                                      SysTaskQueryVo sysTaskQueryVo){
         //创建page对象
         Page<SysTask> pageParam = new Page<>(page,limit);
         // 构建查询条件
         LambdaQueryWrapper<SysTask> queryWrapper = new LambdaQueryWrapper<>();
-        if(sysTaskQueryVo!=null){
+        if(sysTaskQueryVo.getKeyword() != null){
             queryWrapper.like(SysTask::getTaskCode,sysTaskQueryVo.getKeyword())
                     .or().like(SysTask::getLocation,sysTaskQueryVo.getKeyword());
         }
@@ -76,7 +76,7 @@ public class SysTaskController {
     //4、添加设备
     @ApiOperation("添加任务")
     @PostMapping("save")
-    public Result saveTask(@RequestBody SysTask sysTask){
+    public Result<Void> saveTask(@RequestBody SysTask sysTask){
         boolean isSuccess = sysTaskService.save(sysTask);
         if(isSuccess){
             return Result.ok();
@@ -88,7 +88,7 @@ public class SysTaskController {
     //5、根据id查询
     @ApiOperation("根据id查询设备")
     @GetMapping("fingTaskById/{id}")
-    public Result fingTaskById(@PathVariable String id) {
+    public Result<SysTask> fingTaskById(@PathVariable String id) {
         SysTask sysTask = sysTaskService.getById(id);
         return Result.ok(sysTask);
     }
@@ -96,7 +96,7 @@ public class SysTaskController {
     //6、修改-最终修改
     @ApiOperation("最终修改")
     @PostMapping("update")
-    public Result updateTask(@RequestBody SysTask sysTask){
+    public Result<Void>  updateTask(@RequestBody SysTask sysTask){
         boolean isSuccess = sysTaskService.updateById(sysTask);
         if(isSuccess){
             return Result.ok();
@@ -108,7 +108,7 @@ public class SysTaskController {
     //7、批量删除
     @ApiOperation("物理批量删除")
     @DeleteMapping("batchRemove")
-    public Result batchRemove(@RequestBody List<Long> ids){
+    public Result<Void> batchRemove(@RequestBody List<Long> ids){
         sysTaskService.removeByIds(ids);
         return Result.ok();
     }
