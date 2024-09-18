@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.equipment.model.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -25,6 +26,7 @@ public class SysEquipmentStock extends BaseEntity implements Serializable {
     /**
      * 设备出入库日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date equipmentDate;
 
     /**
@@ -53,7 +55,7 @@ public class SysEquipmentStock extends BaseEntity implements Serializable {
     private String warehouseManagerCode;
 
     /**
-     * 逻辑出入库
+     * 虚拟出入库
      */
     private Integer isTransfer;
 

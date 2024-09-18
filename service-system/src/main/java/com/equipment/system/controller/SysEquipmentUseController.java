@@ -3,8 +3,6 @@ package com.equipment.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
-import com.equipment.model.system.SysEquipmentMaintenance;
-import com.equipment.model.vo.SysEquipmentIntakeQueryVo;
 import com.equipment.model.vo.SysEquipmentUseQueryVo;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.system.service.SysEquipmentUseService;
@@ -12,6 +10,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +56,16 @@ public class SysEquipmentUseController {
     //page表示当前页 limit每页记录
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result<IPage<SysEquipmentUse>> fingPageQueryEquipIntake(@PathVariable Long page,
-                                           @PathVariable Long limit,
-                                           SysEquipmentUseQueryVo sysEquipmentUseQueryVo){
+    public Result<IPage<SysEquipmentUse>> fingPageQueryEquipIntake(
+
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable Long limit,
+
+            @ApiParam(name = "SysEquipmentUseQueryVo", value = "查询对象", required = false)
+            SysEquipmentUseQueryVo sysEquipmentUseQueryVo){
         //创建page对象
         Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
         // 构造查询条件
@@ -90,8 +96,8 @@ public class SysEquipmentUseController {
 
     //5、根据id查询
     @ApiOperation("根据id查询设备入库记录")
-    @GetMapping("fingEquipUseById/{id}")
-    public Result<SysEquipmentUse> fingEquipUseById(@PathVariable String id) {
+    @GetMapping("findEquipUseById/{id}")
+    public Result<SysEquipmentUse> findEquipUseById(@PathVariable String id) {
         SysEquipmentUse sysEquipmentUse = sysEquipmentUseService.getById(id);
         return Result.ok(sysEquipmentUse);
     }

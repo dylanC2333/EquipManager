@@ -26,8 +26,8 @@
 //    //http://localhost:8800/admin/system/Employe/findAll
 //    // 1 查询所有记录
 //    @ApiOperation("查询所有接口")
-//    @GetMapping("findAll")
-//    public Result<List<Employee>> findAll() {
+//    @GetMapping("findAllIn")
+//    public Result<List<Employee>> findAllIn() {
 //        List<Employee> list = employeeService.list();
 //        return Result.ok(list);
 //    }

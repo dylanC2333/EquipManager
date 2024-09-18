@@ -3,7 +3,7 @@ package com.equipment.model.vo;
 import lombok.Data;
 
 @Data
-public class SysEquipmentIntakeQueryVo {
+public class SysEquipmentStockQueryVo {
 
     private static final long serialVersionUID = 1L;
 

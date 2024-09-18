@@ -3,8 +3,6 @@ package com.equipment.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.equipment.common.result.Result;
-import com.equipment.model.system.SysEquipment;
-import com.equipment.model.vo.SysEquipmentIntakeQueryVo;
 import com.equipment.model.vo.SysEquipmentTransferQueryVo;
 import com.equipment.model.system.SysEquipmentTransfer;
 import com.equipment.system.service.SysEquipmentTransferService;
