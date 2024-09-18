@@ -70,9 +70,9 @@
       </el-table-column>
 
       <el-table-column prop="equipmentName" label="设备名称" />
-      <el-table-column prop="equipmentId" label="管理编码" />
-      <el-table-column prop="taskId" label="任务单号" />
-      <el-table-column prop="equipmentUseTime" label="使用日期" />
+      <el-table-column prop="equipmentCode" label="管理编号" />
+      <el-table-column prop="taskCode" label="任务单号" />
+      <el-table-column prop="equipmentUseDate" label="使用日期" />
       <el-table-column prop="employeeUseName" label="操作人" />
       <el-table-column prop="location" label="地点" />
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
@@ -487,7 +487,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
-          // console.log(response.data.records)
+          console.log(response.data.records);f
           // console.log(pcTextArr);
         });
     },
