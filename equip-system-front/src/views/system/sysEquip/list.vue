@@ -6,7 +6,7 @@
       <el-form label-width="70px" size="small">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="关 键 字">
+            <el-form-item label="关键字">
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
@@ -47,6 +47,9 @@
       border
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
+      @sort-change="onSortChange"
+      :default-sort = "{prop: 'createTime', order:'ascending'}"
+      :sort-orders="['ascending','descending']"
     >
       <el-table-column type="selection" />
 
@@ -56,8 +59,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="equipmentName" label="设备名称" />
-      <el-table-column prop="equipmentCode" label="设备编号" />
+      <el-table-column prop="equipmentName" label="设备名称"  sortable="custom"/>
+      <el-table-column prop="equipmentCode" label="设备编号"  sortable="custom"/>
+      <el-table-column prop="createTime" label="创建时间"  sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -134,9 +138,13 @@ export default {
       page: 1, // 页码
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
+      column:null,//排序字段
+      sortorder:null,//升降序条件
+
       dialogVisible: false, //弹框
       sysEquip: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
+      
     };
   },
   created() {
@@ -256,18 +264,28 @@ export default {
         });
       });
     },
+    // 表格排序
+    onSortChange({prop,order}){
+      this.column = prop;
+      this.sortorder = order;
+      // console.log(this.column)
+      // console.log(this.sortorder)
+      this.fetchData()
+    },
+
     // 重置表单
     resetData() {
-      console.log("重置查询表单");
+      console.log('重置查询表单');
       this.searchObj = {};
-      this.fetchData();
+      this.column = null;
+      this.sortorder = null;
+      this.fetchData()
     },
     //条件分页查询
     fetchData(pageNum = 1) {
       this.page = pageNum;
       // 调用api
-      api
-        .getPageList(this.page, this.limit, this.searchObj)
+      api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;

@@ -46,13 +46,15 @@ public class SysUserController {
             @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
             SysUserQueryVo sysUserQueryVo,
 
-            @ApiParam(name = "column", value = "字段{ascending,descending}", required = false)
+            @ApiParam(name = "column", value = "字段", required = false)
             @PathVariable String column,
 
-            @ApiParam(name = "order", value = "排序方式", required = false)
+            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
             @PathVariable String order
     ) {
+        //创建page对象
         Page<SysUser> pageParam = new Page<>(page, limit);
+        //构造查询条件
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         if (sysUserQueryVo.getKeyword() != null) {
             queryWrapper.like("user_code", sysUserQueryVo.getKeyword())
@@ -60,6 +62,7 @@ public class SysUserController {
                     .or().like("description", sysUserQueryVo.getKeyword())
                     .or().like("phone", sysUserQueryVo.getKeyword());
         }
+        //构造排序条件
         if (column != null && order != null) {
             String field = NamingUtils.camelToUnderline(column);
             if (order.equals("ascending")) {

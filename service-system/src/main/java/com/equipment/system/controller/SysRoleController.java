@@ -64,10 +64,10 @@ public class SysRoleController {
             @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
             SysRoleQueryVo sysRoleQueryVo,
 
-            @ApiParam(name = "column", value = "字段{ascending,descending}", required = false)
+            @ApiParam(name = "column", value = "字段", required = false)
             @PathVariable String column,
 
-            @ApiParam(name = "order", value = "排序方式", required = false)
+            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
             @PathVariable String order
     ){
         // 创建page对象
