@@ -29,7 +29,7 @@
                           inner join sys_user_role ur on ur.user_id = u.id
                           inner join sys_role r on r.id = ur.role_id
         where
-            r.role_name = #{keyword}
+            r.role_name = #{roleName}
           and u.is_deleted = 0
           and ur.is_deleted = 0
           and r.is_deleted = 0

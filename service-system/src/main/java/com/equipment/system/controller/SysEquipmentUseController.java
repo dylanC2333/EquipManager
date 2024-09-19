@@ -2,7 +2,10 @@ package com.equipment.system.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
+import com.equipment.common.utils.NamingUtils;
+import com.equipment.model.system.SysUser;
 import com.equipment.model.vo.SysEquipmentUseQueryVo;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.system.service.SysEquipmentUseService;
@@ -52,11 +55,10 @@ public class SysEquipmentUseController {
         }
     }
 
-    //3、条件分页查询接口
-    //page表示当前页 limit每页记录
-    @ApiOperation("条件分页查询")
-    @GetMapping("{page}/{limit}")
-    public Result<IPage<SysEquipmentUse>> fingPageQueryEquipIntake(
+    //3 条件分页排序查询
+    @ApiOperation("条件排序分页查询")
+    @GetMapping("{page}/{limit}/{column}/{order}")
+    public Result<IPage<SysEquipmentUse>> findPageQueryEquipIntake(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
@@ -65,16 +67,32 @@ public class SysEquipmentUseController {
             @PathVariable Long limit,
 
             @ApiParam(name = "SysEquipmentUseQueryVo", value = "查询对象", required = false)
-            SysEquipmentUseQueryVo sysEquipmentUseQueryVo){
+            SysEquipmentUseQueryVo sysEquipmentUseQueryVo,
+
+            @ApiParam(name = "column", value = "字段", required = false)
+            @PathVariable String column,
+
+            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
+            @PathVariable String order
+    ){
         //创建page对象
         Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
         // 构造查询条件
-        LambdaQueryWrapper<SysEquipmentUse> queryWrapper = new LambdaQueryWrapper<>();
+        QueryWrapper<SysEquipmentUse> queryWrapper = new QueryWrapper<>();
         if(sysEquipmentUseQueryVo.getKeyword() !=null){
-            queryWrapper.like(SysEquipmentUse::getEquipmentCode,sysEquipmentUseQueryVo.getKeyword())
-                    .or().like(SysEquipmentUse::getEmployeeUseCode,sysEquipmentUseQueryVo.getKeyword())
-                    .or().like(SysEquipmentUse::getLocation,sysEquipmentUseQueryVo.getKeyword())
-                    .or().like(SysEquipmentUse::getTaskCode,sysEquipmentUseQueryVo.getKeyword());
+            queryWrapper.like("equipment_code",sysEquipmentUseQueryVo.getKeyword())
+                    .or().like("employee_use_code",sysEquipmentUseQueryVo.getKeyword())
+                    .or().like("location",sysEquipmentUseQueryVo.getKeyword())
+                    .or().like("task_code",sysEquipmentUseQueryVo.getKeyword());
+        }
+        //构造排序条件
+        if (column != null && order != null) {
+            String field = NamingUtils.camelToUnderline(column);
+            if (order.equals("ascending")) {
+                queryWrapper.orderByAsc(field);
+            } else {
+                queryWrapper.orderByDesc(field);
+            }
         }
         //调用service方法
         IPage<SysEquipmentUse> pageModel = sysEquipmentUseService.page(pageParam,queryWrapper);
@@ -102,24 +120,18 @@ public class SysEquipmentUseController {
         return Result.ok(sysEquipmentUse);
     }
 
-    //6、修改-最终修改
-    @ApiOperation("最终修改")
-    @PostMapping("update")
-    public Result<Void> updateEquipUse(@RequestBody SysEquipmentUse sysEquipmentUse){
-        boolean isSuccess = sysEquipmentUseService.updateById(sysEquipmentUse);
-        if(isSuccess){
-            return Result.ok();
-        }  else {
-            return Result.fail();
-        }
+    //6、修改记录
+    @ApiOperation("修改记录")
+    @PutMapping("update")
+    public Result<Void> updateById(@RequestBody SysEquipmentUse sysEquipmentUse) {
+        return sysEquipmentUseService.updateById(sysEquipmentUse) ? Result.ok() : Result.fail();
     }
 
     //7、批量删除
     @ApiOperation("批量删除")
     @DeleteMapping("batchRemove")
     public Result<Void> batchRemove(@RequestBody List<Long> ids){
-        sysEquipmentUseService.removeByIds(ids);
-        return Result.ok();
+        return sysEquipmentUseService.removeByIds(ids) ? Result.ok(): Result.fail();
     }
 }
 

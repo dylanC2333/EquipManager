@@ -1,15 +1,15 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/equipment/equipmentUse'
+const api_name = '/admin/equipment/equipmentUse/'
 
 
 export default{
 
-    //1、列表
-    getPageList(page,limit,searchObj){
+    // 1 分页排序列表查询
+    getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}`,
+            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
@@ -30,6 +30,7 @@ export default{
           data: equipUse
         })
     },
+
     //4、根据id查询
     getEquipUseId(id) {
         return request({
@@ -37,14 +38,16 @@ export default{
             method: 'get'
         })
     },
+
     //5、修改方法
     update(equipUse){
         return request({
             url: `${api_name}/update`,
-            method: 'post',
+            method: 'put',
             data: equipUse
         })
     },
+
     //6、批量删除
     batchRemove(idList) {
         return request({
