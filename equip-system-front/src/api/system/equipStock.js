@@ -1,24 +1,24 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/equipment/equipmentStock'
+const api_name = '/admin/equipment/equipmentStock/'
 
 
 export default{
 
-    // 1 入库列表
-    getPageListIn(page,limit,searchObj){
+    // 1 入库列表排序查询
+    getPageListIn(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/in/${page}/${limit}`,
+            url: `${api_name}/in/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
     },
 
-    // 2 出库列表
-    getPageListOut(page,limit,searchObj){
+    // 2 出库列表排序查询
+    getPageListOut(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/out/${page}/${limit}`,
+            url: `${api_name}/out/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })

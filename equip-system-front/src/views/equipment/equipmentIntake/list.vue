@@ -10,7 +10,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="设备入库名称/设备入库编号/任务编号"
+                placeholder="设备编号/任务单号/入库日期/员工编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -60,6 +60,9 @@
       border
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
+      @sort-change="onSortChange"
+      :default-sort = "{prop: 'createTime', order:'ascending'}"
+      :sort-orders="['ascending','descending']"
     >
       <el-table-column type="selection" />
 
@@ -69,11 +72,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="type" label="出入库类型" />
-      <el-table-column prop="equipmentName" label="设备名称" />
-      <el-table-column prop="equipmentCode" label="管理编号" />
-      <el-table-column prop="equipmentDate" label="设备入库日期" />
+      <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
+      <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
+      <el-table-column prop="equipmentDate" label="设备入库日期" sortable="custom"/>
       <el-table-column prop="userName" label="入库人" />
-      <el-table-column prop="taskCode" label="任务单号" />
+      <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="warehouseManagerName" label="仓库管理员" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -171,6 +174,9 @@ export default {
       page: 1, // 页码
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
+      column:'createTime',//排序字段
+      sortorder:'descending',//升降序条件
+
       dialogVisible: false, //弹框
       sysEquipStock: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
@@ -192,6 +198,15 @@ export default {
       this.limit = currentLimit;
       this.fetchData();
       //console.log(this.limit);
+    },
+
+    // 表格排序
+    onSortChange({prop,order}){
+      this.column = prop;
+      this.sortorder = order;
+      // console.log(this.column)
+      // console.log(this.sortorder)
+      this.fetchData()
     },
 
     // 批量删除
@@ -301,6 +316,8 @@ export default {
       console.log("重置查询表单");
       this.searchObj = {};
       this.createTimes = [];
+      this.column = 'createTime';
+      this.sortorder = 'descending';
       this.fetchData();
     },
     
@@ -312,8 +329,7 @@ export default {
         this.searchObj.endTime = this.createTimes[1];
       }
       // 调用api
-      api
-        .getPageListIn(this.page, this.limit, this.searchObj)
+      api.getPageListIn(this.page,this.limit,this.searchObj,this.column,this.sortorder)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;

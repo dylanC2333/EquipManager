@@ -229,7 +229,7 @@ export default{
 
       },
 
-      // 每页显示记录数改变时调用
+      // 每页显示记录数改变
       handleSizeChange(currentLimit){
         this.limit = currentLimit;
         this.fetchData();

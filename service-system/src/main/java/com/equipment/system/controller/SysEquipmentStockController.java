@@ -2,9 +2,11 @@ package com.equipment.system.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.common.result.Result;
+import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.system.SysEquipmentStock;
 import com.equipment.model.vo.SysEquipmentStockQueryVo;
 import com.equipment.system.service.SysEquipmentStockService;
@@ -66,8 +68,8 @@ public class SysEquipmentStockController {
 
     //4 条件分页查询入库记录接口
     //page表示当前页 limit每页记录
-    @ApiOperation("入库记录条件分页查询")
-    @GetMapping("in/{page}/{limit}")
+    @ApiOperation("入库记录条件排序分页查询")
+    @GetMapping("in/{page}/{limit}/{column}/{order}")
     public Result<IPage<SysEquipmentStock>> findPageQueryEquipIn(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
@@ -77,19 +79,35 @@ public class SysEquipmentStockController {
             @PathVariable Long limit,
 
             @ApiParam(name = "SysEquipmentStockQueryVo", value = "查询对象", required = false)
-            SysEquipmentStockQueryVo sysEquipmentStockQueryVo){
+            SysEquipmentStockQueryVo sysEquipmentStockQueryVo,
+
+            @ApiParam(name = "column", value = "字段", required = false)
+            @PathVariable String column,
+
+            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
+            @PathVariable String order
+    ){
         //创建page对象
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         // 构造查询条件
-        LambdaQueryWrapper<SysEquipmentStock> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysEquipmentStock::getType,"入库");
+        QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type","入库");
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
-            queryWrapper.and(i -> i.like(SysEquipmentStock::getEquipmentCode, sysEquipmentStockQueryVo.getKeyword())
-                            .or().like(SysEquipmentStock::getUserCode, sysEquipmentStockQueryVo.getKeyword())
-                            .or().like(SysEquipmentStock::getEquipmentDate, sysEquipmentStockQueryVo.getKeyword())
-                            .or().like(SysEquipmentStock::getTaskCode, sysEquipmentStockQueryVo.getKeyword())
-                            .or().like(SysEquipmentStock::getWarehouseManagerCode, sysEquipmentStockQueryVo.getKeyword())
+            queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
             );
+        }
+        //构造排序条件
+        if (column != null && order != null) {
+            String field = NamingUtils.camelToUnderline(column);
+            if (order.equals("ascending")) {
+                queryWrapper.orderByAsc(field);
+            } else {
+                queryWrapper.orderByDesc(field);
+            }
         }
         //调用service方法
         IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.page(pageParam,queryWrapper);
@@ -99,8 +117,8 @@ public class SysEquipmentStockController {
 
     //5 条件分页查询出库记录接口
     //page表示当前页 limit每页记录
-    @ApiOperation("出库记录条件分页查询")
-    @GetMapping("out/{page}/{limit}")
+    @ApiOperation("出库记录条件排序分页查询")
+    @GetMapping("out/{page}/{limit}/{column}/{order}")
     public Result<IPage<SysEquipmentStock>> findPageQueryEquipOut(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
@@ -110,19 +128,35 @@ public class SysEquipmentStockController {
             @PathVariable Long limit,
 
             @ApiParam(name = "SysEquipmentStockQueryVo", value = "查询对象", required = false)
-            SysEquipmentStockQueryVo sysEquipmentStockQueryVo){
+            SysEquipmentStockQueryVo sysEquipmentStockQueryVo,
+
+            @ApiParam(name = "column", value = "字段", required = false)
+            @PathVariable String column,
+
+            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
+            @PathVariable String order
+    ){
         //创建page对象
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         // 构造查询条件
-        LambdaQueryWrapper<SysEquipmentStock> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysEquipmentStock::getType,"出库");
+        QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type","出库");
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
-            queryWrapper.and(i -> i.like(SysEquipmentStock::getEquipmentCode, sysEquipmentStockQueryVo.getKeyword())
-                    .or().like(SysEquipmentStock::getUserCode, sysEquipmentStockQueryVo.getKeyword())
-                    .or().like(SysEquipmentStock::getEquipmentDate, sysEquipmentStockQueryVo.getKeyword())
-                    .or().like(SysEquipmentStock::getTaskCode, sysEquipmentStockQueryVo.getKeyword())
-                    .or().like(SysEquipmentStock::getWarehouseManagerCode, sysEquipmentStockQueryVo.getKeyword())
+            queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
             );
+        }
+        //构造排序条件
+        if (column != null && order != null) {
+            String field = NamingUtils.camelToUnderline(column);
+            if (order.equals("ascending")) {
+                queryWrapper.orderByAsc(field);
+            } else {
+                queryWrapper.orderByDesc(field);
+            }
         }
         //调用service方法
         IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.page(pageParam,queryWrapper);
