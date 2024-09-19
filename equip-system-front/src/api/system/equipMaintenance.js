@@ -1,16 +1,19 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/equipment/equipmentMaintenance'
+const api_name = '/admin/equipment/equipmentMaintenance/'
 
 
 export default{
 
-    //1、列表
-    getPageList(page,limit,searchObj){
+    // 1 分页排序列表查询
+    getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}`,
+            // 接口路径
+            url: `${api_name}${page}/${limit}/${column}/${sortorder}`,
+            //提交方式
             method: 'get',
+            //参数
             params:searchObj
         })
     },

@@ -30,6 +30,7 @@ public class NamingUtils {
         return result.toString();
     }
 
+    // test
     public static void main(String[] args) {
         String camel = "employeeName";
         String underline = "employee_name";
