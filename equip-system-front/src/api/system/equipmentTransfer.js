@@ -1,15 +1,15 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/equipment/equipmentTransfer'
+const api_name = '/admin/equipment/equipmentTransfer/'
 
 
 export default{
 
-    //1、列表
-    getPageList(page,limit,searchObj){
+    // 1 分页排序列表查询
+    getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}`,
+            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })

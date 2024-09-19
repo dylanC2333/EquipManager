@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="旧任务编号/新任务编号/设备编号"
+                placeholder="旧任务编号/新任务编号/设备编号/交付员工编号/接收员工编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -59,6 +59,9 @@
       border
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
+      @sort-change="onSortChange"
+      :default-sort = "{prop: 'createTime', order:'ascending'}"
+      :sort-orders="['ascending','descending']"
     >
       <el-table-column type="selection" />
 
@@ -67,13 +70,13 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column prop="oldTaskCode" label="旧任务编号" />
-      <el-table-column prop="newTaskCode" label="新任务编号" />
-      <el-table-column prop="equipmentCode" label="设备编号" />
-      <el-table-column prop="deliverEmployeeCode" label="交付员工编号" />
-      <el-table-column prop="receiverEmployeeCode" label="接收员工编号" />
-      <el-table-column prop="transferDate" label="交接时间" />
-      <el-table-column prop="transferLocation" label="交接地点" />
+      <el-table-column prop="oldTaskCode" label="旧任务编号" sortable="custom"/>
+      <el-table-column prop="newTaskCode" label="新任务编号" sortable="custom"/>
+      <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
+      <el-table-column prop="deliverEmployeeCode" label="交付员工编号" sortable="custom"/>
+      <el-table-column prop="receiverEmployeeCode" label="接收员工编号" sortable="custom"/>
+      <el-table-column prop="transferDate" label="交接时间" sortable="custom"/>
+      <el-table-column prop="transferLocation" label="交接地点" sortable="custom"/>
       <el-table-column prop="transferType" label="交接类型" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -180,6 +183,9 @@ export default {
       page: 1, // 页码
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
+      column:'createTime',//排序字段
+      sortorder:'descending',//升降序条件
+
       dialogVisible: false, //弹框
       sysEquipTransfer: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
@@ -210,6 +216,15 @@ export default {
       this.limit = currentLimit;
       this.fetchData();
       //console.log(this.limit);
+    },
+
+    // 表格排序
+    onSortChange({prop,order}){
+      this.column = prop;
+      this.sortorder = order;
+      // console.log(this.column)
+      // console.log(this.sortorder)
+      this.fetchData()
     },
 
     // 批量删除
@@ -362,6 +377,8 @@ export default {
       console.log("重置查询表单");
       this.searchObj = {};
       this.createTimes = [];
+      this.column = 'createTime';
+      this.sortorder = 'descending';
       this.fetchData();
     },
 
@@ -373,8 +390,7 @@ export default {
         this.searchObj.endTime = this.createTimes[1] ;
       }
       // 调用api
-      api
-        .getPageList(this.page, this.limit, this.searchObj)
+      api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
