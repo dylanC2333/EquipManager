@@ -311,6 +311,14 @@ export default {
       this.multipleSelection = selection;
     },
 
+    // 每页显示记录数改变时调用
+    handleSizeChange(currentLimit){
+      this.limit = currentLimit;
+      this.fetchData();
+      //console.log(this.limit);
+    },
+
+
     // 批量删除
     batchRemove() {
       if (this.multipleSelection.length === 0) {
@@ -488,7 +496,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
-          console.log(response.data.records);f
+          // console.log(response.data.records);
           // console.log(pcTextArr);
         });
     },

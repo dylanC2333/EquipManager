@@ -60,6 +60,9 @@
       border
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
+      @sort-change="onSortChange"
+      :default-sort = "{prop: 'createTime', order:'ascending'}"
+      :sort-orders="['ascending','descending']"
     >
       <el-table-column type="selection" />
 
@@ -69,11 +72,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="taskCode" label="任务编号" />
-      <el-table-column prop="startDate" label="任务开始日期" />
-      <el-table-column prop="endDate" label="任务结束日期" />
+      <el-table-column prop="taskCode" label="任务编号"  sortable="custom"/>
+      <el-table-column prop="startDate" label="任务开始日期"  sortable="custom"/>
+      <el-table-column prop="endDate" label="任务结束日期"  sortable="custom"/>
       <el-table-column prop="location" label="任务地点" />
-      <el-table-column prop="createTime" label="任务创建时间" />
+      <el-table-column prop="createTime" label="任务创建时间"  sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -114,7 +117,7 @@
         size="small"
         style="padding-right: 40px"
       >
-        <el-form-item label="任务编码">
+        <el-form-item label="任务单号">
           <el-input v-model="sysTask.taskCode" />
         </el-form-item>
         <el-form-item label="任务开始日期">
@@ -165,6 +168,9 @@ export default {
       page: 1, // 页码
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
+      column:'createTime',//排序字段
+      sortorder:'descending',//升降序条件
+
       dialogVisible: false, //弹框
       sysTask: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
@@ -177,11 +183,20 @@ export default {
     this.fetchData();
   },
   methods: {
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
       this.multipleSelection = selection;
     },
+    
+    // 每页显示记录数改变时调用
+    handleSizeChange(currentLimit){
+      this.limit = currentLimit;
+      this.fetchData();
+      //console.log(this.limit);
+    },
+
     // 批量删除
     batchRemove() {
       if (this.multipleSelection.length === 0) {
@@ -215,6 +230,7 @@ export default {
         });
       });
     },
+
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
@@ -222,6 +238,7 @@ export default {
         this.sysTask = response.data;
       });
     },
+
     //添加或修改
     saveOrUpdate() {
       if (!this.sysTask.id) {
@@ -230,6 +247,7 @@ export default {
         this.updateTask();
       }
     },
+
     //修改方法
     updateTask() {
       api.update(this.sysTask).then((response) => {
@@ -244,6 +262,7 @@ export default {
         this.fetchData();
       });
     },
+
     //添加
     saveTask() {
       api.saveTask(this.sysTask).then((response) => {
@@ -258,11 +277,13 @@ export default {
         this.fetchData();
       });
     },
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquip = {};
     },
+    
     // 根据id删除数据
     removeDataById(id) {
       // debugger
@@ -283,11 +304,22 @@ export default {
         });
       });
     },
+
+    // 表格排序
+    onSortChange({prop,order}){
+      this.column = prop;
+      this.sortorder = order;
+      // console.log(this.column)
+      // console.log(this.sortorder)
+      this.fetchData()
+    },
+
     // 重置表单
     resetData() {
       console.log("重置查询表单");
-      this.searchObj = {};
-      this.createTimes = [];
+      this.searchObj = {};      
+      this.column = 'createTime';
+      this.sortorder = 'descending';
       this.fetchData();
     },
     //条件分页查询
@@ -298,8 +330,7 @@ export default {
         this.searchObj.endTime = this.createTimes[1];
       }
       // 调用api
-      api
-        .getPageList(this.page, this.limit, this.searchObj)
+      api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;

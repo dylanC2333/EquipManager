@@ -177,6 +177,14 @@ export default {
       console.log(selection);
       this.multipleSelection = selection;
     },
+
+    // 每页显示记录数改变时调用
+    handleSizeChange(currentLimit){
+      this.limit = currentLimit;
+      this.fetchData();
+      //console.log(this.limit);
+    },
+
     // 批量删除
     batchRemove() {
       if (this.multipleSelection.length === 0) {

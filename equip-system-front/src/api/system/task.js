@@ -1,17 +1,20 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/system/sysTask'
+const api_name = '/admin/system/sysTask/'
 
 
 export default{
 
-    //1、列表
-    getPageList(page,limit,searchObj){
+    // 1 分页排序列表查询
+    getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}`,
+            // 接口路径
+            url: `${api_name}${page}/${limit}/${column}/${sortorder}`,
+            //提交方式
             method: 'get',
-            params:searchObj
+            //参数
+            params: searchObj
         })
     },
 
@@ -33,7 +36,7 @@ export default{
     //4、根据id查询
     getTaskId(id) {
         return request({
-            url: `${api_name}/fingTaskById/${id}`,
+            url: `${api_name}/findTaskById/${id}`,
             method: 'get'
         })
     },
@@ -41,7 +44,7 @@ export default{
     update(task){
         return request({
             url: `${api_name}/update`,
-            method: 'post',
+            method: 'put',
             data: task
         })
     },

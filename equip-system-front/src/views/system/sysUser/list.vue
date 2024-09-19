@@ -159,8 +159,8 @@ export default{
             page:1,//当前页
             limit:10,//每页显示记录数
             searchObj:{},//条件查询封装对象
-            column:null,//排序字段
-            sortorder:null,//升降序条件
+            column:'createTime',//排序字段
+            sortorder:'descending',//升降序条件
 
             createdTimes:[],
 
@@ -355,8 +355,8 @@ export default{
       resetData() {
           console.log('重置查询表单')
           this.searchObj = {}
-          this.column = null
-          this.sortorder = null
+          this.column = 'createTime';
+          this.sortorder = 'descending';
           this.fetchData()
       },
 

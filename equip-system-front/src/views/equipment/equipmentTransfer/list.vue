@@ -199,12 +199,19 @@ export default {
       this.sysEquipTransfer.transferLocation += value[1];
     },
 
-
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
       this.multipleSelection = selection;
     },
+
+    // 每页显示记录数改变时调用
+    handleSizeChange(currentLimit){
+      this.limit = currentLimit;
+      this.fetchData();
+      //console.log(this.limit);
+    },
+
     // 批量删除
     batchRemove() {
       if (this.multipleSelection.length === 0) {

@@ -138,8 +138,8 @@ export default {
       page: 1, // 页码
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
-      column:null,//排序字段
-      sortorder:null,//升降序条件
+      column:'createTime',//排序字段
+      sortorder:'descending',//升降序条件
 
       dialogVisible: false, //弹框
       sysEquip: {}, //封装添加表单数据
@@ -277,8 +277,8 @@ export default {
     resetData() {
       console.log('重置查询表单');
       this.searchObj = {};
-      this.column = null;
-      this.sortorder = null;
+      this.column='createTime';
+      this.sortorder='descending';
       this.fetchData()
     },
     //条件分页查询
