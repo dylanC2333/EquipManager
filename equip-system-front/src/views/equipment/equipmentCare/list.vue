@@ -276,11 +276,13 @@ export default {
         this.fetchData();
       });
     },
+    
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquipMain = {};
     },
+
     // 根据id删除数据
     removeDataById(id) {
       // debugger
@@ -301,6 +303,7 @@ export default {
         });
       });
     },
+
     // 重置表单
     resetData() {
       console.log("重置查询表单");

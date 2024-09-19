@@ -124,7 +124,7 @@
           <el-input v-model="sysTask.startDate" />
         </el-form-item>
         <el-form-item label="任务结束日期">
-          <el-input v-model="sysTask.endDtate" />
+          <el-input v-model="sysTask.endDate" />
         </el-form-item>
         <el-form-item label="任务地点（省份）">
           <el-select v-model="sysTask.location" placeholder="请选择">
@@ -281,7 +281,7 @@ export default {
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
-      this.sysEquip = {};
+      this.sysTask = {};
     },
     
     // 根据id删除数据

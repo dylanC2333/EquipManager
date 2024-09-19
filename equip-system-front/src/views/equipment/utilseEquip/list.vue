@@ -310,6 +310,7 @@ export default {
       this.sysEquipUse.location = ""
       this.sysEquipUse.location += value[0];
       this.sysEquipUse.location += value[1];
+      // console.log(this.sysEquipUse.location);
     },
 
     // 当多选选项发生变化的时候调用
@@ -396,7 +397,7 @@ export default {
         } 
         // 判断是否是自治区（如“广西壮族自治区南宁市”）
         else if (address.includes("自治区")) {
-            let matchArray = address.match(/(.*?自治区)(.*?市)/);
+            let matchArray = address.match(/(.*?自治区)(.*)/);
             if (matchArray) {
                 province = matchArray[1];  // 广西壮族自治区等
                 city = matchArray[2];      // 南宁市
@@ -404,7 +405,7 @@ export default {
         } 
         // 普通省份处理
         else {
-            let matchArray = address.match(/(.*?省)(.*?市)/);
+            let matchArray = address.match(/(.*?省)(.*)/);
             if (matchArray) {
                 province = matchArray[1];  // 省
                 city = matchArray[2];      // 市

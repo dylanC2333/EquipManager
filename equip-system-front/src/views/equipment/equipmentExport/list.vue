@@ -284,12 +284,14 @@ export default {
         this.fetchData();
       });
     },
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquipStock = {};
       this.sysEquipStock.type = "出库"
     },
+    
      // 根据id删除数据
      removeDataById(id) {
       // debugger

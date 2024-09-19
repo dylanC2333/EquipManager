@@ -76,7 +76,7 @@
       <el-table-column prop="deliverEmployeeCode" label="交付员工编号" sortable="custom"/>
       <el-table-column prop="receiverEmployeeCode" label="接收员工编号" sortable="custom"/>
       <el-table-column prop="transferDate" label="交接时间" sortable="custom"/>
-      <el-table-column prop="transferLocation" label="交接地点" sortable="custom"/>
+      <el-table-column prop="transferLocation" label="交接地点" />
       <el-table-column prop="transferType" label="交接类型" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -191,18 +191,22 @@ export default {
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
 
-      pcTextArr,
+      pcTextArr,//省市二级地址，纯汉字
+      selectedLocations:[],// 选中的省市地址数据
     };
   },
   created() {
     this.fetchData();
   },
+
   methods: {
     // 地址选择变化时调用
     handleLocationChange(value){
+      // console.log(value);
       this.sysEquipTransfer.transferLocation = ""
-      this.sysEquipTransfer.transferlocation += value[0];
+      this.sysEquipTransfer.transferLocation += value[0];
       this.sysEquipTransfer.transferLocation += value[1];
+      // console.log(this.sysEquipTransfer.transferLocation);
     },
 
     // 当多选选项发生变化的时候调用
@@ -266,7 +270,9 @@ export default {
       this.dialogVisible = true;
       api.getEquipTransferId(id).then((response) => {
         this.sysEquipTransfer = response.data;
+        // console.log(this.sysEquipTransfer);
         this.selectedLocations = this.locationSplit(this.sysEquipTransfer.transferLocation);
+        // console.log(this.selectedLocations);
       });
     },
 
@@ -274,6 +280,7 @@ export default {
     // 地址数据回显格式分割转换
     locationSplit(address){
         // console.log("locationSplit in")
+        // console.log(address)
         // 针对不同的情况进行匹配
         let province, city
         // 判断是否是直辖市（例如，北京市，上海市等）
@@ -287,7 +294,7 @@ export default {
         } 
         // 判断是否是自治区（如“广西壮族自治区南宁市”）
         else if (address.includes("自治区")) {
-            let matchArray = address.match(/(.*?自治区)(.*?市)/);
+            let matchArray = address.match(/(.*?自治区)(.*)/);
             if (matchArray) {
                 province = matchArray[1];  // 广西壮族自治区等
                 city = matchArray[2];      // 南宁市
@@ -295,7 +302,7 @@ export default {
         } 
         // 普通省份处理
         else {
-            let matchArray = address.match(/(.*?省)(.*?市)/);
+            let matchArray = address.match(/(.*?省)(.*)/);
             if (matchArray) {
                 province = matchArray[1];  // 省
                 city = matchArray[2];      // 市
@@ -318,6 +325,7 @@ export default {
         this.updateEquipTransfer();
       }
     },
+
     //修改方法
     updateEquipTransfer() {
       api.update(this.sysEquipTransfer).then((response) => {

@@ -129,7 +129,13 @@
           <el-input v-model="sysEquipDetction.endDate" />
         </el-form-item>
         <el-form-item label="任务地点">
-          <el-input v-model="sysEquipDetction.detectionLocation" />
+          <el-select v-model="sysEquipDetction.detectionLocation" placeholder="请选择">
+          <el-option
+            v-for="item in pcTextArr"
+            :key="item.value"
+            :value="item.value">
+          </el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="sysEquipDetction.remarks" />
