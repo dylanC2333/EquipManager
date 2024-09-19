@@ -353,11 +353,11 @@ export default{
 
       // 重置表单
       resetData() {
-          console.log('重置查询表单')
-          this.searchObj = {}
-          this.column = 'createTime';
-          this.sortorder = 'descending';
-          this.fetchData()
+        console.log('重置查询表单')
+        this.searchObj = {}
+        this.column = 'createTime';
+        this.sortorder = 'descending';
+        this.fetchData()
       },
 
 

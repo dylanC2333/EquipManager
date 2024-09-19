@@ -1,16 +1,18 @@
 package com.equipment.system.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
-import com.equipment.model.system.SysEquipmentStock;
+import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
 import com.equipment.model.system.SysDetection;
+import com.equipment.model.vo.SysUserQueryVo;
 import com.equipment.system.service.SysDetectionService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,21 +55,43 @@ public class SysDetectionController {
         }
     }
 
-    //3、条件分页查询接口
-    //page表示当前页 limit每页记录
-    @ApiOperation("条件分页查询")
-    @GetMapping("{page}/{limit}")
-    public Result<IPage<SysDetection>> findPageQueryEquip(@PathVariable Long page,
-                                     @PathVariable Long limit,
-                                     SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo){
+    //3 条件分页排序查询
+    @ApiOperation("条件排序分页查询")
+    @GetMapping("{page}/{limit}/{column}/{order}")
+    public Result<IPage<SysDetection>> findPageQueryEquip(
+
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable int page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable int limit,
+
+            @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
+            SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo,
+
+            @ApiParam(name = "column", value = "字段", required = false)
+            @PathVariable String column,
+
+            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
+            @PathVariable String order
+    ){
         //创建page对象
         Page<SysDetection> pageParam = new Page<>(page,limit);
         //构造查询条件
-        LambdaQueryWrapper<SysDetection> queryWrapper = new LambdaQueryWrapper();
+        QueryWrapper<SysDetection> queryWrapper = new QueryWrapper<>();
         if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
-            queryWrapper.like(SysDetection::getEmployeeCode,sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like(SysDetection::getDetectionLocation,sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like(SysDetection::getTaskCode,sysEquipmentDetectionQueryVo.getKeyword());
+            queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
+                    .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
+                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword());
+        }
+        //构造排序条件
+        if (column != null && order != null) {
+            String field = NamingUtils.camelToUnderline(column);
+            if (order.equals("ascending")) {
+                queryWrapper.orderByAsc(field);
+            } else {
+                queryWrapper.orderByDesc(field);
+            }
         }
         //调用service方法
         IPage<SysDetection> pageModel = sysDetectionService.page(pageParam,queryWrapper);
