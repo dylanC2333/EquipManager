@@ -135,7 +135,12 @@
           <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
         </el-form-item>
         <el-form-item label="交接日期">
-          <el-input v-model="sysEquipTransfer.transferDate" />
+          <el-date-picker
+            v-model="sysEquipTransfer.transferDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="交接地点">
           <el-cascader
@@ -200,6 +205,13 @@ export default {
   },
 
   methods: {
+    // 日期选择器强制更新方法
+    dateChange(){
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
+    },
+
     // 地址选择变化时调用
     handleLocationChange(value){
       // console.log(value);
@@ -340,6 +352,7 @@ export default {
         this.fetchData();
       });
     },
+
     //添加
     saveEquipTransfer() {
       api.saveEquipTransfer(this.sysEquipTransfer).then((response) => {
@@ -354,11 +367,13 @@ export default {
         this.fetchData();
       });
     },
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquipTransfer = {};
       this.selectedLocations = [];
+      this.sysEquipTransfer.transferDate =  new Date();
     },
     // 根据id删除数据
     removeDataById(id) {

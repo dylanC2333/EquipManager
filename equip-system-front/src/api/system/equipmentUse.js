@@ -34,7 +34,7 @@ export default{
     //4、根据id查询
     getEquipUseId(id) {
         return request({
-            url: `${api_name}/fingEquipUseById/${id}`,
+            url: `${api_name}/findEquipUseById/${id}`,
             method: 'get'
         })
     },

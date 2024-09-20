@@ -126,7 +126,12 @@
           <el-input v-model="sysEquipStock.equipmentCode" />
         </el-form-item>
         <el-form-item label="设备入库日期">
-          <el-input v-model="sysEquipStock.equipmentDate" />
+          <el-date-picker
+            v-model="sysEquipStock.equipmentDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="入库人">
           <el-input v-model="sysEquipStock.userName" />
@@ -187,6 +192,14 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 日期选择器强制更新方法
+    dateChange(){
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
+    },
+
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
@@ -289,7 +302,8 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysEquipStock = {};
-      this.sysEquipStock.type = "入库"
+      this.sysEquipStock.type = "入库";
+      this.sysEquipStock.equipmentDate =  new Date();
     },
      // 根据id删除数据
      removeDataById(id) {

@@ -141,9 +141,9 @@
             @select="handleSubmit"
           ></el-autocomplete>
         </el-form-item>
-        <el-form-item label="使用日期"  prop = "equipmentUseTime">
+        <el-form-item label="使用日期"  prop = "equipmentUseDate">
           <el-date-picker
-            v-model="sysEquipUse.equipmentUseTime"
+            v-model="sysEquipUse.equipmentUseDate"
             type="date"
             placeholder="选择日期"
             @input="dateChange">
@@ -234,7 +234,7 @@ export default {
         employeeUseName : [
           { required : true , message : "必填" },
         ],
-        equipmentUseTime : [
+        equipmentUseDate : [
           { required : true , message : "必填" },
         ],
         location:[
@@ -470,7 +470,7 @@ export default {
       this.dialogVisible = true;
       this.sysEquipUse = {};
       this.selectedLocations = [];
-      this.sysEquipUse.equipmentUseTime =  new Date();
+      this.sysEquipUse.equipmentUseDate =  new Date();
     },
     
      // 根据id删除数据

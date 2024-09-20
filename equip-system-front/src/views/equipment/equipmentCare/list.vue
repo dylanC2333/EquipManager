@@ -124,7 +124,12 @@
           <el-input v-model="sysEquipMain.equipmentCode" />
         </el-form-item>
         <el-form-item label="保养日期">
-          <el-input v-model="sysEquipMain.maintenanceDate" />
+          <el-date-picker
+            v-model="sysEquipMain.maintenanceDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="设备使用前状态">
           <el-input v-model="sysEquipMain.beforeUseStatus" />
@@ -178,6 +183,12 @@ export default {
     this.fetchData();
   },
   methods: {
+    dateChange(){
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
+    },
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
@@ -281,6 +292,7 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysEquipMain = {};
+      this.sysEquipMain.maintenanceDate =  new Date();
     },
 
     // 根据id删除数据

@@ -121,10 +121,20 @@
           <el-input v-model="sysTask.taskCode" />
         </el-form-item>
         <el-form-item label="任务开始日期">
-          <el-input v-model="sysTask.startDate" />
+          <el-date-picker
+            v-model="sysTask.startDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="任务结束日期">
-          <el-input v-model="sysTask.endDate" />
+          <el-date-picker
+            v-model="sysTask.endDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="任务地点（省份）">
           <el-select v-model="sysTask.location" placeholder="请选择">
@@ -156,9 +166,7 @@
 </template>
 <script>
 import api from "@/api/system/task";
-import {
-  pcTextArr,
-} from "element-china-area-data";
+import {  pcTextArr } from "element-china-area-data";
 export default {
   data() {
     return {
@@ -183,6 +191,13 @@ export default {
     this.fetchData();
   },
   methods: {
+
+    // 日期选择器强制更新方法
+    dateChange(){
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
+    },
 
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
@@ -282,6 +297,8 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysTask = {};
+      this.sysTask.startDate =  new Date();
+      this.sysTask.endDate = new Date();
     },
     
     // 根据id删除数据

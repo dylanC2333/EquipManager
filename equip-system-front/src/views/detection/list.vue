@@ -123,10 +123,20 @@
           <el-input v-model="sysEquipDetction.taskCode" />
         </el-form-item>
         <el-form-item label="开始日期">
-          <el-input v-model="sysEquipDetction.startDate" />
+          <el-date-picker
+            v-model="sysEquipDetction.startDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="结束日期">
-          <el-input v-model="sysEquipDetction.endDate" />
+          <el-date-picker
+            v-model="sysEquipDetction.endDate"
+            type="date"
+            placeholder="选择日期"
+            @input="dateChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="任务地点">
           <el-select v-model="sysEquipDetction.detectionLocation" placeholder="请选择">
@@ -163,6 +173,7 @@
 
 <script>
 import api from "@/api/system/equipDetection";
+import {  pcTextArr } from "element-china-area-data";
 export default {
   data() {
     return {
@@ -179,12 +190,22 @@ export default {
       sysEquipDetction: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      pcTextArr,
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
+
+    // 日期选择器强制更新方法
+    dateChange(){
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
+    },
+
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
@@ -245,6 +266,7 @@ export default {
       this.dialogVisible = true;
       api.getEquipDetctionId(id).then((response) => {
         this.sysEquipDetction = response.data;
+        
       });
     },
     //添加或修改
@@ -287,11 +309,13 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysEquipDetction = {};
+      this.sysEquipDetction.startDate =  new Date();
+      this.sysEquipDetction.endDate =  new Date();
     },
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
