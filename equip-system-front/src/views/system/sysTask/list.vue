@@ -125,6 +125,7 @@
             v-model="sysTask.startDate"
             type="date"
             placeholder="选择日期"
+            value-format = "yyyy-MM-dd"
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
@@ -133,6 +134,7 @@
             v-model="sysTask.endDate"
             type="date"
             placeholder="选择日期"
+            value-format = "yyyy-MM-dd"
             @input="dateChange">
           </el-date-picker>
         </el-form-item>

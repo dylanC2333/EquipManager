@@ -130,6 +130,7 @@
             v-model="sysEquipStock.equipmentDate"
             type="date"
             placeholder="选择日期"
+            value-format = "yyyy-MM-dd"
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
