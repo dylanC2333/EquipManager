@@ -129,7 +129,7 @@
         <el-form-item label="管理编号"  prop = "equipmentCode">
           <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
-        <el-form-item label="任务单号"  prop = "taskCode">
+        <el-form-item label="任务单号" prop = "taskCode">
           <el-input v-model="sysEquipUse.taskCode" />
         </el-form-item>
         <el-form-item label="使用人工号" prop = "employeeUseCode">
@@ -458,6 +458,7 @@ export default {
         this.fetchData();
       });
     },
+    
     //添加
     saveEquipUse() {
       api.saveEquipUse(this.sysEquipUse).then((response) => {

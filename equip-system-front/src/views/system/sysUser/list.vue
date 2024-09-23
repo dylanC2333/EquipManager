@@ -76,20 +76,27 @@
 
         <!-- 添加、修改弹框 -->
         <el-dialog title="添加用户" :visible.sync="dialogVisible" width="40%" >
-      <el-form ref="dataForm" :model="sysUser" label-width="150px" size="small" style="padding-right: 40px;">
-        <el-form-item label="用户姓名">
+      <el-form 
+        ref="dataForm" 
+        :model="sysUser" 
+        label-width="150px" 
+        size="small" 
+        style="padding-right: 40px;"
+        :rules = "rules"
+      >
+        <el-form-item label="用户姓名" prop = "userName">
           <el-input v-model="sysUser.userName"/>
         </el-form-item>
-        <el-form-item label="用户编号">
+        <el-form-item label="用户编号" prop = "userCode">
           <el-input v-model="sysUser.userCode"/>
         </el-form-item>
         <el-form-item label="密码"   v-if="!sysUser.id" prop="password">
           <el-input v-model="sysUser.password"  type="password"/>
         </el-form-item>
-        <el-form-item label="用户详情">
+        <el-form-item label="用户详情" prop = "description">
           <el-input v-model="sysUser.description"/>
         </el-form-item>
-        <el-form-item label="电话号码">
+        <el-form-item label="电话号码" prop = "phone">
           <el-input v-model="sysUser.phone"/>
         </el-form-item>
       </el-form>
@@ -130,6 +137,7 @@ export default{
     data(){
             //定义数据模型
         return{
+            listLoading: false, // 数据是否正在加载
             list:[],//角色列表
             total:0,//总记录数
             page:1,//当前页
@@ -149,8 +157,26 @@ export default{
             allRoles:[], //所有角色列表
             userRoleIds:[], // 用户的角色ID的列表
             isIndeterminate: false,// 是否是不确定的
-            checkAll: false // 是否全选
-        }
+            checkAll: false, // 是否全选
+
+            rules:{// 表单校验规则
+              userName:[
+                { required : true , message : "必填" },
+              ],
+              userCode:[
+                { required : true , message : "必填" },
+              ],
+              password:[
+                { required : true , message : "必填" },
+              ],
+              description:[
+                { required : true , message : "必填" },
+              ],
+              phone:[
+                { required : true , message : "必填" },
+              ],
+            },
+        };
     },
     created(){
         this.fetchData()

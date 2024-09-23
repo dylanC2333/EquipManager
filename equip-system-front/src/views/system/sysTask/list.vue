@@ -116,11 +116,12 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="任务单号">
-          <el-input v-model="sysTask.taskCode" />
+        <el-form-item label="任务单号" prop = "taskCode">
+          <el-input v-model="sysTask.taskCode"/>
         </el-form-item>
-        <el-form-item label="任务开始日期">
+        <el-form-item label="任务开始日期" prop = "startDate">
           <el-date-picker
             v-model="sysTask.startDate"
             type="date"
@@ -129,7 +130,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务结束日期">
+        <el-form-item label="任务结束日期" prop = "endDate">
           <el-date-picker
             v-model="sysTask.endDate"
             type="date"
@@ -138,7 +139,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务地点（省份）">
+        <el-form-item label="任务地点（省份）" prop = "location">
           <el-select v-model="sysTask.location" placeholder="请选择">
           <el-option
             v-for="item in pcTextArr"
@@ -187,6 +188,21 @@ export default {
       createTimes: [],
       
       pcTextArr,//省市二级数据纯文字
+
+      rules:{// 表单校验规则
+        taskCode:[
+          { required : true , message : "必填" },
+        ],
+        startDate:[
+          { required : true , message : "必填" },
+        ],
+        endDate:[
+          { required : true , message : "必填" },
+        ],
+        location:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
@@ -258,11 +274,18 @@ export default {
 
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysTask.id) {
-        this.saveTask();
-      } else {
-        this.updateTask();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysTask.id) {
+            this.saveTask();
+          } else {
+            this.updateTask();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
 
     //修改方法

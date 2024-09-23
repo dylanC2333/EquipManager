@@ -76,19 +76,26 @@
 
     <!-- 添加、修改弹框 -->
     <el-dialog title="修改角色" :visible.sync="dialogVisible" width="40%" >
-      <el-form ref="dataForm" :model="sysRole" label-width="150px" size="small" style="padding-right: 40px;">
-        <el-form-item label="角色名称">
+      <el-form 
+        ref="dataForm" 
+        :model="sysRole" 
+        label-width="150px" 
+        size="small" 
+        style="padding-right: 40px;"
+        :rules = "rules"
+      >
+        <el-form-item label="角色名称" prop = "roleName">
           <el-input v-model="sysRole.roleName"/>
         </el-form-item>
-        <el-form-item label="角色编码">
+        <el-form-item label="角色编码" prop = "roleCode">
           <el-input v-model="sysRole.roleCode"/>
         </el-form-item>
-        <el-form-item label="角色描述">
+        <el-form-item label="角色描述"  prop = "description">
           <el-input v-model="sysRole.description"/>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editdialogVisible = false" size="small" icon="el-icon-refresh-right">取 消</el-button>
+        <el-button @click="dialogVisible = false" size="small" icon="el-icon-refresh-right">取 消</el-button>
         <el-button type="primary" icon="el-icon-check" @click="saveOrUpdate()" size="small">确 定</el-button>
       </span>
     </el-dialog>
@@ -105,6 +112,7 @@ export default{
     //定义初始值
     data() {
         return {
+            listLoading: false, // 数据是否正在加载
             list:[],//角色列表
             total:0,//总记录数
             page:1,//当前页
@@ -116,7 +124,16 @@ export default{
             dialogVisible:false,//修改弹出框
 
             sysRole:{},//封装添加表单数据。
-            multipleSelect:[]//批量删除选中的记录列表
+            multipleSelect:[],//批量删除选中的记录列表
+
+            rules:{// 表单校验规则
+              roleName:[
+                { required : true , message : "必填" },
+              ],
+              roleCode:[
+                { required : true , message : "必填" },
+              ],
+            },
         }
     },
     //页面渲染之前执行
@@ -190,10 +207,10 @@ export default{
         saveOrUpdate() {
           this.$refs.dataForm.validate((valid) =>{
             if(valid){
-              if (!this.sysEquipUse.id) {
-                this.saveEquipUse();
+              if (!this.sysRole.id) {
+                this.saveRole();
               } else {
-                this.updateEquipUse();
+                this.updateRole();
               }
             } else{
               this.$message.error('请完善表单相关信息！');
