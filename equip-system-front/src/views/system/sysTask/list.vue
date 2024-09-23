@@ -14,7 +14,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="操作时间">
               <el-date-picker
                 v-model="createTimes"
@@ -26,7 +26,7 @@
                 style="margin-right: 10px; width: 100%"
               />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -72,7 +72,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="taskCode" label="任务编号"  sortable="custom"/>
+      <el-table-column prop="taskCode" label="任务单号"  sortable="custom"/>
       <el-table-column prop="startDate" label="任务开始日期"  sortable="custom"/>
       <el-table-column prop="endDate" label="任务结束日期"  sortable="custom"/>
       <el-table-column prop="location" label="任务地点" />
@@ -306,7 +306,7 @@ export default {
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

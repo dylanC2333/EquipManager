@@ -1,8 +1,6 @@
 package com.equipment.model.system;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
@@ -53,6 +51,18 @@ public class SysEquipmentUse extends BaseEntity implements Serializable {
      * 维护保养情况
      */
     private String maintenanceStatus;
+
+    /**
+     * 设备名称，属性在数据库无对应字段
+     */
+    @TableField(exist = false)
+    private String equipmentName;
+
+    /**
+     * 使用人员姓名，属性在数据库无对应字段
+     */
+    @TableField(exist = false)
+    private String employeeuseName;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

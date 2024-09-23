@@ -5,7 +5,7 @@
     <div class="search-div">
       <el-form label-width="70px" size="small">
         <el-row>
-          <el-col :span="24">
+          <el-col :span="8">
             <el-form-item label="关键字">
               <el-input
                 style="width: 100%"
@@ -247,7 +247,7 @@ export default {
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

@@ -5,7 +5,7 @@
     <div class="search-div">
         <el-form label-width="70px" size="small">
           <el-row>
-            <el-col :span="24">
+            <el-col :span="8">
               <el-form-item label="关键字">
                 <el-input style="width: 100%" v-model="searchObj.keyword" placeholder="角色名称/角色编码/角色描述"></el-input>
               </el-form-item>
@@ -74,30 +74,11 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"/>
 
-    <!-- 添加弹框 -->
-    <el-dialog title="添加角色" :visible.sync="adddialogVisible" width="40%" >
+    <!-- 添加、修改弹框 -->
+    <el-dialog title="修改角色" :visible.sync="dialogVisible" width="40%" >
       <el-form ref="dataForm" :model="sysRole" label-width="150px" size="small" style="padding-right: 40px;">
         <el-form-item label="角色名称">
-          <el-input v-model="sysRole.keyword"/>
-        </el-form-item>
-        <el-form-item label="角色编码">
-          <el-input v-model="sysRole.roleCode"/>
-        </el-form-item>
-        <el-form-item label="角色描述">
-          <el-input v-model="sysRole.description"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="adddialogVisible = false" size="small" icon="el-icon-refresh-right">取 消</el-button>
-        <el-button type="primary" icon="el-icon-check" @click="saveRole()" size="small">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <!-- 修改弹框 -->
-    <el-dialog title="修改角色" :visible.sync="editdialogVisible" width="40%" >
-      <el-form ref="dataForm" :model="sysRole" label-width="150px" size="small" style="padding-right: 40px;">
-        <el-form-item label="角色名称">
-          <el-input v-model="sysRole.keyword"/>
+          <el-input v-model="sysRole.roleName"/>
         </el-form-item>
         <el-form-item label="角色编码">
           <el-input v-model="sysRole.roleCode"/>
@@ -108,7 +89,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editdialogVisible = false" size="small" icon="el-icon-refresh-right">取 消</el-button>
-        <el-button type="primary" icon="el-icon-check" @click="updateRole()" size="small">确 定</el-button>
+        <el-button type="primary" icon="el-icon-check" @click="saveOrUpdate()" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -132,8 +113,8 @@ export default{
             column:null,//排序字段
             sortorder:null,//升降序条件
 
-            adddialogVisible:false ,//添加弹出框
-            editdialogVisible:false,//修改弹出框
+            dialogVisible:false,//修改弹出框
+
             sysRole:{},//封装添加表单数据。
             multipleSelect:[]//批量删除选中的记录列表
         }
@@ -196,13 +177,31 @@ export default{
         // 修改-数据回显
         edit(id){
           // 弹出框
-          this.editdialogVisible = true
+          this.dialogVisible = true
           api.getRoleId(id).then(response =>{
             this.sysRole = response.data;
             console.log(response.data)
             console.log(response)
           });
         },
+
+        //添加或修改
+        //增加表单校验判断。
+        saveOrUpdate() {
+          this.$refs.dataForm.validate((valid) =>{
+            if(valid){
+              if (!this.sysEquipUse.id) {
+                this.saveEquipUse();
+              } else {
+                this.updateEquipUse();
+              }
+            } else{
+              this.$message.error('请完善表单相关信息！');
+              return false;
+            }
+          })
+        },
+
         //修改的方法
         updateRole() {
           console.log(this.sysRole);
@@ -214,7 +213,7 @@ export default{
                 message: '修改成功!'
               });
               //关闭弹窗
-              this.editdialogVisible = false
+              this.dialogVisible = false
               //刷新页面
               this.fetchData()
             })
@@ -222,9 +221,10 @@ export default{
 
         //点击添加，弹出框
         add(){
-          this.adddialogVisible = true
+          this.dialogVisible = true
           this.sysRole = {} //保证弹出以后，表为空
         },
+
         //添加方法
         saveRole(){
           api.saveRole(this.sysRole)
@@ -235,7 +235,7 @@ export default{
                 message: '添加成功!'
               });
               //关闭弹窗
-              this.adddialogVisible = false
+              this.dialogVisible = false
               //刷新页面
               this.fetchData()
             })
