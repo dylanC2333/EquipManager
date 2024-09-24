@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.SysEquipmentStockMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.SysEquipmentStock">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="equipmentDate" column="equipment_date" jdbcType="DATE"/>
+            <result property="userCode" column="user_code" jdbcType="VARCHAR"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="CHAR"/>
+            <result property="warehouseManagerCode" column="warehouse_manager_code" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="isTransfer" column="is_transfer" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,equipment_code,equipment_date,
+        user_code,task_code,remarks,
+        type,warehouse_manager_code,create_time,
+        update_time,is_deleted,is_transfer
+    </sql>
+
+
+    <resultMap id="SysEquipmentFinderMap" type="com.equipment.model.system.SysEquipment" autoMapping="true"></resultMap>
+
+    <sql id="equipmentFindercolumns">
+        e.equipment_code
+    </sql>
+
+    <select id="idleEquipmentFinder" resultMap="SysEquipmentFinderMap">
+        select <include refid="equipmentFindercolumns" />
+        from sys_equipment e
+        LEFT JOIN (
+        -- 获取设备在起始日期之前的最后一条出入库记录
+        SELECT s1.equipment_code, s1.type, s1.equipment_date, t.location
+        FROM sys_equipment_stock s1
+        JOIN sys_task t ON s1.task_code = t.task_code
+        <where>
+            <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
+                and s1.equipment_date &lt;= #{equipFinderVo.startTime}
+            </if>
+        </where>
+        ) AS last_stock ON e.equipment_code = last_stock.equipment_code
+        <where>
+            <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
+                and e.equipment_name = #{equipFinderVo.keyword }
+            </if>
+            AND (
+            -- 条件1：在库
+            last_stock.type = '入库'
+            OR last_stock.equipment_code IS NULL
+            -- 条件2：出库且满足条件
+            OR (
+            last_stock.type = '出库'
+            AND last_stock.location  LIKE CONCAT('%', #{equipFinderVo.location}, '%')
+            AND NOT EXISTS (
+            SELECT 1
+            FROM sys_equipment_use u
+            WHERE u.equipment_code = e.equipment_code
+            AND u.equipment_use_date BETWEEN last_stock.equipment_date  AND #{equipFinderVo.startTime}
+            )
+            )
+            )
+        </where>
+
+    </select>
+
+</mapper>

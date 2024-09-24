@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.SysUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.SysUser">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userCode" column="user_code" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_code,password,
+        user_name,phone,description,
+        status,create_time,update_time,
+        is_deleted
+    </sql>
+
+    <select id="getUserListByRoleName" resultMap="BaseResultMap">
+        select * from sys_user u
+                          inner join sys_user_role ur on ur.user_id = u.id
+                          inner join sys_role r on r.id = ur.role_id
+        where
+            r.role_name = #{roleName}
+          and u.is_deleted = 0
+          and ur.is_deleted = 0
+          and r.is_deleted = 0
+        order by convert(u.user_name using gbk) asc;
+    </select>
+
+    <resultMap id="SysDetectionMap" type="com.equipment.model.system.SysUser"  autoMapping="true"></resultMap>
+
+    <select id="sysDetectionEmployeesMap" resultMap="SysDetectionMap" >
+        select u.user_name
+        from sys_user u
+        INNER JOIN sys_user_role ur ON u.id = ur.user_id AND ur.role_id = 5
+        LEFT JOIN (
+        SELECT DISTINCT d.employee_code
+        FROM sys_detection d
+        <where>
+            <if test="detVo.endTime != null and detVo.endTime != ''">
+                and (d.start_date >= #{detVo.endTime} )
+            </if>
+            <if test="detVo.startTime != null and detVo.startTime != ''">
+                and (d.end_date &lt;= #{detVo.startTime})
+            </if>
+        </where>
+        ) AS used_employees ON u.user_code = used_employees.employee_code
+        LEFT JOIN (
+        SELECT DISTINCT d2.employee_code
+        FROM sys_detection d2
+        <where>
+            <if test="detVo.endTime != null and detVo.endTime != ''">
+                and (d2.start_date &lt;= #{detVo.endTime} )
+            </if>
+            <if test="detVo.startTime != null and detVo.startTime != ''">
+                and (d2.end_date >= #{detVo.startTime})
+            </if>
+            <if test="detVo.keyword != null and detVo.keyword != ''">
+                and (d2.detection_location LIKE	CONCAT('%',#{detVo.keyword},'%'))
+            </if>
+        </where>
+        ) AS used_employees2 ON u.user_code = used_employees2.employee_code
+        <where>
+            used_employees.employee_code IS NOT NULL OR used_employees2.employee_code IS NOT NULL
+        </where>
+    </select>
+
+
+
+</mapper>

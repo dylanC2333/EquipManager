@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.SysEquipmentUseMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.system.SysEquipmentUse">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="equipmentUseDate" column="equipment_use_date" jdbcType="DATE"/>
+            <result property="employeeUseCode" column="employee_use_code" jdbcType="VARCHAR"/>
+            <result property="location" column="location" jdbcType="VARCHAR"/>
+            <result property="preUseEquipmentStatus" column="pre_use_equipment_status" jdbcType="VARCHAR"/>
+            <result property="maintenanceStatus" column="maintenance_status" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,equipment_code,task_code,
+        equipment_use_date,employee_use_code,location,
+        pre_use_equipment_status,maintenance_status,create_time,
+        update_time,is_deleted
+    </sql>
+
+    <resultMap id="sysTaskDeviceMap" type="com.equipment.model.system.SysEquipmentUse" ></resultMap>
+
+    <select id="taskDevice" resultMap="sysTaskDeviceMap">
+        SELECT e.equipment_name, u.equipment_code,u.equipment_use_date
+        FROM sys_equipment_use u
+        JOIN sys_equipment e ON u.equipment_code = e.equipment_code
+        <where>
+            <if test="taskDeviceVo.keyword != null and taskDeviceVo.keyword != ''">
+                and (u.task_code = #{taskDeviceVo.keyword})
+            </if>
+        </where>
+    </select>
+
+</mapper>
