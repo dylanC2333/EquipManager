@@ -38,4 +38,23 @@
         </where>
     </select>
 
+    <resultMap id="sysEquipUseDayMap" type="com.equipment.model.system.SysEquipmentUse"></resultMap>
+
+    <select id="equipmentUsageDays" resultMap="sysEquipUseDayMap">
+        SELECT u.task_code, u.equipment_code, u.equipment_use_date
+        FROM sys_equipment_use u
+        <where>
+            <if test="equipUseDayVo.keyword != null and equipUseDayVo.keyword != ''">
+                and (u.equipment_code = #{equipUseDayVo.keyword})
+            </if>
+            <if test="equipUseDayVo.startTime != null and equipUseDayVo.startTime != ''">
+                and (u.equipment_use_date >= #{equipUseDayVo.startTime})
+            </if>
+            <if test="equipUseDayVo.endTime != null and equipUseDayVo.endTime != ''">
+                and (u.equipment_use_date &lt;=  #{equipUseDayVo.endTime})
+            </if>
+        </where>
+    </select>
+
+
 </mapper>

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysEquipmentUse;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.equipment.model.vo.SysEquipmentUsageDaysQueryVo;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
 
 /**
@@ -14,4 +15,6 @@ import com.equipment.model.vo.SysTaskDeviceQueryVo;
 public interface SysEquipmentUseService extends IService<SysEquipmentUse> {
 
     IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+
+    IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo);
 }

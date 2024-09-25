@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.system.SysUser;
+import com.equipment.model.vo.SysEquipmentUsageDaysQueryVo;
 import com.equipment.model.vo.SysEquipmentUseQueryVo;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
@@ -151,6 +152,26 @@ public class SysEquipmentUseController {
         Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
         //调用service方法
         IPage<SysEquipmentUse> pageModel = sysEquipmentUseService.taskDevice(pageParam,sysTaskDeviceQueryVo);
+        //返回
+        return  Result.ok(pageModel);
+    }
+
+    //9、 该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
+    @ApiOperation("该设备在日期范围内的所有使用记录和总天数统计")
+    @GetMapping("equipmentUsageDays/{page}/{limit}")
+    public Result<IPage<SysEquipmentUse>> equipmentUsageDays(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable int page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable int limit,
+
+            @ApiParam(name = "sysEquipmentUsageDaysQueryVo", value = "查询对象", required = false)
+            SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo){
+        //创建page对象
+        Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
+        //调用service方法
+        IPage<SysEquipmentUse> pageModel = sysEquipmentUseService.equipmentUsageDays(pageParam,sysEquipmentUsageDaysQueryVo);
         //返回
         return  Result.ok(pageModel);
     }

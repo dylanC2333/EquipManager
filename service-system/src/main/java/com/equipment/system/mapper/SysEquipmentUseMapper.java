@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysEquipmentUse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.equipment.model.vo.SysEquipmentUsageDaysQueryVo;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,6 +17,8 @@ import org.apache.ibatis.annotations.Param;
 public interface SysEquipmentUseMapper extends BaseMapper<SysEquipmentUse> {
 
     IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, @Param("taskDeviceVo")SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+
+    IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, @Param("equipUseDayVo")SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo);
 }
 
 

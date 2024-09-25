@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.equipment.model.system.SysEquipmentUse;
+import com.equipment.model.vo.SysEquipmentUsageDaysQueryVo;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import com.equipment.system.mapper.SysEquipmentUseMapper;
 import com.equipment.system.service.SysEquipmentUseService;
@@ -21,6 +22,11 @@ public class SysEquipmentUseServiceImpl extends ServiceImpl<SysEquipmentUseMappe
     @Override
     public IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
         return baseMapper.taskDevice(pageParam,sysTaskDeviceQueryVo);
+    }
+
+    @Override
+    public IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo) {
+        return baseMapper.equipmentUsageDays(pageParam,sysEquipmentUsageDaysQueryVo);
     }
 }
 
