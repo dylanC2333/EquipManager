@@ -264,7 +264,7 @@ export default {
       this.loadUserQuery();
   },
   methods: {
-    
+
     //输入建议主方法
     querySearch(queryString, cb){
       var userNameList = this.userNameList;
@@ -272,7 +272,7 @@ export default {
       console.log(results);
       cb(results);
     },
-    
+
     //输入建议关键词筛选方法
     createFilter(queryString){
       const regExp = new RegExp(queryString,'i');
@@ -388,21 +388,21 @@ export default {
       });
     },
 
-    
+
     // 地址数据回显格式分割转换
     locationSplit(address){
         // console.log("locationSplit in")
         // 针对不同的情况进行匹配
         let province, city
         // 判断是否是直辖市（例如，北京市，上海市等）
-        if (address.includes("北京市") || address.includes("上海市") || 
+        if (address.includes("北京市") || address.includes("上海市") ||
             address.includes("天津市") || address.includes("重庆市")) {
             let matchArray = address.match(/(.*?市)(.*)/);
             if (matchArray) {
                 province = matchArray[1];  // 北京市、上海市等
                 city = matchArray[2];      // 直辖市下属的区县
             }
-        } 
+        }
         // 判断是否是自治区（如“广西壮族自治区南宁市”）
         else if (address.includes("自治区")) {
             let matchArray = address.match(/(.*?自治区)(.*)/);
@@ -410,7 +410,7 @@ export default {
                 province = matchArray[1];  // 广西壮族自治区等
                 city = matchArray[2];      // 南宁市
             }
-        } 
+        }
         // 普通省份处理
         else {
             let matchArray = address.match(/(.*?省)(.*)/);
@@ -442,8 +442,8 @@ export default {
           return false;
         }
       })
+
     },
-    
     //修改方法
     updateEquipUse() {
       api.update(this.sysEquipUse).then((response) => {
@@ -458,7 +458,6 @@ export default {
         this.fetchData();
       });
     },
-    
     //添加
     saveEquipUse() {
       api.saveEquipUse(this.sysEquipUse).then((response) => {
@@ -481,7 +480,7 @@ export default {
       this.selectedLocations = [];
       this.sysEquipUse.equipmentUseDate =  new Date();
     },
-    
+
      // 根据id删除数据
      removeDataById(id) {
       // debugger
@@ -512,7 +511,7 @@ export default {
       this.sortorder = 'descending';
       this.fetchData();
     },
-    
+
     //条件分页查询
     fetchData(pageNum = 1) {
       this.page = pageNum;
