@@ -58,12 +58,6 @@ public class SysEquipmentUse extends BaseEntity implements Serializable {
      * 设备名称，属性在数据库无对应字段
      */
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
-
-    /**
-     * 设备名称
-     */
     private String equipmentName;
 
     /**
