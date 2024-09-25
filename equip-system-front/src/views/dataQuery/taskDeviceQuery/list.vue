@@ -28,7 +28,7 @@
           </el-row>
         </el-form>
       </div>
-  
+
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -42,12 +42,12 @@
             {{ (page - 1) * limit + scope.$index + 1 }}
           </template>
         </el-table-column>
-  
+
         <el-table-column prop="equipmentName" label="设备名称" />
         <el-table-column prop="equipmentCode" label="设备编码" />
         <el-table-column prop="equipmentUseDate" label="设备使用时间" />
       </el-table>
-  
+
       <!-- 分页组件 -->
       <el-pagination
         :current-page="page"
@@ -97,4 +97,3 @@
     },
   };
   </script>
-  

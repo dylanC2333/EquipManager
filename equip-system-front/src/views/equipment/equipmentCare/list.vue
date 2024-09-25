@@ -201,7 +201,7 @@ export default {
       this.limit = currentLimit;
       this.fetchData();
       //console.log(this.limit);
-    },      
+    },
 
     // 表格排序
     onSortChange({prop,order}){
@@ -288,7 +288,7 @@ export default {
         this.fetchData();
       });
     },
-    
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;

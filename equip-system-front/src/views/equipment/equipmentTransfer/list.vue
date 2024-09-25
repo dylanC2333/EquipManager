@@ -297,14 +297,14 @@ export default {
         // 针对不同的情况进行匹配
         let province, city
         // 判断是否是直辖市（例如，北京市，上海市等）
-        if (address.includes("北京市") || address.includes("上海市") || 
+        if (address.includes("北京市") || address.includes("上海市") ||
             address.includes("天津市") || address.includes("重庆市")) {
             let matchArray = address.match(/(.*?市)(.*)/);
             if (matchArray) {
                 province = matchArray[0];  // 北京市、上海市等
                 city = matchArray[1];      // 直辖市下属的区县
             }
-        } 
+        }
         // 判断是否是自治区（如“广西壮族自治区南宁市”）
         else if (address.includes("自治区")) {
             let matchArray = address.match(/(.*?自治区)(.*)/);
@@ -312,7 +312,7 @@ export default {
                 province = matchArray[1];  // 广西壮族自治区等
                 city = matchArray[2];      // 南宁市
             }
-        } 
+        }
         // 普通省份处理
         else {
             let matchArray = address.match(/(.*?省)(.*)/);
@@ -328,7 +328,7 @@ export default {
           return [province, city];
           // console.log(this.selectedLocations);
         }
-    },    
+    },
 
     //添加或修改
     saveOrUpdate() {

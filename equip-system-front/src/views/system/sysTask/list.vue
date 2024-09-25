@@ -72,7 +72,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="taskCode" label="任务编号"  sortable="custom"/>
+      <el-table-column prop="taskCode" label="任务单号"  sortable="custom"/>
       <el-table-column prop="startDate" label="任务开始日期"  sortable="custom"/>
       <el-table-column prop="endDate" label="任务结束日期"  sortable="custom"/>
       <el-table-column prop="location" label="任务地点" />
@@ -116,11 +116,12 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="任务单号">
-          <el-input v-model="sysTask.taskCode" />
+        <el-form-item label="任务单号" prop = "taskCode">
+          <el-input v-model="sysTask.taskCode"/>
         </el-form-item>
-        <el-form-item label="任务开始日期">
+        <el-form-item label="任务开始日期" prop = "startDate">
           <el-date-picker
             v-model="sysTask.startDate"
             type="date"
@@ -129,7 +130,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务结束日期">
+        <el-form-item label="任务结束日期" prop = "endDate">
           <el-date-picker
             v-model="sysTask.endDate"
             type="date"
@@ -138,7 +139,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务地点（省份）">
+        <el-form-item label="任务地点（省份）" prop = "location">
           <el-select v-model="sysTask.location" placeholder="请选择">
           <el-option
             v-for="item in pcTextArr"
@@ -185,8 +186,23 @@ export default {
       sysTask: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
-      
+
       pcTextArr,//省市二级数据纯文字
+
+      rules:{// 表单校验规则
+        taskCode:[
+          { required : true , message : "必填" },
+        ],
+        startDate:[
+          { required : true , message : "必填" },
+        ],
+        endDate:[
+          { required : true , message : "必填" },
+        ],
+        location:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
@@ -206,7 +222,7 @@ export default {
       console.log(selection);
       this.multipleSelection = selection;
     },
-    
+
     // 每页显示记录数改变时调用
     handleSizeChange(currentLimit){
       this.limit = currentLimit;
@@ -258,11 +274,18 @@ export default {
 
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysTask.id) {
-        this.saveTask();
-      } else {
-        this.updateTask();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysTask.id) {
+            this.saveTask();
+          } else {
+            this.updateTask();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
 
     //修改方法
@@ -302,11 +325,11 @@ export default {
       this.sysTask.startDate =  new Date();
       this.sysTask.endDate = new Date();
     },
-    
+
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -336,7 +359,7 @@ export default {
     // 重置表单
     resetData() {
       console.log("重置查询表单");
-      this.searchObj = {};      
+      this.searchObj = {};
       this.column = 'createTime';
       this.sortorder = 'descending';
       this.fetchData();

@@ -101,11 +101,12 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="设备名称">
-          <el-input v-model="sysEquip.equipmentName" />
+        <el-form-item label="设备名称"  prop = "equipmentName">
+          <el-input v-model="sysEquip.equipmentName"/>
         </el-form-item>
-        <el-form-item label="设备编码">
+        <el-form-item label="设备编码" prop = "equipmentCode">
           <el-input v-model="sysEquip.equipmentCode" />
         </el-form-item>
       </el-form>
@@ -144,13 +145,22 @@ export default {
       dialogVisible: false, //弹框
       sysEquip: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
-      
+
+      rules:{// 表单校验规则
+        equipmentName:[
+          { required : true , message : "必填" },
+        ],
+        equipmentCode:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
+
     // 每页显示记录数改变时调用
       handleSizeChange(currentLimit){
       this.limit = currentLimit;
@@ -163,6 +173,7 @@ export default {
       console.log(selection);
       this.multipleSelection = selection;
     },
+
     // 批量删除
     batchRemove() {
       if (this.multipleSelection.length === 0) {
@@ -196,6 +207,7 @@ export default {
         });
       });
     },
+
     //修改-数据回显
     edit(id) {
       this.dialogVisible = true;
@@ -203,14 +215,23 @@ export default {
         this.sysEquip = response.data;
       });
     },
+
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquip.id) {
-        this.saveEquip();
-      } else {
-        this.updateEquip();
-      }
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquip.id) {
+            this.saveEquip();
+          } else {
+            this.updateEquip();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
+
     //修改方法
     updateEquip() {
       api.update(this.sysEquip).then((response) => {
@@ -225,6 +246,7 @@ export default {
         this.fetchData();
       });
     },
+
     //添加
     saveEquip() {
       api.saveEquip(this.sysEquip).then((response) => {
@@ -247,7 +269,7 @@ export default {
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

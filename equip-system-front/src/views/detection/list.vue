@@ -268,7 +268,7 @@ export default {
       this.dialogVisible = true;
       api.getEquipDetctionId(id).then((response) => {
         this.sysEquipDetction = response.data;
-        
+
       });
     },
     //添加或修改

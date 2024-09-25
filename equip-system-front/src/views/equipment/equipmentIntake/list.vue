@@ -14,7 +14,6 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
             <el-form-item label="操作时间">
               <el-date-picker
                 v-model="createTimes"
@@ -26,7 +25,6 @@
                 style="margin-right: 10px; width: 100%"
               />
             </el-form-item>
-          </el-col>
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -72,12 +70,14 @@
         </template>
       </el-table-column>
       <el-table-column prop="type" label="出入库类型" />
-      <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
-      <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
-      <el-table-column prop="equipmentDate" label="设备入库日期" sortable="custom"/>
-      <el-table-column prop="userName" label="入库人" />
+      <!-- <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/> -->
+      <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
+      <el-table-column prop="equipmentDate" label="设备出库日期" sortable="custom"/>
+      <!-- <el-table-column prop="userName" label="出库人" /> -->
+      <el-table-column prop="userCode" label="出库人工号" />
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
-      <el-table-column prop="warehouseManagerName" label="仓库管理员" />
+      <!-- <el-table-column prop="warehouseManagerName" label="仓库管理员" /> -->
+      <el-table-column prop="warehouseManagerCode" label="仓库管理员工号" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -119,13 +119,13 @@
         size="small"
         style="padding-right: 40px"
       >
-        <el-form-item label="设备名称">
+        <!-- <el-form-item label="设备名称">
           <el-input v-model="sysEquipStock.equipmentName" />
-        </el-form-item>
-        <el-form-item label="管理编号">
+        </el-form-item> -->
+        <el-form-item label="设备编号">
           <el-input v-model="sysEquipStock.equipmentCode" />
         </el-form-item>
-        <el-form-item label="设备入库日期">
+        <el-form-item label="设备出库日期">
           <el-date-picker
             v-model="sysEquipStock.equipmentDate"
             type="date"
@@ -134,14 +134,20 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="入库人">
+        <!-- <el-form-item label="出库人">
           <el-input v-model="sysEquipStock.userName" />
+        </el-form-item> -->
+        <el-form-item label="出库人工号">
+          <el-input v-model="sysEquipStock.userCode" />
         </el-form-item>
         <el-form-item label="任务单号">
           <el-input v-model="sysEquipStock.taskCode" />
         </el-form-item>
-        <el-form-item label="仓库管理员">
+        <!-- <el-form-item label="仓库管理员">
           <el-input v-model="sysEquipStock.warehouseManagerName" />
+        </el-form-item> -->
+        <el-form-item label="仓库管理员工号">
+          <el-input v-model="sysEquipStock.warehouseManagerCode" />
         </el-form-item>
         <el-form-item label="出入库类型">
           <el-radio disabled v-model="sysEquipStock.type" label="出库">出库</el-radio>
@@ -309,7 +315,7 @@ export default {
      // 根据id删除数据
      removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -335,7 +341,7 @@ export default {
       this.sortorder = 'descending';
       this.fetchData();
     },
-    
+
     //条件分页查询
     fetchData(pageNum = 1) {
       this.page = pageNum;
