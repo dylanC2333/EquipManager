@@ -13,7 +13,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="操作时间">
               <el-date-picker
                 v-model="createTimes"
@@ -25,7 +25,7 @@
                 style="margin-right: 10px; width: 100%"
               />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -301,8 +301,8 @@ export default {
             address.includes("天津市") || address.includes("重庆市")) {
             let matchArray = address.match(/(.*?市)(.*)/);
             if (matchArray) {
-                province = matchArray[0];  // 北京市、上海市等
-                city = matchArray[1];      // 直辖市下属的区县
+                province = matchArray[1];  // 北京市、上海市等
+                city = matchArray[2];      // 直辖市下属的区县
             }
         } 
         // 判断是否是自治区（如“广西壮族自治区南宁市”）
@@ -379,7 +379,7 @@ export default {
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

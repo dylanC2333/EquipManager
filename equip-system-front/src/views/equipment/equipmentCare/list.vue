@@ -13,7 +13,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="操作时间">
               <el-date-picker
                 v-model="createTimes"
@@ -25,7 +25,7 @@
                 style="margin-right: 10px; width: 100%"
               />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -133,7 +133,8 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="设备使用前状态">
-          <el-input v-model="sysEquipMain.beforeUseStatus" />
+          <el-radio v-model="sysEquipMain.beforeUseStatus" label="正常">正常</el-radio>
+          <el-radio v-model="sysEquipMain.beforeUseStatus" label="异常">异常</el-radio>
         </el-form-item>
         <el-form-item label="设备维护保养状态">
           <el-input v-model="sysEquipMain.maintenanceStatus" />
@@ -201,7 +202,7 @@ export default {
       this.limit = currentLimit;
       this.fetchData();
       //console.log(this.limit);
-    },      
+    },
 
     // 表格排序
     onSortChange({prop,order}){
@@ -288,7 +289,7 @@ export default {
         this.fetchData();
       });
     },
-    
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
@@ -299,7 +300,7 @@ export default {
     // 根据id删除数据
     removeDataById(id) {
       // debugger
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

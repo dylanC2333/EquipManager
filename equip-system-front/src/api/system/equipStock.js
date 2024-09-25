@@ -40,7 +40,7 @@ export default{
           data: equipStock
         })
     },
-    
+
     // 5 根据id查询
     getEquipStockId(id) {
         return request({
@@ -74,8 +74,8 @@ export default{
             params:searchObj
         })
     }
-    
-    
-  
-    
+
+
+
+
 }

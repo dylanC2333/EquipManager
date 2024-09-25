@@ -10,11 +10,11 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="设备编号/管理编号/任务编号"
+                placeholder="设备编号/操作人工号/任务编号"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="操作时间">
               <el-date-picker
                 v-model="createTimes"
@@ -26,7 +26,7 @@
                 style="margin-right: 10px; width: 100%"
               />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -72,11 +72,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
+      <!-- <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/> -->
       <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="equipmentUseDate" label="使用日期" sortable="custom"/>
-      <el-table-column prop="employeeUseName" label="操作人"/>
+      <el-table-column prop="employeeUseCode" label="使用人工号"/>
+      <!-- <el-table-column prop="employeeUseName" label="操作人"/> -->
       <el-table-column prop="location" label="地点" />
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
       <el-table-column prop="maintenanceStatus" label="维护保养情况" />
@@ -122,17 +123,19 @@
         style="padding-right: 40px"
         :rules = "rules"
       >
-        <el-form-item label="设备名称"  prop = "equipmentName">
+        <!-- <el-form-item label="设备名称"  prop = "equipmentName">
           <el-input v-model="sysEquipUse.equipmentName" />
+        </el-form-item> -->
+        <el-form-item label="管理编号"  prop = "equipmentCode">
+          <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
-        <el-form-item label="管理编码"  prop = "equipmentId">
-          <el-input v-model="sysEquipUse.equipmentId" />
+        <el-form-item label="任务单号" prop = "taskCode">
+          <el-input v-model="sysEquipUse.taskCode" />
         </el-form-item>
-        <el-form-item label="任务单号"  prop = "taskId">
-          <el-input v-model="sysEquipUse.taskId" />
+        <el-form-item label="使用人工号" prop = "employeeUseCode">
+          <el-input v-model="sysEquipUse.employeeUseCode" />
         </el-form-item>
-        <el-form-item label="操作人"  prop = "employeeUseName">
-          <!-- <el-input v-model="sysEquipUse.employeeUseName" /> -->
+        <!-- <el-form-item label="操作人"  prop = "employeeUseName">
           <el-autocomplete
             class="inline-input"
             v-model="sysEquipUse.employeeUseName"
@@ -140,7 +143,7 @@
             placeholder="请输入内容"
             @select="handleSubmit"
           ></el-autocomplete>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="使用日期"  prop = "equipmentUseDate">
           <el-date-picker
             v-model="sysEquipUse.equipmentUseDate"
@@ -159,7 +162,8 @@
           </el-cascader>
         </el-form-item>
         <el-form-item label="设备使用前情况"  prop = "preUseEquipmentStatus">
-          <el-input v-model="sysEquipUse.preUseEquipmentStatus" />
+          <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="正常">正常</el-radio>
+          <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="异常">异常</el-radio>
         </el-form-item>
         <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
           <el-input v-model="sysEquipUse.maintenanceStatus" />
@@ -223,13 +227,16 @@ export default {
       userIdList:[],
 
       rules:{// 表单校验规则
+        employeeUseCode:[
+          { required : true , message : "必填" },
+        ],
         equipmentName: [
           { required : true , message : "必填" },
         ],
-        equipmentId : [
+        equipmentCode : [
           { required : true , message : "必填" },
         ],
-        taskId :[
+        taskCode :[
           { required : true , message : "必填" },
         ],
         employeeUseName : [
@@ -392,8 +399,8 @@ export default {
             address.includes("天津市") || address.includes("重庆市")) {
             let matchArray = address.match(/(.*?市)(.*)/);
             if (matchArray) {
-                province = matchArray[0];  // 北京市、上海市等
-                city = matchArray[1];      // 直辖市下属的区县
+                province = matchArray[1];  // 北京市、上海市等
+                city = matchArray[2];      // 直辖市下属的区县
             }
         } 
         // 判断是否是自治区（如“广西壮族自治区南宁市”）
@@ -417,11 +424,11 @@ export default {
           // console.log(province);
           // console.log(city);
           return [province, city];
-          // console.log(this.selectedLocations);
         }
     },
 
     //添加或修改
+    //增加表单校验判断。
     saveOrUpdate() {
       this.$refs.dataForm.validate((valid) =>{
         if(valid){
@@ -435,8 +442,8 @@ export default {
           return false;
         }
       })
-      
     },
+    
     //修改方法
     updateEquipUse() {
       api.update(this.sysEquipUse).then((response) => {
@@ -451,6 +458,7 @@ export default {
         this.fetchData();
       });
     },
+    
     //添加
     saveEquipUse() {
       api.saveEquipUse(this.sysEquipUse).then((response) => {
@@ -494,6 +502,7 @@ export default {
         });
       });
     },
+
     // 重置表单
     resetData() {
       console.log("重置查询表单");
