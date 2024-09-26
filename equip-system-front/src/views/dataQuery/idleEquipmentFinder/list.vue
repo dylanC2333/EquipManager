@@ -15,11 +15,14 @@
           </el-col>
           <el-col :span="7">
             <el-form-item label="地点">
-              <el-input
-                style="width: 95%"
-                v-model="searchObj.location"
-                placeholder="地点"
-              ></el-input>
+              <el-select v-model="sysEquipFinder.location" placeholder="请选择">
+                <el-option
+                  v-for="item in pcTextArr"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="7">
@@ -66,6 +69,7 @@
       </el-table-column>
 
       <el-table-column prop="equipmentCode" label="设备编码" />
+      <el-table-column prop="equipmentName" label="设备名称" />
     </el-table>
 
     <!-- 分页组件 -->
@@ -81,6 +85,14 @@
 </template>
 <script>
 import api from "@/api/system/equipStock";
+import {
+  provinceAndCityData,
+  pcTextArr,
+  regionData,
+  pcaTextArr,
+  codeToText,
+  TextToCode,
+} from "element-china-area-data";
 export default {
   data() {
     return {
@@ -95,6 +107,8 @@ export default {
 
       dialogVisible: false,
       sysEquipFinder: [],
+      pcTextArr, //省市二级地址，纯汉字
+      selectedLocations: [], // 选中的省市地址数据
 
       dialogRoleVisible: false,
     };

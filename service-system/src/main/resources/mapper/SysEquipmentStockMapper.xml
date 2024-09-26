@@ -30,7 +30,7 @@
     <resultMap id="SysEquipmentFinderMap" type="com.equipment.model.system.SysEquipment" autoMapping="true"></resultMap>
 
     <sql id="equipmentFindercolumns">
-        e.equipment_code
+        e.equipment_code,e.equipment_name
     </sql>
 
     <select id="idleEquipmentFinder" resultMap="SysEquipmentFinderMap">
@@ -49,7 +49,7 @@
         ) AS last_stock ON e.equipment_code = last_stock.equipment_code
         <where>
             <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
-                and e.equipment_name = #{equipFinderVo.keyword }
+                and e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
             </if>
             AND (
             -- 条件1：在库
