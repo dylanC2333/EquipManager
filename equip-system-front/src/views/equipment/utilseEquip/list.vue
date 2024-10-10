@@ -251,9 +251,6 @@ export default {
         preUseEquipmentStatus : [
           { required : true , message : "必填" },
         ],
-        maintenanceStatus : [
-          { required : true , message : "必填" },
-        ]
       },
     };
   },
