@@ -34,27 +34,16 @@ public class SysEquipmentStockController {
     @Autowired
     private SysEquipmentStockService sysEquipmentStockService;
 
-    //1 查询所有入库记录
-    @ApiOperation("查询所有入库记录接口")
-    @GetMapping("findAllIn")
-    public Result<List<SysEquipmentStock>> findAllIn(){
-        LambdaQueryWrapper<SysEquipmentStock> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysEquipmentStock::getType, "入库");
-        List<SysEquipmentStock> list =  sysEquipmentStockService.list(wrapper);
+
+    //1 查询所有出入库记录
+    @ApiOperation("查询所有出入库记录接口")
+    @GetMapping("findAll")
+    public Result<List<SysEquipmentStock>> findAll(){
+        List<SysEquipmentStock> list =  sysEquipmentStockService.list();
         return Result.ok(list);
     }
 
-    //2 查询所有出库记录
-    @ApiOperation("查询所有出库记录接口")
-    @GetMapping("findAllOut")
-    public Result<List<SysEquipmentStock>> findAllOut(){
-        LambdaQueryWrapper<SysEquipmentStock> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysEquipmentStock::getType, "出库");
-        List<SysEquipmentStock> list =  sysEquipmentStockService.list(wrapper);
-        return Result.ok(list);
-    }
-
-    //3 删除记录接口
+    //2 删除记录接口
     @ApiOperation("根据id删除接口")
     @DeleteMapping("remove/{id}")
     public Result<Void> removeEquipStock(@PathVariable Long id){
@@ -67,11 +56,11 @@ public class SysEquipmentStockController {
         }
     }
 
-    //4 条件分页查询入库记录接口
+    //3 条件分页查询出入库记录接口
     //page表示当前页 limit每页记录
-    @ApiOperation("入库记录条件排序分页查询")
-    @GetMapping("in/{page}/{limit}/{column}/{order}")
-    public Result<IPage<SysEquipmentStock>> findPageQueryEquipIn(
+    @ApiOperation("出入库记录条件排序分页查询")
+    @GetMapping("{page}/{limit}/{column}/{order}")
+    public Result<IPage<SysEquipmentStock>> findPageQueryEquip(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
@@ -92,62 +81,13 @@ public class SysEquipmentStockController {
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type","入库");
-        if(sysEquipmentStockQueryVo.getKeyword() !=null){
-            queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
-            );
-        }
-        //构造排序条件
-        if (column != null && order != null) {
-            String field = NamingUtils.camelToUnderline(column);
-            if (order.equals("ascending")) {
-                queryWrapper.orderByAsc(field);
-            } else {
-                queryWrapper.orderByDesc(field);
-            }
-        }
-        //调用service方法
-        IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.page(pageParam,queryWrapper);
-        //返回
-        return  Result.ok(pageModel);
-    }
-
-    //5 条件分页查询出库记录接口
-    //page表示当前页 limit每页记录
-    @ApiOperation("出库记录条件排序分页查询")
-    @GetMapping("out/{page}/{limit}/{column}/{order}")
-    public Result<IPage<SysEquipmentStock>> findPageQueryEquipOut(
-
-            @ApiParam(name = "page", value = "当前页码", required = true)
-            @PathVariable Long page,
-
-            @ApiParam(name = "limit", value = "每页记录数量", required = true)
-            @PathVariable Long limit,
-
-            @ApiParam(name = "SysEquipmentStockQueryVo", value = "查询对象", required = false)
-            SysEquipmentStockQueryVo sysEquipmentStockQueryVo,
-
-            @ApiParam(name = "column", value = "字段", required = false)
-            @PathVariable String column,
-
-            @ApiParam(name = "order", value = "排序方式{ascending,descending}", required = false)
-            @PathVariable String order
-    ){
-        //创建page对象
-        Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
-        // 构造查询条件
-        QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type","出库");
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
             queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().eq("type", sysEquipmentStockQueryVo.getKeyword())
             );
         }
         //构造排序条件

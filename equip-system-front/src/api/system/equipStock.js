@@ -24,6 +24,15 @@ export default{
         })
     },
 
+    // 1 出入库列表排序查询
+    getPageList(page,limit,searchObj,column,sortorder){
+        return request({
+            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
+
     // 3 删除
     removeId(id) {
         return request({

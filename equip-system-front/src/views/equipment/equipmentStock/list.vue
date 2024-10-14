@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    设备入库列表
+    设备出入库列表
     <!--查询表单-->
     <div class="search-div">
       <el-form label-width="70px" size="small">
@@ -10,7 +10,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="设备编号/任务单号/入库日期/员工编号"
+                placeholder="设备编号/任务单号/出入库日期/员工编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -61,7 +61,6 @@
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
       @sort-change="onSortChange"
-      :default-sort = "{prop: 'createTime', order:'ascending'}"
       :sort-orders="['ascending','descending']"
     >
       <el-table-column type="selection" />
@@ -71,12 +70,12 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="出入库类型" />
+      <el-table-column prop="type" label="出入库类型"  sortable="custom"/>
       <!-- <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/> -->
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
-      <el-table-column prop="equipmentDate" label="设备出库日期" sortable="custom"/>
+      <el-table-column prop="equipmentDate" label="设备出入库日期" sortable="custom"/>
       <!-- <el-table-column prop="userName" label="出库人" /> -->
-      <el-table-column prop="userCode" label="出库人工号" />
+      <el-table-column prop="userCode" label="出入库人工号" />
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <!-- <el-table-column prop="warehouseManagerName" label="仓库管理员" /> -->
       <el-table-column prop="warehouseManagerCode" label="仓库管理员工号" />
@@ -150,10 +149,10 @@
         </el-form-item> -->
         <el-form-item label="仓库管理员工号">
           <el-input v-model="sysEquipStock.warehouseManagerCode" />
-        </el-form-item>        
+        </el-form-item>
         <el-form-item label="出入库类型">
-          <el-radio disabled v-model="sysEquipStock.type" label="出库">出库</el-radio>
-          <el-radio disabled v-model="sysEquipStock.type" label="入库">入库</el-radio>
+          <el-radio v-model="sysEquipStock.type" label="出库">出库</el-radio>
+          <el-radio v-model="sysEquipStock.type" label="入库">入库</el-radio>
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="sysEquipStock.remarks" />
@@ -208,14 +207,13 @@ export default {
       })
     },
 
-
     // 当多选选项发生变化的时候调用
     handleSelectionChange(selection) {
       console.log(selection);
       this.multipleSelection = selection;
     },
 
-    // 每页显示记录数改变时调用
+    // 每页显示记录数改变
     handleSizeChange(currentLimit){
       this.limit = currentLimit;
       this.fetchData();
@@ -307,13 +305,14 @@ export default {
         this.fetchData();
       });
     },
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquipStock = {};
-      this.sysEquipStock.type = "入库";
       this.sysEquipStock.equipmentDate =  new Date();
     },
+
      // 根据id删除数据
      removeDataById(id) {
       // debugger
@@ -343,7 +342,7 @@ export default {
       this.sortorder = 'descending';
       this.fetchData();
     },
-    
+
     //条件分页查询
     fetchData(pageNum = 1) {
       this.page = pageNum;
@@ -352,7 +351,7 @@ export default {
         this.searchObj.endTime = this.createTimes[1];
       }
       // 调用api
-      api.getPageListIn(this.page,this.limit,this.searchObj,this.column,this.sortorder)
+      api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
