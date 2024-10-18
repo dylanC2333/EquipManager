@@ -19,11 +19,11 @@
 
     <resultMap id="userDeviceMap" type="com.equipment.model.view.ViewTaskUserEquipQuery" ></resultMap>
     <select id="SearchUserDeviceByTaskcode" resultMap="userDeviceMap">
-        SELECT user_name, employee_code,equipment_code,is_additional
-        FROM view_task_user_equip_query
+        SELECT v.user_name, v.employee_code, v.equipment_code, v.task_code, v.is_additional
+        FROM view_task_user_equip_query v
         <where>
-            <if test="sysTaskDeviceQueryVo.keyword != null and sysTaskDeviceQueryVo.keyword != ''">
-                and (task_code = #{sysTaskDeviceQueryVo.keyword})
+            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
+               AND (v.task_code = #{sysTaskDeviceQuery.keyword})
             </if>
         </where>
     </select>

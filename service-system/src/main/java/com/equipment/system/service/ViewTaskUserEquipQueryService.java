@@ -14,5 +14,5 @@ import com.equipment.model.vo.SysTaskDeviceQueryVo;
 */
 public interface ViewTaskUserEquipQueryService extends IService<ViewTaskUserEquipQuery> {
 
-    IPage<SysEquipmentUse> SearchUserDeviceByTaskcode(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+    IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }

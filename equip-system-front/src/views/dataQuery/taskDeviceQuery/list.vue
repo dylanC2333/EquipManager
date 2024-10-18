@@ -43,9 +43,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="equipmentName" label="设备名称" />
-        <el-table-column prop="equipmentCode" label="设备编码" />
-        <el-table-column prop="equipmentUseDate" label="设备使用时间" />
+        <el-table-column prop="userName" label="检测人员姓名" />
+        <el-table-column prop="employeeCode" label="检测人员工号" />
+        <el-table-column prop="equipmentCode" label="设备编号" />
+        <el-table-column prop="taskCode" label="任务编号" />
+        <el-table-column prop="isAdditional" label="是否为补充记录（1表示补充记录）" />
       </el-table>
 
       <!-- 分页组件 -->
@@ -90,6 +92,7 @@
         api
           .taskDeviceFinder(this.page, this.limit, this.searchObj)
           .then((response) => {
+            console.log(response);
             this.list = response.data.records;
             this.total = response.data.total;
           });

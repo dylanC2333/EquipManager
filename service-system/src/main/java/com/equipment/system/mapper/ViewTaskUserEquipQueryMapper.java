@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface ViewTaskUserEquipQueryMapper extends BaseMapper<ViewTaskUserEquipQuery> {
 
-    IPage<SysEquipmentUse> SearchUserDeviceByTaskcode(Page<SysEquipmentUse> pageParam, @Param("sysTaskDeviceQueryVo") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+    IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, @Param("sysTaskDeviceQuery") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }
 
 

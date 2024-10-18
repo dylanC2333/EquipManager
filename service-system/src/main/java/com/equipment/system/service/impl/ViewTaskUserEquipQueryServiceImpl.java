@@ -21,7 +21,7 @@ public class ViewTaskUserEquipQueryServiceImpl extends ServiceImpl<ViewTaskUserE
     implements ViewTaskUserEquipQueryService {
 
     @Override
-    public IPage<SysEquipmentUse> SearchUserDeviceByTaskcode(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
+    public IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
         return baseMapper.SearchUserDeviceByTaskcode(pageParam, sysTaskDeviceQueryVo);
     }
 }
