@@ -70,10 +70,10 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column prop="employeeCode" label="目测人编号" sortable="custom"/>
+      <el-table-column prop="employeeCode" label="检测人工号" sortable="custom"/>
+      <el-table-column prop="employeeName" label="检测人姓名" sortable="custom"/>
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="startDate" label="开始日期" sortable="custom"/>
-      <el-table-column prop="endDate" label="结束日期" sortable="custom"/>
       <el-table-column prop="detectionLocation" label="任务地点" sortable="custom"/>
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -116,7 +116,7 @@
         size="small"
         style="padding-right: 40px"
       >
-        <el-form-item label="目测人id">
+        <el-form-item label="检测人工号">
           <el-input v-model="sysEquipDetction.employeeCode" />
         </el-form-item>
         <el-form-item label="任务单号">
@@ -125,15 +125,6 @@
         <el-form-item label="开始日期">
           <el-date-picker
             v-model="sysEquipDetction.startDate"
-            type="date"
-            placeholder="选择日期"
-            value-format = "yyyy-MM-dd"
-            @input="dateChange">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束日期">
-          <el-date-picker
-            v-model="sysEquipDetction.endDate"
             type="date"
             placeholder="选择日期"
             value-format = "yyyy-MM-dd"
@@ -180,7 +171,7 @@ export default {
   data() {
     return {
       listLoading: false, // 数据是否正在加载
-      list: [], // 设备列表
+      list: [], // 记录列表
       total: 0, // 总记录数
       page: 1, // 页码
       limit: 10, // 每页记录数

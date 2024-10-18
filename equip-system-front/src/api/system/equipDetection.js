@@ -9,7 +9,7 @@ export default{
     // 1 分页排序列表查询
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
+            url: `${api_name}name/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
