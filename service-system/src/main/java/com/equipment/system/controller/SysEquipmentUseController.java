@@ -13,6 +13,7 @@ import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import com.equipment.system.service.SysEquipmentUseService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.equipment.system.service.ViewTaskUserEquipQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,6 +36,8 @@ import java.util.List;
 public class SysEquipmentUseController {
     @Autowired
     private SysEquipmentUseService sysEquipmentUseService;
+
+    private ViewTaskUserEquipQueryService viewTaskUserEquipQueryService;
 
     //1、查询所有记录
     @ApiOperation("查询所有记录接口")
@@ -151,7 +154,7 @@ public class SysEquipmentUseController {
         //创建page对象
         Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
         //调用service方法
-        IPage<SysEquipmentUse> pageModel = sysEquipmentUseService.taskDevice(pageParam,sysTaskDeviceQueryVo);
+        IPage<SysEquipmentUse> pageModel = viewTaskUserEquipQueryService.SearchUserDeviceByTaskcode(pageParam,sysTaskDeviceQueryVo);
         //返回
         return  Result.ok(pageModel);
     }
