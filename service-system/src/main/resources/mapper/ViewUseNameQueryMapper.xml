@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.ViewUseNameQueryMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.view.ViewUseNameQuery">
+            <result property="id" column="id" jdbcType="BIGINT"/>
+            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="equipmentUseDate" column="equipment_use_date" jdbcType="DATE"/>
+            <result property="employeeUseCode" column="employee_use_code" jdbcType="VARCHAR"/>
+            <result property="location" column="location" jdbcType="VARCHAR"/>
+            <result property="preUseEquipmentStatus" column="pre_use_equipment_status" jdbcType="VARCHAR"/>
+            <result property="maintenanceStatus" column="maintenance_status" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="isAdditional" column="is_additional" jdbcType="TINYINT"/>
+            <result property="employeeUseName" column="employee_use_name" jdbcType="VARCHAR"/>
+            <result property="equipmentUseName" column="equipment_use_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,equipment_code,task_code,
+        equipment_use_date,employee_use_code,location,
+        pre_use_equipment_status,maintenance_status,create_time,
+        update_time,is_deleted,is_additional,
+        employee_use_name,equipment_use_name
+    </sql>
+</mapper>
