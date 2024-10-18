@@ -54,6 +54,11 @@ public class SysEquipmentUse extends BaseEntity implements Serializable {
      */
     private String maintenanceStatus;
 
+    /**
+     * 是否补充记录（0:否，真实 1:是，后续补充）
+     */
+    private Integer isAdditional;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

@@ -28,6 +28,11 @@ public class SysEquipment extends BaseEntity implements Serializable {
      */
     private String equipmentName;
 
+    /**
+     * 状态（1：正常 0：停用）
+     */
+    private Integer status;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
