@@ -107,7 +107,7 @@ public class SysDetectionController {
     //4 带姓名条件分页排序查询
     @ApiOperation("带姓名条件排序分页查询")
     @GetMapping("name/{page}/{limit}/{column}/{order}")
-    public Result<IPage<ViewDetectionNameQuery>> findPageNameQuery(
+    public Result<IPage<ViewDetectionNameQuery>> findPageQueryDetectionName(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable int page,

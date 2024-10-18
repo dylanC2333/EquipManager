@@ -1,17 +1,12 @@
 package com.equipment.system.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
-import com.equipment.model.system.SysEquipment;
-import com.equipment.model.system.SysEquipmentTransfer;
 import com.equipment.model.view.ViewMaintenanceNameQuery;
 import com.equipment.model.vo.SysEquipmentMaintenanceQueryVo;
-import com.equipment.model.vo.SysEquipmentTransferQueryVo;
 import com.equipment.model.system.SysEquipmentMaintenance;
-import com.equipment.model.vo.SysUserQueryVo;
 import com.equipment.system.service.SysEquipmentMaintenanceService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -110,7 +105,7 @@ public class SysEquipmentMaintenanceController {
     //4 带姓名条件分页排序查询
     @ApiOperation("条件排序分页查询带姓名")
     @GetMapping("name/{page}/{limit}/{column}/{order}")
-    public Result<IPage<ViewMaintenanceNameQuery>> findPageQueryNameEquipMaintenance(
+    public Result<IPage<ViewMaintenanceNameQuery>> findPageQueryEquipMaintenanceName(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable int page,
 

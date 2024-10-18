@@ -55,11 +55,6 @@ public class SysEquipmentTransfer extends BaseEntity implements Serializable {
     private String transferLocation;
 
     /**
-     * 交接类型（虚拟/真实）
-     */
-    private String transferType;
-
-    /**
      * 备注
      */
     private String remarks;
