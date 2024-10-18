@@ -71,13 +71,12 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
-      <!-- <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/> -->
       <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
+      <el-table-column prop="equipmentUseName" label="设备名称" sortable="custom"/>
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="equipmentUseDate" label="使用日期" sortable="custom"/>
       <el-table-column prop="employeeUseCode" label="使用人工号"/>
-      <!-- <el-table-column prop="employeeUseName" label="操作人"/> -->
+      <el-table-column prop="employeeUseName" label="使用人姓名"/>
       <el-table-column prop="location" label="地点" />
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
       <el-table-column prop="maintenanceStatus" label="维护保养情况" />
