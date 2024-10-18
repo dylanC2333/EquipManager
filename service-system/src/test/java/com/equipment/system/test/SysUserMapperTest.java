@@ -4,13 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysUser;
+import com.equipment.model.view.ViewTaskUserEquipQuery;
+import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import com.equipment.system.mapper.SysUserMapper;
+import com.equipment.system.mapper.ViewTaskUserEquipQueryMapper;
 import com.equipment.system.service.SysUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 public class SysUserMapperTest {
@@ -19,6 +24,8 @@ public class SysUserMapperTest {
     private SysUserMapper sysRoleMapper;
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private ViewTaskUserEquipQueryMapper viewTaskUserEquipQueryMapper;
     // 1 查询全部
     @Test
     public void findAll() {
@@ -43,5 +50,14 @@ public class SysUserMapperTest {
         List<SysUser> list = null;
         list = sysUserService.getUserListByRoleName("设备使用人员");
         System.out.println(list);
+    }
+
+    @Test
+    public void getUserDeviceByTaskcode(){
+        Page<ViewTaskUserEquipQuery> pageParam = new Page<>(1,3);
+        SysTaskDeviceQueryVo s = new SysTaskDeviceQueryVo();
+        s.setKeyword("11");
+        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryMapper.SearchUserDeviceByTaskcode(pageParam,s);
+        System.out.print(pageModel.getRecords());
     }
 }
