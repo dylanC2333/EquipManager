@@ -6,6 +6,7 @@ import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ASUS
@@ -15,7 +16,7 @@ import com.equipment.model.vo.SysTaskDeviceQueryVo;
 */
 public interface ViewTaskUserEquipQueryMapper extends BaseMapper<ViewTaskUserEquipQuery> {
 
-    IPage<SysEquipmentUse> SearchUserDeviceByTaskcode(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+    IPage<SysEquipmentUse> SearchUserDeviceByTaskcode(Page<SysEquipmentUse> pageParam, @Param("sysTaskDeviceQueryVo") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }
 
 
