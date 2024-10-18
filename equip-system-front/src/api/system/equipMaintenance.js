@@ -10,7 +10,7 @@ export default{
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
             // 接口路径
-            url: `${api_name}${page}/${limit}/${column}/${sortorder}`,
+            url: `${api_name}/name/${page}/${limit}/${column}/${sortorder}`,
             //提交方式
             method: 'get',
             //参数

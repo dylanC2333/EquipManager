@@ -68,7 +68,7 @@ public class ViewMaintenanceNameQuery implements Serializable {
     /**
      * 员工姓名
      */
-    private String userName;
+    private String employeeName;
 
     /**
      * 设备名称

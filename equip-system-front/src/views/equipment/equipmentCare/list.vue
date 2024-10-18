@@ -70,9 +70,10 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
       <el-table-column prop="employeeCode" label="员工编号" sortable="custom"/>
+      <el-table-column prop="employeeName" label="员工姓名" sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
+      <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
       <el-table-column prop="maintenanceDate" label="保养日期" sortable="custom"/>
       <el-table-column prop="beforeUseStatus" label="设备使用前状态" sortable="custom"/>
       <el-table-column prop="maintenanceStatus" label="设备维护保养状态" />
