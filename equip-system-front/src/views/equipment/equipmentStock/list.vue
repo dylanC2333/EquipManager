@@ -71,13 +71,13 @@
         </template>
       </el-table-column>
       <el-table-column prop="type" label="出入库类型"  sortable="custom"/>
-      <!-- <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/> -->
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
+      <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
       <el-table-column prop="equipmentDate" label="设备出入库日期" sortable="custom"/>
-      <!-- <el-table-column prop="userName" label="出库人" /> -->
+      <el-table-column prop="userName" label="出库人姓名" />
       <el-table-column prop="userCode" label="出入库人工号" />
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
-      <!-- <el-table-column prop="warehouseManagerName" label="仓库管理员" /> -->
+      <el-table-column prop="warehouseManagerName" label="仓库管理员姓名" />
       <el-table-column prop="warehouseManagerCode" label="仓库管理员工号" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -135,18 +135,12 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="出库人">
-          <el-input v-model="sysEquipStock.userName" />
-        </el-form-item> -->
         <el-form-item label="出库人工号">
           <el-input v-model="sysEquipStock.userCode" />
         </el-form-item>
         <el-form-item label="任务单号">
           <el-input v-model="sysEquipStock.taskCode" />
         </el-form-item>
-        <!-- <el-form-item label="仓库管理员">
-          <el-input v-model="sysEquipStock.warehouseManagerName" />
-        </el-form-item> -->
         <el-form-item label="仓库管理员工号">
           <el-input v-model="sysEquipStock.warehouseManagerCode" />
         </el-form-item>

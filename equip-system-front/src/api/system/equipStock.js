@@ -6,28 +6,10 @@ const api_name = '/admin/equipment/equipmentStock/'
 
 export default{
 
-    // 1 入库列表排序查询
-    getPageListIn(page,limit,searchObj,column,sortorder){
-        return request({
-            url: `${api_name}/in/${page}/${limit}/${column}/${sortorder}`,
-            method: 'get',
-            params:searchObj
-        })
-    },
-
-    // 2 出库列表排序查询
-    getPageListOut(page,limit,searchObj,column,sortorder){
-        return request({
-            url: `${api_name}/out/${page}/${limit}/${column}/${sortorder}`,
-            method: 'get',
-            params:searchObj
-        })
-    },
-
     // 1 出入库列表排序查询
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
+            url: `${api_name}/name/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
