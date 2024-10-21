@@ -122,9 +122,6 @@
         style="padding-right: 40px"
         :rules = "rules"
       >
-        <!-- <el-form-item label="设备名称"  prop = "equipmentName">
-          <el-input v-model="sysEquipUse.equipmentName" />
-        </el-form-item> -->
         <el-form-item label="管理编号"  prop = "equipmentCode">
           <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
@@ -132,19 +129,10 @@
           <el-input v-model="sysEquipUse.taskCode" />
         </el-form-item>
         <el-form-item label="使用人工号" prop = "employeeUseCode">
-          <el-input v-model="sysEquipUse.employeeUseCode" />
+          <el-input disabled v-model="sysEquipUse.employeeUseCode" />
         </el-form-item>
-        <!-- <el-form-item label="操作人"  prop = "employeeUseName">
-          <el-autocomplete
-            class="inline-input"
-            v-model="sysEquipUse.employeeUseName"
-            :fetch-suggestions="querySearch"
-            placeholder="请输入内容"
-            @select="handleSubmit"
-          ></el-autocomplete>
-        </el-form-item> -->
         <el-form-item label="使用日期"  prop = "equipmentUseDate">
-          <el-date-picker
+          <el-date-picker disabled 
             v-model="sysEquipUse.equipmentUseDate"
             type="date"
             placeholder="选择日期"
@@ -191,16 +179,11 @@
 </template>
 <script>
 import api from "@/api/system/equipmentUse";
-import {
-  provinceAndCityData,
-  pcTextArr,
-  regionData,
-  pcaTextArr,
-  codeToText,
-  TextToCode,
-} from "element-china-area-data";
+import {  pcTextArr } from "element-china-area-data";
 // import { getUserQuery } from "@/api/system/user";
 import userapi from "@/api/system/user";
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -252,6 +235,11 @@ export default {
         ],
       },
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   created() {
     this.fetchData();
@@ -475,6 +463,7 @@ export default {
       this.sysEquipUse = {};
       this.selectedLocations = [];
       this.sysEquipUse.equipmentUseDate =  new Date();
+      this.sysEquipUse.employeeUseCode = this.name;
     },
 
      // 根据id删除数据

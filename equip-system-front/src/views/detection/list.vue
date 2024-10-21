@@ -73,7 +73,7 @@
       <el-table-column prop="employeeCode" label="检测人工号" sortable="custom"/>
       <el-table-column prop="employeeName" label="检测人姓名" sortable="custom"/>
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
-      <el-table-column prop="startDate" label="开始日期" sortable="custom"/>
+      <el-table-column prop="startDate" label="检测日期" sortable="custom"/>
       <el-table-column prop="detectionLocation" label="任务地点" sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -116,13 +116,13 @@
         style="padding-right: 40px"
       >
         <el-form-item label="检测人工号">
-          <el-input v-model="sysEquipDetction.employeeCode" />
+          <el-input disabled v-model="sysEquipDetction.employeeCode" />
         </el-form-item>
         <el-form-item label="任务单号">
           <el-input v-model="sysEquipDetction.taskCode" />
         </el-form-item>
-        <el-form-item label="开始日期">
-          <el-date-picker
+        <el-form-item label="检测日期">
+          <el-date-picker disabled 
             v-model="sysEquipDetction.startDate"
             type="date"
             placeholder="选择日期"
@@ -163,6 +163,8 @@
 <script>
 import api from "@/api/system/equipDetection";
 import {  pcTextArr } from "element-china-area-data";
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -182,6 +184,11 @@ export default {
 
       pcTextArr,
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   created() {
     this.fetchData();
@@ -294,12 +301,14 @@ export default {
         this.fetchData();
       });
     },
+
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
       this.sysEquipDetction = {};
       this.sysEquipDetction.startDate =  new Date();
       this.sysEquipDetction.endDate =  new Date();
+      this.sysEquipDetction.employeeCode = this.name;
     },
     // 根据id删除数据
     removeDataById(id) {

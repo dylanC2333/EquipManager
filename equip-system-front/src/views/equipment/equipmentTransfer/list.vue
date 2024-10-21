@@ -132,13 +132,13 @@
           <el-input v-model="sysEquipTransfer.equipmentCode" />
         </el-form-item>
         <el-form-item label="交付员工编号">
-          <el-input v-model="sysEquipTransfer.deliverEmployeeCode" />
+          <el-input disabled v-model="sysEquipTransfer.deliverEmployeeCode" />
         </el-form-item>
         <el-form-item label="接收员工编号">
           <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
         </el-form-item>
         <el-form-item label="交接日期">
-          <el-date-picker
+          <el-date-picker disabled 
             v-model="sysEquipTransfer.transferDate"
             type="date"
             placeholder="选择日期"
@@ -183,6 +183,8 @@
 <script>
 import api from "@/api/system/equipmentTransfer";
 import {  pcTextArr } from "element-china-area-data";
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -203,6 +205,11 @@ export default {
       pcTextArr,//省市二级地址，纯汉字
       selectedLocations:[],// 选中的省市地址数据
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   created() {
     this.fetchData();
@@ -378,6 +385,7 @@ export default {
       this.sysEquipTransfer = {};
       this.selectedLocations = [];
       this.sysEquipTransfer.transferDate =  new Date();
+      this.sysEquipTransfer.deliverEmployeeCode = this.name;
     },
     // 根据id删除数据
     removeDataById(id) {

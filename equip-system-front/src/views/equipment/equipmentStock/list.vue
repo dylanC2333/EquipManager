@@ -127,7 +127,7 @@
           <el-input v-model="sysEquipStock.equipmentCode" />
         </el-form-item>
         <el-form-item label="设备出库日期">
-          <el-date-picker
+          <el-date-picker disabled 
             v-model="sysEquipStock.equipmentDate"
             type="date"
             placeholder="选择日期"
@@ -136,7 +136,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="出库人工号">
-          <el-input v-model="sysEquipStock.userCode" />
+          <el-input disabled v-model="sysEquipStock.userCode" />
         </el-form-item>
         <el-form-item label="任务单号">
           <el-input v-model="sysEquipStock.taskCode" />
@@ -172,6 +172,8 @@
 </template>
 <script>
 import api from "@/api/system/equipStock";
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -189,6 +191,11 @@ export default {
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   created() {
     this.fetchData();
@@ -305,6 +312,7 @@ export default {
       this.dialogVisible = true;
       this.sysEquipStock = {};
       this.sysEquipStock.equipmentDate =  new Date();
+      this.sysEquipStock.userCode = this.name;
     },
 
      // 根据id删除数据
