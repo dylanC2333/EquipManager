@@ -75,7 +75,6 @@
       <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
       <el-table-column prop="startDate" label="开始日期" sortable="custom"/>
       <el-table-column prop="detectionLocation" label="任务地点" sortable="custom"/>
-      <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -139,9 +138,6 @@
             :value="item.value">
           </el-option>
         </el-select>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="sysEquipDetction.remarks" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -213,9 +209,9 @@ export default {
     },
 
     // 表格排序
-    onSortChange({prop,order}){
-      this.column = prop;
-      this.sortorder = order;
+    onSortChange({ prop, order }) {
+      this.column = prop
+      this.sortorder = order
       // console.log(this.column)
       // console.log(this.sortorder)
       this.fetchData()
