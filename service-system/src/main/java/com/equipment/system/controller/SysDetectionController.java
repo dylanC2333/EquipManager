@@ -131,7 +131,8 @@ public class SysDetectionController {
         if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
             queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword());
+                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword())
+                    .or().like("employee_name",sysEquipmentDetectionQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {

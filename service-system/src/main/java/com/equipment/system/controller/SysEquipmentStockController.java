@@ -136,13 +136,15 @@ public class SysEquipmentStockController {
         // 构造查询条件
         QueryWrapper<ViewStockNameQuery> queryWrapper = new QueryWrapper<>();
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
-            queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
+            queryWrapper.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().eq("type", sysEquipmentStockQueryVo.getKeyword())
-            );
+                    .or().like("user_name", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("warehouse_manager_name", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("equipment_name", sysEquipmentStockQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {

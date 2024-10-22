@@ -141,7 +141,9 @@ public class SysEquipmentUseController {
             queryWrapper.like("equipment_code",sysEquipmentUseQueryVo.getKeyword())
                     .or().like("employee_use_code",sysEquipmentUseQueryVo.getKeyword())
                     .or().like("location",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentUseQueryVo.getKeyword());
+                    .or().like("task_code",sysEquipmentUseQueryVo.getKeyword())
+                    .or().like("employee_use_name",sysEquipmentUseQueryVo.getKeyword())
+                    .or().like("equipment_use_name",sysEquipmentUseQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {
