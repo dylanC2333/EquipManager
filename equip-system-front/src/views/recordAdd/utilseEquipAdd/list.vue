@@ -160,8 +160,8 @@
             <el-input v-model="sysEquipUse.remarks" />
           </el-form-item>
           <el-form-item label="是否为补充记录">
-            <el-radio v-model="sysEquipUse.isAdditional" label="1">是</el-radio>
-            <el-radio v-model="sysEquipUse.isAdditional" label="0">否</el-radio>
+            <el-radio v-model="sysEquipUse.isAdditional" :label="1">是</el-radio>
+            <el-radio v-model="sysEquipUse.isAdditional" :label="0">否</el-radio>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

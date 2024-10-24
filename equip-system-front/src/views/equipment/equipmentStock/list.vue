@@ -120,9 +120,6 @@
         size="small"
         style="padding-right: 40px"
       >
-        <!-- <el-form-item label="设备名称">
-          <el-input v-model="sysEquipStock.equipmentName" />
-        </el-form-item> -->
         <el-form-item label="设备编号">
           <el-input v-model="sysEquipStock.equipmentCode" />
         </el-form-item>

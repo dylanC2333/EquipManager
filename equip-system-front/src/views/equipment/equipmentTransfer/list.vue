@@ -79,8 +79,7 @@
       <el-table-column prop="receiverEmployeeCode" label="接收员工编号" sortable="custom"/>
       <el-table-column prop="receiverEmployeeName" label="接收员工姓名" sortable="custom"/>
       <el-table-column prop="transferDate" label="交接时间" sortable="custom"/>
-      <el-table-column prop="transferLocation" label="交接地点" />
-      <el-table-column prop="transferType" label="交接类型" />
+      <el-table-column prop="transferLocation" label="新任务地点" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -146,7 +145,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="交接地点">
+        <el-form-item label="新任务地点">
           <el-cascader
             size="large"
             :options="pcTextArr"
@@ -154,9 +153,6 @@
             filterable
             @change="handleLocationChange">
           </el-cascader>
-        </el-form-item>
-        <el-form-item label="交接类型">
-          <el-input v-model="sysEquipTransfer.transferType" />
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="sysEquipTransfer.remarks" />

@@ -141,8 +141,11 @@
           </el-select>
           </el-form-item>
           <el-form-item label="是否为补充记录">
-            <el-radio v-model="sysEquipDetction.isAdditional" label="1">是</el-radio>
-            <el-radio v-model="sysEquipDetction.isAdditional" label="0">否</el-radio>
+            <el-radio v-model="sysEquipDetction.isAdditional" :label="1">是</el-radio>
+            <el-radio v-model="sysEquipDetction.isAdditional" :label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="是否为补充记录">
+            <el-input v-model="sysEquipDetction.isAdditional"/>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
