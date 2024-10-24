@@ -2,6 +2,7 @@ package com.equipment.system.service;
 
 import com.equipment.model.system.SysDetection;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.equipment.model.view.ViewDetectionNameQuery;
 
 /**
 * @author A
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SysDetectionService extends IService<SysDetection> {
 
+    ViewDetectionNameQuery getLastOne(String employeeCode);
 }

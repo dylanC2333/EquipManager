@@ -52,7 +52,15 @@ export default{
           method: `delete`,
           data: idList
         })
-    }
+    },
+
+    //7、根据employeeCode查询最近一条检测记录
+    getLastOneDetction(employeeCode) {
+        return request({
+            url: `${api_name}/findLastOne/${employeeCode}`,
+            method: 'get'
+        })
+    },
     
     
   

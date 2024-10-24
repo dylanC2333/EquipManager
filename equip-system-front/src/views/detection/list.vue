@@ -257,12 +257,11 @@ export default {
         });
       });
     },
-    //修改-数据回显
+    //弹出修改表单-数据回显
     edit(id) {
       this.dialogVisible = true;
       api.getEquipDetctionId(id).then((response) => {
         this.sysEquipDetction = response.data;
-
       });
     },
     //添加或修改
@@ -305,11 +304,20 @@ export default {
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
-      this.sysEquipDetction = {};
-      this.sysEquipDetction.startDate =  new Date();
-      this.sysEquipDetction.endDate =  new Date();
-      this.sysEquipDetction.employeeCode = this.name;
+      api.getLastOneDetction(this.name).then((response) => {
+        console.log(response.data);
+        if (response.data != null) {
+          this.sysEquipDetction = response.data;
+        } else {
+          this.sysEquipDetction = {};
+        }
+        this.sysEquipDetction.startDate = new Date();
+        // this.sysEquipDetction.endDate = new Date();
+        this.sysEquipDetction.employeeCode = this.name;
+      })
     },
+
+
     // 根据id删除数据
     removeDataById(id) {
       // debugger

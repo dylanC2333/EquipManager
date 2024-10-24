@@ -309,6 +309,7 @@
         this.sysEquipDetction.startDate =  new Date();
         this.sysEquipDetction.endDate =  new Date();
       },
+      
       // 根据id删除数据
       removeDataById(id) {
         // debugger

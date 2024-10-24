@@ -163,7 +163,7 @@ public class SysDetectionController {
     }
 
     //6 根据id查询
-    @ApiOperation("根据id查询设备检测")
+    @ApiOperation("根据id查询检测记录")
     @GetMapping("findDetectionById/{id}")
     public Result<SysDetection> findDetectionById(@PathVariable String id) {
         SysDetection sysDetection = sysDetectionService.getById(id);
@@ -182,6 +182,14 @@ public class SysDetectionController {
     @DeleteMapping("batchRemove")
     public Result<Void> batchRemove(@RequestBody List<Long> ids){
         return sysDetectionService.removeByIds(ids) ? Result.ok() : Result.fail();
+    }
+
+    // 9 查询用户编号最近的一条检测记录
+    @ApiOperation("根据用户编号查询最近的一条检测记录")
+    @GetMapping("findLastOne/{employeeCode}")
+    public Result<ViewDetectionNameQuery> findLastOne(@PathVariable String employeeCode) {
+        ViewDetectionNameQuery lastOne =  sysDetectionService.getLastOne(employeeCode);
+        return Result.ok(lastOne);
     }
 }
 
