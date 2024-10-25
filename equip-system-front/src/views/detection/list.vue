@@ -311,6 +311,7 @@ export default {
         } else {
           this.sysEquipDetction = {};
         }
+        this.sysEquipDetction.id = null;
         this.sysEquipDetction.startDate = new Date();
         // this.sysEquipDetction.endDate = new Date();
         this.sysEquipDetction.employeeCode = this.name;
