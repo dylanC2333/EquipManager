@@ -28,7 +28,7 @@
           </el-row>
         </el-form>
       </div>
-
+      <!-- 参与任务的员工信息 -->
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -45,7 +45,6 @@
 
         <el-table-column prop="userName" label="检测人员姓名" />
         <el-table-column prop="employeeCode" label="检测人员工号" />
-        <el-table-column prop="equipmentCode" label="设备编号" />
         <el-table-column prop="taskCode" label="任务编号" />
         <el-table-column prop="isAdditional" label="是否为补充记录（1表示补充记录）" />
       </el-table>
@@ -54,6 +53,37 @@
       <el-pagination
         :current-page="page"
         :total="total"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center"
+        layout="total, prev, pager, next, jumper"
+        @current-change="fetchData"
+      />
+
+      <!-- 参与任务的设备信息 -->
+      <el-table
+        v-loading="listLoading"
+        :data="list_eq"
+        stripe
+        border
+        style="width: 100%; margin-top: 10px"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column label="序号" width="70" align="center">
+          <template slot-scope="scope">
+            {{ (page - 1) * limit + scope.$index + 1 }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="equipmentName" label="设备名称" />
+        <el-table-column prop="equipmentCode" label="设备编号" />
+        <el-table-column prop="taskCode" label="任务编号" />
+        <el-table-column prop="isAdditional" label="是否为补充记录（1表示补充记录）" />
+      </el-table>
+
+      <!-- 分页组件 -->
+      <el-pagination
+        :current-page="page"
+        :total="total_eq"
         :page-size="limit"
         style="padding: 30px 0; text-align: center"
         layout="total, prev, pager, next, jumper"
@@ -68,7 +98,9 @@
       return {
         listLoading: false, // 数据是否正在加载
         list: null, // banner列表
+        list_eq: null,
         total: 0, // 数据库中的总记录数
+        total_eq: 0,
         page: 1, // 默认页码
         limit: 10, // 每页记录数
         searchObj: {}, // 查询表单对象
@@ -89,13 +121,18 @@
       //列表
       fetchData(page = 1) {
         this.page = page;
-        api
-          .taskDeviceFinder(this.page, this.limit, this.searchObj)
+        api.taskUserFinder(this.page, this.limit, this.searchObj)
           .then((response) => {
             console.log(response);
             this.list = response.data.records;
             this.total = response.data.total;
           });
+        api.taskDeviceFinder(this.page, this.limit, this.searchObj)
+          .then((response) => {
+            console.log(response);
+            this.list_eq = response.data.records;
+            this.total_eq = response.data.total;
+          });  
       },
     },
   };

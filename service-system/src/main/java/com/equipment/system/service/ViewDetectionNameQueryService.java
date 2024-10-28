@@ -1,7 +1,15 @@
 package com.equipment.system.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.view.ViewDetectionNameQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.equipment.model.vo.StatisticTaskAndDetection;
+import com.equipment.model.vo.SysTaskDeviceQueryVo;
+import com.equipment.model.vo.UserIDAndDateRageVo;
+
+import java.sql.Wrapper;
 
 /**
 * @author A
@@ -10,4 +18,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ViewDetectionNameQueryService extends IService<ViewDetectionNameQuery> {
 
+
+    IPage<StatisticTaskAndDetection> UserDetectionCountForBoss(Page<StatisticTaskAndDetection> pageParam, UserIDAndDateRageVo sysTaskDeviceQueryVo);
 }

@@ -1,7 +1,12 @@
 package com.equipment.system.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.view.ViewDetectionNameQuery;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.equipment.model.vo.StatisticTaskAndDetection;
+import com.equipment.model.vo.UserIDAndDateRageVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author A
@@ -11,6 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ViewDetectionNameQueryMapper extends BaseMapper<ViewDetectionNameQuery> {
 
+    IPage<StatisticTaskAndDetection> findUserDetectionCountForBoss(Page<StatisticTaskAndDetection> pageParam,@Param("taskAndDetectionVo") UserIDAndDateRageVo sysTaskDeviceQueryVo);
 }
 
 

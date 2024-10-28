@@ -4,7 +4,7 @@
     <div class="search-div">
       <el-form label-width="70px" size="small">
         <el-row>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="地点">
               <el-select v-model="sysUser.keyword" placeholder="请选择">
                 <el-option
@@ -15,7 +15,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="操作时间">
               <el-date-picker
@@ -59,7 +59,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="userName" label="目测人员姓名" />
+      <el-table-column prop="userName" label="员工姓名" />
+      <el-table-column prop="userCode" label="员工编号" />
     </el-table>
 
     <!-- 分页组件 -->

@@ -127,6 +127,7 @@ public class SysUserController {
         return sysUserService.removeByIds(ids)?Result.ok():Result.fail();
     }
 
+    // 9. 查询空闲人员
     @ApiOperation("空闲目测人员名单")
     @GetMapping("/detectionEmployees/{page}/{limit}")
     public Result<IPage<SysUser>> detectionEmployees(

@@ -66,6 +66,15 @@ export default{
         })
     },
 
+    //7、任务所参与人员查询列表
+    taskUserFinder(page,limit,searchObj){
+        return request({
+            url: `${api_name}/taskUserFinder/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
+
     //8、该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
     equipmentUsageDays(page,limit,searchObj){
         return request({
@@ -75,6 +84,7 @@ export default{
         })
     },
 
+    
 
 
 

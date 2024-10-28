@@ -39,39 +39,28 @@
     <resultMap id="SysDetectionMap" type="com.equipment.model.system.SysUser"  autoMapping="true"></resultMap>
 
     <select id="sysDetectionEmployeesMap" resultMap="SysDetectionMap" >
-        select u.user_name
-        from sys_user u
-        INNER JOIN sys_user_role ur ON u.id = ur.user_id AND ur.role_id = 5
-        LEFT JOIN (
-        SELECT DISTINCT d.employee_code
+        SELECT DISTINCT u.user_name as userName, u.user_code as userCode
         FROM sys_detection d
+        RIGHT JOIN sys_user u on u.user_code = d.employee_code
         <where>
-            <if test="detVo.endTime != null and detVo.endTime != ''">
-                and (d.start_date >= #{detVo.endTime} )
-            </if>
+            d.is_deleted =0 and u.is_deleted = 0
             <if test="detVo.startTime != null and detVo.startTime != ''">
-                and (d.end_date &lt;= #{detVo.startTime})
+                AND u.create_time &lt;= #{detVo.startTime}
             </if>
         </where>
-        ) AS used_employees ON u.user_code = used_employees.employee_code
-        LEFT JOIN (
-        SELECT DISTINCT d2.employee_code
-        FROM sys_detection d2
+        AND NOT EXISTS (
+        SELECT 1 FROM sys_detection sub
+        RIGHT JOIN sys_user u on u.user_code = sub.employee_code
         <where>
-            <if test="detVo.endTime != null and detVo.endTime != ''">
-                and (d2.start_date &lt;= #{detVo.endTime} )
-            </if>
+               sub.employee_code = d.employee_code
             <if test="detVo.startTime != null and detVo.startTime != ''">
-                and (d2.end_date >= #{detVo.startTime})
+                AND sub.start_date >= #{detVo.startTime}
             </if>
-            <if test="detVo.keyword != null and detVo.keyword != ''">
-                and (d2.detection_location LIKE	CONCAT('%',#{detVo.keyword},'%'))
+            <if test="detVo.endTime != null and detVo.endTime != ''">
+                AND sub.start_date &lt;= #{detVo.endTime}
             </if>
         </where>
-        ) AS used_employees2 ON u.user_code = used_employees2.employee_code
-        <where>
-            used_employees.employee_code IS NOT NULL OR used_employees2.employee_code IS NOT NULL
-        </where>
+        )
     </select>
 
 

@@ -9,7 +9,7 @@ export default{
     // 1 分页排序列表查询
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}name/${page}/${limit}/${column}/${sortorder}`,
+            url: `${api_name}/name/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
@@ -51,6 +51,24 @@ export default{
           url: `${api_name}/batchRemove`,
           method: `delete`,
           data: idList
+        })
+    },
+
+    //7、员工打卡次数和经历任务数查询
+    UserDetectionCount(page,limit,searchObj) {
+        return request({
+          url: `${api_name}/UserDetectionCount/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
+
+    //8、员工打卡次数和经历任务数查询领导版
+    UserDetectionCountForBoss(page,limit,searchObj) {
+        return request({
+          url: `${api_name}/UserDetectionCountForBoss/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
         })
     }
     

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.equipment.model.vo.FindEquipByTaskCode;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +18,8 @@ import org.apache.ibatis.annotations.Param;
 public interface ViewTaskUserEquipQueryMapper extends BaseMapper<ViewTaskUserEquipQuery> {
 
     IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, @Param("sysTaskDeviceQuery") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+
+    IPage<FindEquipByTaskCode> SearchEquipByTask(Page<FindEquipByTaskCode> pageParam, @Param("sysTaskDeviceQuery")SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }
 
 

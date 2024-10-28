@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
+import com.equipment.model.vo.FindEquipByTaskCode;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import com.equipment.system.mapper.ViewTaskUserEquipQueryMapper;
 import com.equipment.system.service.ViewTaskUserEquipQueryService;
@@ -23,6 +24,11 @@ public class ViewTaskUserEquipQueryServiceImpl extends ServiceImpl<ViewTaskUserE
     @Override
     public IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
         return baseMapper.SearchUserDeviceByTaskcode(pageParam, sysTaskDeviceQueryVo);
+    }
+
+    @Override
+    public IPage<FindEquipByTaskCode> SearchEquipByTaskcode(Page<FindEquipByTaskCode> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
+        return baseMapper.SearchEquipByTask(pageParam, sysTaskDeviceQueryVo);
     }
 }
 

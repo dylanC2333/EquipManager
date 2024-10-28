@@ -9,6 +9,7 @@ import com.equipment.model.system.SysUser;
 import com.equipment.model.view.ViewUseNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.equipment.model.vo.SysEquipmentUsageDaysQueryVo;
+import com.equipment.model.vo.FindEquipByTaskCode;
 import com.equipment.model.vo.SysEquipmentUseQueryVo;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
@@ -192,10 +193,10 @@ public class SysEquipmentUseController {
         return sysEquipmentUseService.removeByIds(ids) ? Result.ok(): Result.fail();
     }
 
-    //8、 任务所使用设备查询列表
-    @ApiOperation("任务所使用设备查询列表")
-    @GetMapping("taskDeviceFinder/{page}/{limit}")
-    public Result<IPage<ViewTaskUserEquipQuery>> taskDeviceFinder(
+    //8、 任务参与员工查询列表
+    @ApiOperation("任务参与员工查询列表")
+    @GetMapping("taskUserFinder/{page}/{limit}")
+    public Result<IPage<ViewTaskUserEquipQuery>> taskUserFinder(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable int page,
 
@@ -206,8 +207,28 @@ public class SysEquipmentUseController {
             SysTaskDeviceQueryVo sysTaskDeviceQueryVo){
         //创建page对象
         Page<ViewTaskUserEquipQuery> pageParam = new Page<>(page,limit);
-        //调用service方法
+        //调用service方法,不用管下面的函数名字，因为后来进行了修改，为了方便没有再修改名字
         IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryService.SearchUserDeviceByTaskcode(pageParam,sysTaskDeviceQueryVo);
+        //返回
+        return  Result.ok(pageModel);
+    }
+
+    //8、 任务所使用设备查询列表
+    @ApiOperation("任务所使用设备查询列表")
+    @GetMapping("taskDeviceFinder/{page}/{limit}")
+    public Result<IPage<FindEquipByTaskCode>> taskDeviceFinder(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable int page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable int limit,
+
+            @ApiParam(name = "sysTaskDeviceQueryVo", value = "查询对象", required = false)
+            SysTaskDeviceQueryVo sysTaskDeviceQueryVo){
+        //创建page对象
+        Page<FindEquipByTaskCode> pageParam = new Page<>(page,limit);
+        //调用service方法
+        IPage<FindEquipByTaskCode> pageModel = viewTaskUserEquipQueryService.SearchEquipByTaskcode(pageParam,sysTaskDeviceQueryVo);
         //返回
         return  Result.ok(pageModel);
     }

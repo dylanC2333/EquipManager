@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.view.ViewDetectionNameQuery;
+import com.equipment.model.view.ViewTaskUserEquipQuery;
+import com.equipment.model.vo.StatisticTaskAndDetection;
 import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
+import com.equipment.model.vo.UserIDAndDateRageVo;
 import com.equipment.model.system.SysDetection;
+import com.equipment.model.vo.SysTaskDeviceQueryVo;
 import com.equipment.system.service.SysDetectionService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,7 +20,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -181,6 +188,71 @@ public class SysDetectionController {
     @DeleteMapping("batchRemove")
     public Result<Void> batchRemove(@RequestBody List<Long> ids){
         return sysDetectionService.removeByIds(ids) ? Result.ok() : Result.fail();
+    }
+
+    //9、 员工打卡次数和经历任务数查询
+    @ApiOperation("员工打卡次数和经历任务数查询")
+    @GetMapping("UserDetectionCount/{page}/{limit}")
+    public Result<IPage<ViewDetectionNameQuery>> UserDetectionCount(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable int page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable int limit,
+
+            @ApiParam(name = "sysTaskDeviceQueryVo", value = "查询对象", required = false)
+            UserIDAndDateRageVo sysTaskDeviceQueryVo){
+        //创建page对象
+        Page<ViewDetectionNameQuery> pageParam = new Page<>(page,limit);
+        // 构造条件
+        QueryWrapper<ViewDetectionNameQuery> r = new QueryWrapper<>();
+        if (sysTaskDeviceQueryVo.getKeyword() != null) {
+            r.eq("employee_code", sysTaskDeviceQueryVo.getKeyword())
+             .eq("is_additional",0).eq("is_deleted",0);
+            r.orderByDesc("start_date");
+        }
+        // 添加日期范围条件
+        String startDateStr = sysTaskDeviceQueryVo.getStart();
+        String endDateStr = sysTaskDeviceQueryVo.getEnd();
+        // 定义日期格式
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // 根据您的日期格式进行调整
+        try {
+            if (startDateStr != null && endDateStr != null) {
+                // 将字符串转换为日期
+                Date startDate = dateFormat.parse(startDateStr);
+                Date endDate = dateFormat.parse(endDateStr);
+
+                // 生成日期范围查询条件
+                r.between("start_date", startDate, endDate);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace(); // 处理解析异常
+        }
+        //调用service方法,不用管下面的函数名字，因为后来进行了修改，为了方便没有再修改名字
+        IPage<ViewDetectionNameQuery> pageModel = viewDetectionNameQueryService.page(pageParam,r);
+        //返回
+        return  Result.ok(pageModel);
+    }
+
+    //9、 员工打卡次数和经历任务数查询领导版
+    @ApiOperation("员工打卡次数和经历任务数查询领导版")
+    @GetMapping("UserDetectionCountForBoss/{page}/{limit}")
+    public Result<IPage<StatisticTaskAndDetection>> UserDetectionCountForBoss(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable int page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable int limit,
+
+            @ApiParam(name = "sysTaskDeviceQueryVo", value = "查询对象", required = false)
+            UserIDAndDateRageVo sysTaskDeviceQueryVo){
+        //创建page对象
+        Page<StatisticTaskAndDetection> pageParam = new Page<>(page,limit);
+
+        //调用service方法,不用管下面的函数名字，因为后来进行了修改，为了方便没有再修改名字
+        IPage<StatisticTaskAndDetection> pageModel = viewDetectionNameQueryService.UserDetectionCountForBoss(pageParam,sysTaskDeviceQueryVo);
+        //返回
+        return  Result.ok(pageModel);
     }
 }
 

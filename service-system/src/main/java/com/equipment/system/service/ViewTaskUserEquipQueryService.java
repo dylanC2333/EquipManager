@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.equipment.model.vo.FindEquipByTaskCode;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
 
 /**
@@ -15,4 +16,6 @@ import com.equipment.model.vo.SysTaskDeviceQueryVo;
 public interface ViewTaskUserEquipQueryService extends IService<ViewTaskUserEquipQuery> {
 
     IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+
+    IPage<FindEquipByTaskCode> SearchEquipByTaskcode(Page<FindEquipByTaskCode> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }
