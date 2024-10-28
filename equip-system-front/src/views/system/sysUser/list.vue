@@ -169,9 +169,6 @@ export default{
               password:[
                 { required : true , message : "必填" },
               ],
-              description:[
-                { required : true , message : "必填" },
-              ],
               phone:[
                 { required : true , message : "必填" },
               ],

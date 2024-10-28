@@ -71,7 +71,6 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
       <el-table-column prop="taskCode" label="任务单号"  sortable="custom"/>
       <el-table-column prop="startDate" label="任务开始日期"  sortable="custom"/>
       <el-table-column prop="endDate" label="任务结束日期"  sortable="custom"/>
@@ -125,22 +124,24 @@
         <el-form-item label="任务单号">
             <el-row>
               <el-col :span="12">
-                <el-input 
-                  v-model="taskCodeParts.year" 
-                  placeholder="    请输入年份,例如2024" 
-                  @blur="$refs.dataForm.validateField('year')"
-                  >
-                  <template slot="prefix">RW-</template>
-                </el-input>
+                <el-form-item  prop="year">
+                  <el-input 
+                    v-model="sysTask.year" 
+                    placeholder="    请输入年份,例如2024" 
+                    >
+                    <template slot="prefix">RW-</template>
+                  </el-input>
+                </el-form-item>
               </el-col>
-              <el-col  :span="12">
-                <el-input 
-                  v-model="taskCodeParts.number" 
-                  placeholder="请输入序列号,例如001"
-                  @blur = "$refs.dataForm.validateField('number')"
-                  >
-                  <template slot="prefix" >-</template>
-                </el-input>
+              <el-col :span="12">
+                <el-form-item  prop="number">
+                  <el-input 
+                    v-model="sysTask.number" 
+                    placeholder="请输入序列号,例如001"
+                    >
+                    <template slot="prefix" >-</template>
+                  </el-input>
+                </el-form-item>
               </el-col>
             </el-row>
         </el-form-item>
@@ -228,15 +229,14 @@ export default {
       rules:{// 表单校验规则
         //任务编号组件验证规则
         year:[
-          { required : true , message : "必填" },
+          { required : true , message : "必填" , trigger:'blur'},
         ],
         number:[
           { required : true , message : "必填" },
         ],
-        
-        taskCode:[
-          { required : true , message : "必填" },
-        ],
+        // taskCode:[
+        //   { required : true , message : "必填" },
+        // ],
         startDate:[
           { required : true , message : "必填" },
         ],
@@ -256,14 +256,13 @@ export default {
 
     // 任务编号分割显示
     taskCodeSplit(fullCode){
+      // let year,number
       // 使用正则表达式匹配并提取年份和序列号
       const regex = /^RW-(\d{4})-(\d{3})$/;
       const matches = fullCode.match(regex);
       if (matches) {
-        return {
-          year: matches[1],  // 提取年份
-          number: matches[2]  // 提取序列号
-        };
+          this.sysTask.year = matches[1];  // 提取年份
+          this.sysTask.number = matches[2];// 提取序列号
       } else {
         throw new Error("格式不正确");
       }
@@ -334,7 +333,8 @@ export default {
       this.dialogVisible = true;
       api.getTaskId(id).then((response) => {
         this.sysTask = response.data;
-        this.taskCodeParts = this.taskCodeSplit(this.sysTask.taskCode);
+        this.taskCodeSplit(this.sysTask.taskCode);
+        console.log(this.sysTask);
       });
     },
 
@@ -342,7 +342,6 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysTask = {};
-      this.taskCodeParts = { year: '', number: '' };
       this.sysTask.startDate =  new Date();
       this.sysTask.endDate = new Date();
     },
@@ -350,7 +349,7 @@ export default {
     //添加或修改
     saveOrUpdate() {
       //任务编号拼接
-      this.sysTask.taskCode = this.taskCodeConcat(this.taskCodeParts);
+      this.sysTask.taskCode = this.taskCodeConcat(this.sysTask);
       //表单校验
       this.$refs.dataForm.validate((valid) =>{
         if(valid){
