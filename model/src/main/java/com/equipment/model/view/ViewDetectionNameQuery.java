@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class ViewDetectionNameQuery implements Serializable {
     /**
-     * 目测id
+     * 检测id
      */
     private Long id;
 
@@ -31,16 +31,16 @@ public class ViewDetectionNameQuery implements Serializable {
     private String taskCode;
 
     /**
-     * 目测开始时间
+     * 检测时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    /**
-     * 目测结束时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date endDate;
+//    /**
+//     * 目测结束时间(已弃用)
+//     */
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    private Date endDate;
 
     /**
      * 目测地点

@@ -110,20 +110,20 @@
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
       <el-form
         ref="dataForm"
-        :model="sysEquipDetction"
+        :model="sysEquipDetection"
         label-width="150px"
         size="small"
         style="padding-right: 40px"
       >
         <el-form-item label="检测人工号">
-          <el-input disabled v-model="sysEquipDetction.employeeCode" />
+          <el-input disabled v-model="sysEquipDetection.employeeCode" />
         </el-form-item>
         <el-form-item label="任务单号">
-          <el-input v-model="sysEquipDetction.taskCode" />
+          <el-input v-model="sysEquipDetection.taskCode" />
         </el-form-item>
         <el-form-item label="检测日期">
           <el-date-picker disabled 
-            v-model="sysEquipDetction.startDate"
+            v-model="sysEquipDetection.startDate"
             type="date"
             placeholder="选择日期"
             value-format = "yyyy-MM-dd"
@@ -131,7 +131,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="任务地点">
-          <el-select v-model="sysEquipDetction.detectionLocation" placeholder="请选择">
+          <el-select v-model="sysEquipDetection.detectionLocation" placeholder="请选择">
           <el-option
             v-for="item in pcTextArr"
             :key="item.value"
@@ -178,7 +178,7 @@ export default {
       sortorder:'descending',//升降序条件
 
       dialogVisible: false, //弹框
-      sysEquipDetction: {}, //封装添加表单数据
+      sysEquipDetection: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
 
@@ -260,13 +260,13 @@ export default {
     //弹出修改表单-数据回显
     edit(id) {
       this.dialogVisible = true;
-      api.getEquipDetctionId(id).then((response) => {
-        this.sysEquipDetction = response.data;
+      api.getEquipDetectionId(id).then((response) => {
+        this.sysEquipDetection = response.data;
       });
     },
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipDetction.id) {
+      if (!this.sysEquipDetection.id) {
         this.saveEquipDetection();
       } else {
         this.updateEquipDetection();
@@ -274,7 +274,7 @@ export default {
     },
     //修改方法
     updateEquipDetection() {
-      api.update(this.sysEquipDetction).then((response) => {
+      api.update(this.sysEquipDetection).then((response) => {
         //提示
         this.$message({
           type: "success",
@@ -288,7 +288,7 @@ export default {
     },
     //添加
     saveEquipDetection() {
-      api.saveEquipDection(this.sysEquipDetction).then((response) => {
+      api.saveEquipDetection(this.sysEquipDetection).then((response) => {
         //提示
         this.$message({
           type: "success",
@@ -304,17 +304,17 @@ export default {
     //弹出添加的表单
     add() {
       this.dialogVisible = true;
-      api.getLastOneDetction(this.name).then((response) => {
+      api.getLastOneDetection(this.name).then((response) => {
         console.log(response.data);
         if (response.data != null) {
-          this.sysEquipDetction = response.data;
+          this.sysEquipDetection = response.data;
         } else {
-          this.sysEquipDetction = {};
+          this.sysEquipDetection = {};
         }
-        this.sysEquipDetction.id = null;
-        this.sysEquipDetction.startDate = new Date();
-        // this.sysEquipDetction.endDate = new Date();
-        this.sysEquipDetction.employeeCode = this.name;
+        this.sysEquipDetection.id = null;
+        this.sysEquipDetection.startDate = new Date();
+        // this.sysEquipDetection.endDate = new Date();
+        this.sysEquipDetection.employeeCode = this.name;
       })
     },
 

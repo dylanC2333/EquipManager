@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-      设备检测列表
+      检测记录列表
       <div class="search-div">
         <el-form label-width="70px" size="small">
           <el-row>
@@ -49,6 +49,9 @@
         >
         <el-button class="btn-add" size="mini" @click="batchRemove()"
           >批量删除</el-button
+        >
+        <el-button type="success" icon="el-icon-notebook-2" size="mini" @click="batchAdd"
+          >批量添加</el-button
         >
       </div>
   
@@ -111,20 +114,20 @@
       <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
         <el-form
           ref="dataForm"
-          :model="sysEquipDetction"
+          :model="sysEquipDetection"
           label-width="150px"
           size="small"
           style="padding-right: 40px"
         >
           <el-form-item label="检测人工号">
-            <el-input v-model="sysEquipDetction.employeeCode" />
+            <el-input v-model="sysEquipDetection.employeeCode" />
           </el-form-item>
           <el-form-item label="任务单号">
-            <el-input v-model="sysEquipDetction.taskCode" />
+            <el-input v-model="sysEquipDetection.taskCode" />
           </el-form-item>
           <el-form-item label="开始日期">
             <el-date-picker
-              v-model="sysEquipDetction.startDate"
+              v-model="sysEquipDetection.startDate"
               type="date"
               placeholder="选择日期"
               value-format = "yyyy-MM-dd"
@@ -132,7 +135,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="任务地点">
-            <el-select v-model="sysEquipDetction.detectionLocation" placeholder="请选择">
+            <el-select v-model="sysEquipDetection.detectionLocation" placeholder="请选择">
             <el-option
               v-for="item in pcTextArr"
               :key="item.value"
@@ -141,11 +144,11 @@
           </el-select>
           </el-form-item>
           <el-form-item label="是否为补充记录">
-            <el-radio v-model="sysEquipDetction.isAdditional" :label="1">是</el-radio>
-            <el-radio v-model="sysEquipDetction.isAdditional" :label="0">否</el-radio>
+            <el-radio v-model="sysEquipDetection.isAdditional" :label="1">是</el-radio>
+            <el-radio v-model="sysEquipDetection.isAdditional" :label="0">否</el-radio>
           </el-form-item>
           <el-form-item label="是否为补充记录">
-            <el-input v-model="sysEquipDetction.isAdditional"/>
+            <el-input v-model="sysEquipDetection.isAdditional"/>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -164,6 +167,73 @@
           >
         </span>
       </el-dialog>
+      
+      <!-- 批量添加 弹框 -->
+      <el-dialog title="批量添加" :visible.sync="dialogBatchVisible" width="40%">
+        <el-form
+          ref="dataForm"
+          :model="BatchDateDetection"
+          label-width="150px"
+          size="small"
+          style="padding-right: 40px"
+        >
+          <el-form-item label="检测人工号">
+            <el-input v-model="BatchDateDetection.employeeCode" />
+          </el-form-item>
+          <el-form-item label="任务单号">
+            <el-input v-model="BatchDateDetection.taskCode" />
+          </el-form-item>
+          <el-form-item label="自动填充开始日期">
+            <el-date-picker
+              v-model="BatchDateDetection.startDate"
+              type="date"
+              placeholder="选择日期"
+              value-format = "yyyy-MM-dd"
+              @input="dateChange">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="自动填充结束日期">
+            <el-date-picker
+              v-model="BatchDateDetection.endDate"
+              type="date"
+              placeholder="选择日期"
+              value-format = "yyyy-MM-dd"
+              @input="dateChange">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="任务地点">
+            <el-select v-model="BatchDateDetection.detectionLocation" placeholder="请选择">
+            <el-option
+              v-for="item in pcTextArr"
+              :key="item.value"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item label="是否为补充记录">
+            <el-radio v-model="BatchDateDetection.isAdditional" :label="1">是</el-radio>
+            <el-radio v-model="BatchDateDetection.isAdditional" :label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="是否为补充记录">
+            <el-input v-model="BatchDateDetection.isAdditional"/>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            @click="dialogBatchVisible = false"
+            size="small"
+            icon="el-icon-refresh-right"
+            >取 消</el-button
+          >
+          <el-button
+            type="primary"
+            icon="el-icon-check"
+            @click="batchSave()"
+            size="small"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
   
     </div>
   </template>
@@ -171,6 +241,14 @@
   <script>
   import api from "@/api/system/equipDetection";
   import {  pcTextArr } from "element-china-area-data";
+  const defaultBatchForm = {
+    employeeCode: '',
+    taskCode:'',
+    startDate: '',
+    endDate: '',
+    detectionLocation:'',
+    isAdditional: '',
+}
   export default {
     data() {
       return {
@@ -184,17 +262,46 @@
         sortorder:'descending',//升降序条件
   
         dialogVisible: false, //弹框
-        sysEquipDetction: {}, //封装添加表单数据
+        sysEquipDetection: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
         createTimes: [],
+
+        dialogBatchVisible: false, //填充日期批量添加弹框
+        BatchDateDetection: defaultBatchForm,//批量添加数据
   
-        pcTextArr,
+        pcTextArr,//全国地址数据
       };
     },
     created() {
       this.fetchData();
     },
     methods: {
+
+      //批量添加弹框弹出方法
+      batchAdd() {
+        this.dialogBatchVisible = true;
+        this.BatchDateDetection = {};
+        //获取当前日期没有生效
+        this.sysEquipDetection.startDate =  new Date();
+        this.sysEquipDetection.endDate =  new Date();
+      },
+
+      //自动填充日期批量插入检测记录
+      batchSave(){
+        api.saveBatchDateDetection(this.BatchDateDetection).then((response) => {
+            
+          console.log(this.BatchDateDetection)
+          //提示
+          this.$message({
+            type: "success",
+            message: "添加成功!",
+          });
+          //关闭弹框
+          this.dialogBatchVisible = false;
+          //刷新页面
+          this.fetchData();
+        });
+      },
   
       // 日期选择器强制更新方法
       dateChange(){
@@ -261,14 +368,14 @@
       //修改-数据回显
       edit(id) {
         this.dialogVisible = true;
-        api.getEquipDetctionId(id).then((response) => {
-          this.sysEquipDetction = response.data;
+        api.getEquipDetectionId(id).then((response) => {
+          this.sysEquipDetection = response.data;
   
         });
       },
       //添加或修改
       saveOrUpdate() {
-        if (!this.sysEquipDetction.id) {
+        if (!this.sysEquipDetection.id) {
           this.saveEquipDetection();
         } else {
           this.updateEquipDetection();
@@ -276,7 +383,7 @@
       },
       //修改方法
       updateEquipDetection() {
-        api.update(this.sysEquipDetction).then((response) => {
+        api.update(this.sysEquipDetection).then((response) => {
           //提示
           this.$message({
             type: "success",
@@ -290,7 +397,9 @@
       },
       //添加
       saveEquipDetection() {
-        api.saveEquipDection(this.sysEquipDetction).then((response) => {
+        api.saveEquipDetection(this.sysEquipDetection).then((response) => {
+            
+          console.log(this.sysEquipDetection)
           //提示
           this.$message({
             type: "success",
@@ -305,9 +414,8 @@
       //弹出添加的表单
       add() {
         this.dialogVisible = true;
-        this.sysEquipDetction = {};
-        this.sysEquipDetction.startDate =  new Date();
-        this.sysEquipDetction.endDate =  new Date();
+        this.sysEquipDetection = {};
+        this.sysEquipDetection.startDate =  new Date();
       },
       
       // 根据id删除数据

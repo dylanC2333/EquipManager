@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.view.ViewDetectionNameQuery;
+import com.equipment.model.vo.SysDetectionDateBatchSaveVo;
 import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
 import com.equipment.model.system.SysDetection;
 import com.equipment.system.service.SysDetectionService;
@@ -27,7 +28,7 @@ import java.util.List;
  * @author atguigu
  * @since 2024-08-21
  */
-@Api(tags = "检测接口")
+@Api(tags = "检测记录接口")
 @RestController
 @RequestMapping("/admin/system/sysEquipDetection")
 public class SysDetectionController {
@@ -190,6 +191,12 @@ public class SysDetectionController {
     public Result<ViewDetectionNameQuery> findLastOne(@PathVariable String employeeCode) {
         ViewDetectionNameQuery lastOne =  sysDetectionService.getLastOne(employeeCode);
         return Result.ok(lastOne);
+    }
+
+    @ApiOperation("自动补充日期批量插入检测记录")
+    @PostMapping("batchSaveDate")
+    public Result<Void> batchSaveDate(@RequestBody SysDetectionDateBatchSaveVo sysDetectionDateBatchSaveVo) {
+        return sysDetectionService.dateBatchSupplement(sysDetectionDateBatchSaveVo) ? Result.ok() : Result.fail();
     }
 }
 
