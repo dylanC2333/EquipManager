@@ -51,6 +51,9 @@
         <el-button class="btn-add" size="mini" @click="batchRemove()"
           >批量删除</el-button
         >
+        <el-button type="success" icon="el-icon-notebook-2" size="mini" @click="batchAdd"
+          >批 量 添 加</el-button
+        >
       </div>
   
       <el-table
@@ -180,20 +183,102 @@
           >
         </span>
       </el-dialog>
+
+
+      <!-- 批量添加 弹框 -->
+      <el-dialog title="批量添加" :visible.sync="dialogBatchVisible" width="40%">
+        <el-form
+          ref="dataForm"
+          :model="batchDateUsage"
+          label-width="150px"
+          size="small"
+          style="padding-right: 40px"
+        >
+          <el-form-item label="管理编号"  prop = "equipmentCode">
+            <el-input v-model="batchDateUsage.equipmentCode" />
+          </el-form-item>
+          <el-form-item label="任务单号" prop = "taskCode">
+            <el-input v-model="batchDateUsage.taskCode" />
+          </el-form-item>
+          <el-form-item label="使用人工号" prop = "employeeUseCode">
+            <el-input v-model="batchDateUsage.employeeUseCode" />
+          </el-form-item>
+          <el-form-item label="自动填充开始日期">
+            <el-date-picker
+              v-model="batchDateUsage.startDate"
+              type="date"
+              placeholder="选择日期"
+              value-format = "yyyy-MM-dd"
+              @input="dateChange">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="自动填充结束日期">
+            <el-date-picker
+              v-model="batchDateUsage.endDate"
+              type="date"
+              placeholder="选择日期"
+              value-format = "yyyy-MM-dd"
+              @input="dateChange">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="地点"  prop = "location">
+            <el-cascader
+              :options="pcTextArr"
+              v-model="selectedLocations"
+              filterable
+              @change="handleLocationChange">
+            </el-cascader>
+          </el-form-item>
+          <el-form-item label="设备使用前情况"  prop = "preUseEquipmentStatus">
+            <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="正常">正常</el-radio>
+            <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="异常">异常</el-radio>
+          </el-form-item>
+          <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
+            <el-input v-model="batchDateUsage.maintenanceStatus" />
+          </el-form-item>
+          <el-form-item label="备注"  prop = "remarks">
+            <el-input v-model="batchDateUsage.remarks" />
+          </el-form-item>
+          <el-form-item label="是否为补充记录">
+            <el-radio v-model="batchDateUsage.isAdditional" :label="1">是</el-radio>
+            <el-radio v-model="batchDateUsage.isAdditional" :label="0">否</el-radio>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            @click="dialogBatchVisible = false"
+            size="small"
+            icon="el-icon-refresh-right"
+            >取 消</el-button
+          >
+          <el-button
+            type="primary"
+            icon="el-icon-check"
+            @click="batchSave()"
+            size="small"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
+
     </div>
   </template>
   <script>
   import api from "@/api/system/equipmentUse";
-  import {
-    provinceAndCityData,
-    pcTextArr,
-    regionData,
-    pcaTextArr,
-    codeToText,
-    TextToCode,
-  } from "element-china-area-data";
-  // import { getUserQuery } from "@/api/system/user";
+  import {    pcTextArr  } from "element-china-area-data";
   import userapi from "@/api/system/user";
+  const defaultBatchForm = {
+    equipmentCode: '',
+    taskCode:'',
+    employeeUseCode:'',
+    startDate: '',
+    endDate: '',
+    location:'',
+    preUseEquipmentStatus:'',
+    maintenanceStatus:'',
+    remarks:'',
+    isAdditional: '',
+}
   export default {
     data() {
       return {
@@ -211,6 +296,11 @@
         sysEquipUse: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
         createTimes: [],
+
+
+
+        dialogBatchVisible: false, //填充日期批量添加弹框
+        batchDateUsage: defaultBatchForm,//批量添加数据
   
         pcTextArr,//省市二级地址，纯汉字
         selectedLocations:[],// 选中的省市地址数据
@@ -253,6 +343,34 @@
         this.loadUserQuery();
     },
     methods: {
+
+      //批量添加弹框弹出方法
+      batchAdd() {
+        this.dialogBatchVisible = true;
+        this.batchDateUsage = {};
+        this.selectedLocations = [];
+        //获取当前日期没有生效
+        this.batchDateUsage.startDate =  new Date();
+        this.batchDateUsage.endDate =  new Date();
+      },
+
+
+      //自动填充日期批量插入检测记录
+      batchSave(){
+        this.batchDateUsage.location = this.sysEquipUse.location
+        api.saveBatchDateUsage(this.batchDateUsage).then((response) => {
+          console.log(this.batchDateUsage)
+          //提示
+          this.$message({
+            type: "success",
+            message: "添加成功!",
+          });
+          //关闭弹框
+          this.dialogBatchVisible = false;
+          //刷新页面
+          this.fetchData();
+        });
+      },
   
       //输入建议主方法
       querySearch(queryString, cb){

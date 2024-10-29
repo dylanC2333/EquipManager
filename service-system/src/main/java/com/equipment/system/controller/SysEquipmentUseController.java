@@ -1,13 +1,12 @@
 package com.equipment.system.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
-import com.equipment.model.system.SysUser;
 import com.equipment.model.view.ViewUseNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
+import com.equipment.model.vo.SysEquipmentUsageDateBatchSaveVo;
 import com.equipment.model.vo.SysEquipmentUsageDaysQueryVo;
 import com.equipment.model.vo.SysEquipmentUseQueryVo;
 import com.equipment.model.system.SysEquipmentUse;
@@ -43,6 +42,7 @@ public class SysEquipmentUseController {
 
     @Autowired
     private SysEquipmentUseService sysEquipmentUseService;
+
     @Autowired
     private ViewTaskUserEquipQueryService viewTaskUserEquipQueryService;
 
@@ -232,6 +232,13 @@ public class SysEquipmentUseController {
         IPage<SysEquipmentUse> pageModel = sysEquipmentUseService.equipmentUsageDays(pageParam,sysEquipmentUsageDaysQueryVo);
         //返回
         return  Result.ok(pageModel);
+    }
+
+    //10、 自动补充日期批量插入使用记录。
+    @ApiOperation("自动补充日期批量插入检测记录")
+    @PostMapping("batchSaveDate")
+    public Result<Void> batchSaveDate(@RequestBody SysEquipmentUsageDateBatchSaveVo sysDetectionDateBatchSaveVo) {
+        return sysEquipmentUseService.dateBatchSupplement(sysDetectionDateBatchSaveVo) ? Result.ok() : Result.fail();
     }
 }
 

@@ -63,11 +63,11 @@ export default{
     },
     
     //8、自动补充日期批量插入检测记录
-    saveBatchDateDetection(BatchDateDetection) {
+    saveBatchDateDetection(batchDateDetection) {
         return request({
           url: `${api_name}/batchSaveDate`,
           method: 'post',
-          data: BatchDateDetection
+          data: batchDateDetection
         })
     },
     

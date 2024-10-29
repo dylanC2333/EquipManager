@@ -75,6 +75,14 @@ export default{
         })
     },
 
+    //9、自动补充日期批量插入检测记录
+    saveBatchDateUsage(batchDateUsage) {
+        return request({
+            url: `${api_name}/batchSaveDate`,
+            method: 'post',
+            data: batchDateUsage
+        })
+    },
 
 
 

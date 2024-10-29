@@ -147,9 +147,6 @@
             <el-radio v-model="sysEquipDetection.isAdditional" :label="1">是</el-radio>
             <el-radio v-model="sysEquipDetection.isAdditional" :label="0">否</el-radio>
           </el-form-item>
-          <el-form-item label="是否为补充记录">
-            <el-input v-model="sysEquipDetection.isAdditional"/>
-          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button
@@ -172,20 +169,20 @@
       <el-dialog title="批量添加" :visible.sync="dialogBatchVisible" width="40%">
         <el-form
           ref="dataForm"
-          :model="BatchDateDetection"
+          :model="batchDateDetection"
           label-width="150px"
           size="small"
           style="padding-right: 40px"
         >
           <el-form-item label="检测人工号">
-            <el-input v-model="BatchDateDetection.employeeCode" />
+            <el-input v-model="batchDateDetection.employeeCode" />
           </el-form-item>
           <el-form-item label="任务单号">
-            <el-input v-model="BatchDateDetection.taskCode" />
+            <el-input v-model="batchDateDetection.taskCode" />
           </el-form-item>
           <el-form-item label="自动填充开始日期">
             <el-date-picker
-              v-model="BatchDateDetection.startDate"
+              v-model="batchDateDetection.startDate"
               type="date"
               placeholder="选择日期"
               value-format = "yyyy-MM-dd"
@@ -194,7 +191,7 @@
           </el-form-item>
           <el-form-item label="自动填充结束日期">
             <el-date-picker
-              v-model="BatchDateDetection.endDate"
+              v-model="batchDateDetection.endDate"
               type="date"
               placeholder="选择日期"
               value-format = "yyyy-MM-dd"
@@ -202,7 +199,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="任务地点">
-            <el-select v-model="BatchDateDetection.detectionLocation" placeholder="请选择">
+            <el-select v-model="batchDateDetection.detectionLocation" placeholder="请选择">
             <el-option
               v-for="item in pcTextArr"
               :key="item.value"
@@ -211,11 +208,8 @@
           </el-select>
           </el-form-item>
           <el-form-item label="是否为补充记录">
-            <el-radio v-model="BatchDateDetection.isAdditional" :label="1">是</el-radio>
-            <el-radio v-model="BatchDateDetection.isAdditional" :label="0">否</el-radio>
-          </el-form-item>
-          <el-form-item label="是否为补充记录">
-            <el-input v-model="BatchDateDetection.isAdditional"/>
+            <el-radio v-model="batchDateDetection.isAdditional" :label="1">是</el-radio>
+            <el-radio v-model="batchDateDetection.isAdditional" :label="0">否</el-radio>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -267,7 +261,7 @@
         createTimes: [],
 
         dialogBatchVisible: false, //填充日期批量添加弹框
-        BatchDateDetection: defaultBatchForm,//批量添加数据
+        batchDateDetection: defaultBatchForm,//批量添加数据
   
         pcTextArr,//全国地址数据
       };
@@ -280,17 +274,17 @@
       //批量添加弹框弹出方法
       batchAdd() {
         this.dialogBatchVisible = true;
-        this.BatchDateDetection = {};
+        this.batchDateDetection = {};
         //获取当前日期没有生效
-        this.sysEquipDetection.startDate =  new Date();
-        this.sysEquipDetection.endDate =  new Date();
+        this.batchDateDetection.startDate =  new Date();
+        this.batchDateDetection.endDate =  new Date();
       },
 
       //自动填充日期批量插入检测记录
       batchSave(){
-        api.saveBatchDateDetection(this.BatchDateDetection).then((response) => {
+        api.saveBatchDateDetection(this.batchDateDetection).then((response) => {
             
-          console.log(this.BatchDateDetection)
+          console.log(this.batchDateDetection)
           //提示
           this.$message({
             type: "success",
