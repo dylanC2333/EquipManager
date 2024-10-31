@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import PasswordChange from '@/views/password/passwordChange.vue'
 // 使用ES6中的模板字符串表示路径，简化代码。
 const api_name = '/admin/system/sysUser/'
 
@@ -79,6 +80,16 @@ export default{
             url: `${api_name}/detectionEmployees/${page}/${limit}`,
             method: 'get',
             params:searchObj
+        })
+    },
+
+    passwordChange(user){
+        return request({
+            // 接口路径
+            url: `${api_name}passwordChange`,
+            // 提交方式
+            method: 'put',
+            data: user
         })
     },
 }
