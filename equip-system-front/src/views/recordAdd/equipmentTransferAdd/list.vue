@@ -81,7 +81,12 @@
         <el-table-column prop="transferDate" label="交接时间" sortable="custom"/>
         <el-table-column prop="transferLocation" label="新任务地点" />
         <el-table-column prop="remarks" label="备注" />
-        <el-table-column prop="isAdditional" label="是否补充记录" />
+        <el-table-column prop="isAdditional" label="是否补充记录" >
+          <template scope="scope">
+            <span v-if="scope.row.isAdditional === 1">是</span>
+            <span v-else-if="scope.row.isAdditional === 0">否</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
@@ -121,23 +126,46 @@
           label-width="150px"
           size="small"
           style="padding-right: 40px"
+          :rules="rules"
         >
-          <el-form-item label="旧任务编号">
-            <el-input v-model="sysEquipTransfer.oldTaskCode" />
-          </el-form-item>
-          <el-form-item label="新任务编号">
-            <el-input v-model="sysEquipTransfer.newTaskCode" />
-          </el-form-item>
-          <el-form-item label="设备编号">
+        <el-form-item label="旧任务编号" prop="oldTaskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input v-model="oldTaskCodeParts.year" placeholder="    请输入年份,例如2024">
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input v-model="oldTaskCodeParts.number" placeholder="请输入序列号,例如001">
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
+        </el-form-item>
+        <el-form-item label="新任务编号" prop="newTaskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input v-model="newTaskCodeParts.year" placeholder="    请输入年份,例如2024">
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input v-model="newTaskCodeParts.number" placeholder="请输入序列号,例如001">
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
+        </el-form-item>
+          <el-form-item label="设备编号" prop = "equipmentCode">
             <el-input v-model="sysEquipTransfer.equipmentCode" />
           </el-form-item>
-          <el-form-item label="交付员工编号">
+          <el-form-item label="交付员工编号" prop = "deliverEmployeeCode">
             <el-input v-model="sysEquipTransfer.deliverEmployeeCode" />
           </el-form-item>
-          <el-form-item label="接收员工编号">
+          <el-form-item label="接收员工编号" prop = "receiverEmployeeCode">
             <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
           </el-form-item>
-          <el-form-item label="交接日期">
+          <el-form-item label="交接日期" prop = "transferDate">
             <el-date-picker
               v-model="sysEquipTransfer.transferDate"
               type="date"
@@ -146,7 +174,7 @@
               @input="dateChange">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="新任务地点">
+          <el-form-item label="新任务地点" prop = "transferLocation">
             <el-cascader
               size="large"
               :options="pcTextArr"
@@ -155,10 +183,10 @@
               @change="handleLocationChange">
             </el-cascader>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item label="备注" prop = "remarks">
             <el-input v-model="sysEquipTransfer.remarks" />
           </el-form-item>
-          <el-form-item label="是否为补充记录">
+          <el-form-item label="是否为补充记录" prop = "isAdditional">
             <el-radio v-model="sysEquipTransfer.isAdditional" :label="1">是</el-radio>
             <el-radio v-model="sysEquipTransfer.isAdditional" :label="0">否</el-radio>
           </el-form-item>
@@ -203,6 +231,38 @@
   
         pcTextArr,//省市二级地址，纯汉字
         selectedLocations:[],// 选中的省市地址数据
+          
+        oldTaskCodeParts: { year: '', number: '' },//旧任务编号组件
+        newTaskCodeParts: { year: '', number: '' },//新任务编号组件
+        rules:{// 表单校验规则
+          //任务编号自定义验证规则，验证两个组件。
+          oldTaskCode:[
+            { validator: this.validateOldTaskCode, trigger:'blur'},
+          ],
+          newTaskCode:[
+            { validator: this.validateNewTaskCode, trigger:'blur'},
+          ],
+          equipmentCode:[
+            { required : true , message : "必填" },
+          ],
+          deliverEmployeeCode:[
+            { required : true , message : "必填" },
+          ],
+          receiverEmployeeCode:[
+            { required : true , message : "必填" },
+          ],
+          transferDate:[
+            { required : true , message : "必填" },
+          ],
+          transferLocation:[
+            { required : true , message : "必填" },
+          ],
+          isAdditional:[
+            { required : true , message : "必填" },
+          ],
+          remarks:[
+          ],
+        },
       };
     },
     created() {
@@ -210,6 +270,62 @@
     },
   
     methods: {
+
+      //旧任务编号校验
+      validateOldTaskCode(rule, value ,callback){
+        const yearPattern = /^\d{4}$/; // 4位数字
+        const numberPattern = /^\d{3}$/; // 3位数字
+        
+        if (!this.oldTaskCodeParts.year || !this.oldTaskCodeParts.number) {
+          callback(new Error("年份和序列号为必填项"));
+        } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
+          callback(new Error("年份必须为4位数字"));
+        } else if (!numberPattern.test(this.oldTaskCodeParts.number)) {
+          callback(new Error("序列号必须为3位数字"));
+        } else {
+          this.sysEquipTransfer.oldTaskCode = this.taskCodeConcat(this.oldTaskCodeParts);
+          callback();
+        }
+      },
+      
+      //新任务编号校验
+      validateNewTaskCode(rule, value ,callback){
+        const yearPattern = /^\d{4}$/; // 4位数字
+        const numberPattern = /^\d{3}$/; // 3位数字
+        
+        if (!this.newTaskCodeParts.year || !this.newTaskCodeParts.number) {
+          callback(new Error("年份和序列号为必填项"));
+        } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
+          callback(new Error("年份必须为4位数字"));
+        } else if (!numberPattern.test(this.newTaskCodeParts.number)) {
+          callback(new Error("序列号必须为3位数字"));
+        } else {
+          this.sysEquipTransfer.newTaskCode = this.taskCodeConcat(this.newTaskCodeParts);
+          callback();
+        }
+      },
+
+      // 任务编号分割显示
+      taskCodeSplit(fullCode){
+        // 使用正则表达式匹配并提取年份和序列号
+        const regex = /^RW-(\d{4})-(\d{3})$/;
+        const matches = fullCode.match(regex);
+        if (matches) {
+          return {
+            year: matches[1],  // 提取年份
+            number: matches[2]  // 提取序列号
+          };
+        } else {
+          throw new Error("格式不正确");
+        }
+      },
+
+      // 任务编号拼接
+      taskCodeConcat(parts){
+        let fullcode = "RW-" + parts.year +"-" + parts.number;
+        return fullcode;
+      },
+
       // 日期选择器强制更新方法
       dateChange(){
         this.$nextTick(() => {
@@ -289,7 +405,10 @@
           this.sysEquipTransfer = response.data;
           // console.log(this.sysEquipTransfer);
           this.selectedLocations = this.locationSplit(this.sysEquipTransfer.transferLocation);
-          // console.log(this.selectedLocations);
+            // console.log(this.selectedLocations);
+          //获取任务编号以后进行分割
+          this.oldTaskCodeParts = this.taskCodeSplit(this.sysEquipTransfer.oldTaskCode);
+          this.newTaskCodeParts = this.taskCodeSplit(this.sysEquipTransfer.newTaskCode);
         });
       },
   
@@ -333,14 +452,25 @@
             // console.log(this.selectedLocations);
           }
       },
-  
+    
       //添加或修改
       saveOrUpdate() {
-        if (!this.sysEquipTransfer.id) {
-          this.saveEquipTransfer();
-        } else {
-          this.updateEquipTransfer();
-        }
+        //任务编号拼接
+        this.sysEquipTransfer.oldTaskCode = this.taskCodeConcat(this.oldTaskCodeParts);
+        this.sysEquipTransfer.newTaskCode = this.taskCodeConcat(this.newTaskCodeParts);
+        //表单校验
+        this.$refs.dataForm.validate((valid) =>{
+          if(valid){
+            if (!this.sysEquipTransfer.id) {
+              this.saveEquipTransfer();
+            } else {
+              this.updateEquipTransfer();
+            }
+          } else{
+            this.$message.error('请完善表单相关信息！');
+            return false;
+          }
+        })
       },
   
       //修改方法
@@ -378,6 +508,8 @@
         this.dialogVisible = true;
         this.sysEquipTransfer = {};
         this.selectedLocations = [];
+        this.oldTaskCodeParts = { year: '', number: '' },
+        this.newTaskCodeParts = { year: '', number: '' },
         this.sysEquipTransfer.transferDate =  new Date();
       },
       // 根据id删除数据

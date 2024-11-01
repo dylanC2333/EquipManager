@@ -84,7 +84,12 @@
         <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
         <el-table-column prop="maintenanceStatus" label="维护保养情况" />
         <el-table-column prop="remarks" label="备注" />
-        <el-table-column prop="isAdditional" label="是否补充记录" />
+        <el-table-column prop="isAdditional" label="是否补充记录" >
+          <template scope="scope">
+            <span v-if="scope.row.isAdditional === 1">是</span>
+            <span v-else-if="scope.row.isAdditional === 0">否</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
@@ -129,8 +134,19 @@
           <el-form-item label="管理编号"  prop = "equipmentCode">
             <el-input v-model="sysEquipUse.equipmentCode" />
           </el-form-item>
-          <el-form-item label="任务单号" prop = "taskCode">
-            <el-input v-model="sysEquipUse.taskCode" />
+          <el-form-item label="任务单号" prop="taskCode">
+              <el-row>
+                <el-col :span="12">
+                  <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                    <template slot="prefix">RW-</template>
+                  </el-input>
+                </el-col>
+                <el-col  :span="12">
+                  <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                    <template slot="prefix" >-</template>
+                  </el-input>
+                </el-col>
+              </el-row>
           </el-form-item>
           <el-form-item label="使用人工号" prop = "employeeUseCode">
             <el-input v-model="sysEquipUse.employeeUseCode" />
@@ -193,12 +209,24 @@
           label-width="150px"
           size="small"
           style="padding-right: 40px"
+          :rules = "rules"
         >
           <el-form-item label="管理编号"  prop = "equipmentCode">
             <el-input v-model="batchDateUsage.equipmentCode" />
           </el-form-item>
-          <el-form-item label="任务单号" prop = "taskCode">
-            <el-input v-model="batchDateUsage.taskCode" />
+          <el-form-item label="任务单号" prop="taskCode">
+              <el-row>
+                <el-col :span="12">
+                  <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                    <template slot="prefix">RW-</template>
+                  </el-input>
+                </el-col>
+                <el-col  :span="12">
+                  <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                    <template slot="prefix" >-</template>
+                  </el-input>
+                </el-col>
+              </el-row>
           </el-form-item>
           <el-form-item label="使用人工号" prop = "employeeUseCode">
             <el-input v-model="batchDateUsage.employeeUseCode" />
@@ -239,7 +267,7 @@
           <el-form-item label="备注"  prop = "remarks">
             <el-input v-model="batchDateUsage.remarks" />
           </el-form-item>
-          <el-form-item label="是否为补充记录">
+          <el-form-item label="是否为补充记录" prop = "isAdditional">
             <el-radio v-model="batchDateUsage.isAdditional" :label="1">是</el-radio>
             <el-radio v-model="batchDateUsage.isAdditional" :label="0">否</el-radio>
           </el-form-item>
@@ -297,8 +325,6 @@
         multipleSelection: [], // 批量删除选中的记录列表
         createTimes: [],
 
-
-
         dialogBatchVisible: false, //填充日期批量添加弹框
         batchDateUsage: defaultBatchForm,//批量添加数据
   
@@ -307,6 +333,8 @@
   
         userqueryList:[],
         userIdList:[],
+
+        taskCodeParts: { year: '', number: '' },//任务单号组件数据
   
         rules:{// 表单校验规则
           employeeUseCode:[
@@ -319,7 +347,7 @@
             { required : true , message : "必填" },
           ],
           taskCode :[
-            { required : true , message : "必填" },
+            { validator: this.validateTaskCode, trigger:'blur' },
           ],
           employeeUseName : [
             { required : true , message : "必填" },
@@ -333,6 +361,9 @@
           preUseEquipmentStatus : [
             { required : true , message : "必填" },
           ],
+          isAdditional:[
+            { required : true , message : "必填" },
+          ],
         },
       };
     },
@@ -344,12 +375,50 @@
     },
     methods: {
 
+      //任务编号校验
+      validateTaskCode(rule, value ,callback){
+        const yearPattern = /^\d{4}$/; // 4位数字
+        const numberPattern = /^\d{3}$/; // 3位数字
+        
+        if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
+          callback(new Error("年份和序列号为必填项"));
+        } else if (!yearPattern.test(this.taskCodeParts.year)) {
+          callback(new Error("年份必须为4位数字"));
+        } else if (!numberPattern.test(this.taskCodeParts.number)) {
+          callback(new Error("序列号必须为3位数字"));
+        } else {
+          this.sysEquipUse.taskCode = this.taskCodeConcat(this.taskCodeParts);
+          callback();
+        }
+      },
+
+      // 任务编号分割显示
+      taskCodeSplit(fullCode){
+        // 使用正则表达式匹配并提取年份和序列号
+        const regex = /^RW-(\d{4})-(\d{3})$/;
+        const matches = fullCode.match(regex);
+        if (matches) {
+          return {
+            year: matches[1],  // 提取年份
+            number: matches[2]  // 提取序列号
+          };
+        } else {
+          throw new Error("格式不正确");
+        }
+      },
+
+      // 任务编号拼接
+      taskCodeConcat(parts){
+        let fullcode = "RW-" + parts.year +"-" + parts.number;
+        return fullcode;
+      },
+
       //批量添加弹框弹出方法
       batchAdd() {
         this.dialogBatchVisible = true;
         this.batchDateUsage = {};
         this.selectedLocations = [];
-        //获取当前日期没有生效
+        this.taskCodeParts = { year: '', number: '' },
         this.batchDateUsage.startDate =  new Date();
         this.batchDateUsage.endDate =  new Date();
       },
@@ -357,60 +426,36 @@
 
       //自动填充日期批量插入检测记录
       batchSave(){
+        //从sysEquipUse数据模型中拿到拼接以后的数据。
         this.batchDateUsage.location = this.sysEquipUse.location
-        api.saveBatchDateUsage(this.batchDateUsage).then((response) => {
-          console.log(this.batchDateUsage)
-          //提示
-          this.$message({
-            type: "success",
-            message: "添加成功!",
-          });
-          //关闭弹框
-          this.dialogBatchVisible = false;
-          //刷新页面
-          this.fetchData();
-        });
+        this.batchDateUsage.taskCode = this.sysEquipUse.taskCode
+        this.$refs.dataForm.validate((valid) =>{
+          if(valid){
+            this.$confirm("此操作将插入大量记录，请再次检查数据填写是否正确！", "提示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
+            }).then(() =>{
+              api.saveBatchDateUsage(this.batchDateUsage).then((response) => {
+                // console.log(this.batchDateUsage)
+                //提示
+                this.$message({
+                  type: "success",
+                  message: "添加成功!",
+                });
+                //关闭弹框
+                this.dialogBatchVisible = false;
+                //刷新页面
+                this.fetchData();
+              });  
+            })
+          } else {
+            this.$message.error('请完善表单相关信息！');
+            return false;
+          }
+        })
       },
   
-      //输入建议主方法
-      querySearch(queryString, cb){
-        var userNameList = this.userNameList;
-        var results = queryString ? userNameList.filter(this.createFilter(queryString)) : userNameList;
-        console.log(results);
-        cb(results);
-      },
-  
-      //输入建议关键词筛选方法
-      createFilter(queryString){
-        const regExp = new RegExp(queryString,'i');
-        return (matchNameList) =>{
-          return (regExp.test(matchNameList.value));
-        };
-  
-        // return (matchNameList) =>{
-        //   return (matchNameList.value.toLowerCase().indexOf(queryString.toLowerCase()) == 0);
-        // };
-      },
-  
-      // 输入建议数据加载方法
-      loadUserQuery(){
-        userapi.getUserQuery("设备使用人员").then((response) =>{
-          this.userqueryList = response.data;
-          // console.log(this.userqueryList);
-          this.userNameList = this.userqueryList.map((user) => {
-            return {
-              value: user.name,
-              id : user.id,
-            };
-          });
-          // console.log(this.userNameList);
-        });
-      },
-  
-      //输入建议提交触发方法
-      handleSubmit(item){
-        // console.log(item);
-      },
   
       // 日期选择器强制更新方法
       dateChange(){
@@ -491,7 +536,10 @@
         this.dialogVisible = true;
         api.getEquipUseId(id).then((response) => {
           this.sysEquipUse = response.data;
-          this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
+        //获取任务单号以后进行分割。
+        this.taskCodeParts = this.taskCodeSplit(this.sysEquipUse.taskCode);
+        //获取地址信息以后尽心分割
+        this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
         });
       },
   
@@ -537,6 +585,9 @@
       //添加或修改
       //增加表单校验判断。
       saveOrUpdate() {
+        //任务编号拼接
+        this.sysEquipUse.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        //表单校验
         this.$refs.dataForm.validate((valid) =>{
           if(valid){
             if (!this.sysEquipUse.id) {
@@ -585,6 +636,7 @@
         this.dialogVisible = true;
         this.sysEquipUse = {};
         this.selectedLocations = [];
+        this.taskCodeParts = { year: '', number: '' },
         this.sysEquipUse.equipmentUseDate =  new Date();
       },
   

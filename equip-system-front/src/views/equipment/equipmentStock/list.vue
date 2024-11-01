@@ -119,11 +119,12 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules = "rules"
       >
-        <el-form-item label="设备编号">
+        <el-form-item label="设备编号" prop="equipmentCode">
           <el-input v-model="sysEquipStock.equipmentCode" />
         </el-form-item>
-        <el-form-item label="设备出库日期">
+        <el-form-item label="设备出/入库日期" prop="equipmentDate">
           <el-date-picker disabled 
             v-model="sysEquipStock.equipmentDate"
             type="date"
@@ -132,20 +133,31 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="出库人工号">
+        <el-form-item label="出/入库人工号" prop="userCode">
           <el-input disabled v-model="sysEquipStock.userCode" />
         </el-form-item>
-        <el-form-item label="任务单号">
-          <el-input v-model="sysEquipStock.taskCode" />
+        <el-form-item label="任务单号" prop="taskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
         </el-form-item>
-        <el-form-item label="仓库管理员工号">
+        <el-form-item label="仓库管理员工号" prop="warehouseManagerCode">
           <el-input v-model="sysEquipStock.warehouseManagerCode" />
         </el-form-item>
-        <el-form-item label="出入库类型">
+        <el-form-item label="出入库类型"  prop="type">
           <el-radio v-model="sysEquipStock.type" label="出库">出库</el-radio>
           <el-radio v-model="sysEquipStock.type" label="入库">入库</el-radio>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注"   prop="remarks">
           <el-input v-model="sysEquipStock.remarks" />
         </el-form-item>
       </el-form>
@@ -187,6 +199,32 @@ export default {
       sysEquipStock: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      taskCodeParts: { year: '', number: '' },    
+
+      rules:{//表单校验规则
+        //任务编号自定义验证规则，验证两个组件。
+        taskCode:[
+          { validator: this.validateTaskCode, trigger:'blur'},
+        ],
+        equipmentCode:[
+          { required: true, message : '必填'},
+        ],
+        equipmentDate:[
+          { required: true, message : '必填'},
+        ],
+        userCode:[
+          { required: true, message : '必填'},
+        ],
+        warehouseManagerCode:[
+          { required: true, message : '必填'},
+        ],
+        type:[
+          { required: true, message : '必填'},
+        ],
+        remarks:[
+        ],
+      },
     };
   },
   computed: {
@@ -198,6 +236,45 @@ export default {
     this.fetchData();
   },
   methods: {
+    
+    //任务编号校验
+    validateTaskCode(rule, value ,callback){
+      const yearPattern = /^\d{4}$/; // 4位数字
+      const numberPattern = /^\d{3}$/; // 3位数字
+      
+      if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
+        callback(new Error("年份和序列号为必填项"));
+      } else if (!yearPattern.test(this.taskCodeParts.year)) {
+        callback(new Error("年份必须为4位数字"));
+      } else if (!numberPattern.test(this.taskCodeParts.number)) {
+        callback(new Error("序列号必须为3位数字"));
+      } else {
+        this.sysEquipStock.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        callback();
+      }
+    },
+
+    // 任务编号分割显示
+    taskCodeSplit(fullCode){
+      // 使用正则表达式匹配并提取年份和序列号
+      const regex = /^RW-(\d{4})-(\d{3})$/;
+      const matches = fullCode.match(regex);
+      if (matches) {
+        return {
+          year: matches[1],  // 提取年份
+          number: matches[2]  // 提取序列号
+        };
+      } else {
+        throw new Error("格式不正确");
+      }
+    },
+
+    // 任务编号拼接
+    taskCodeConcat(parts){
+      let fullcode = "RW-" + parts.year +"-" + parts.number;
+      return fullcode;
+    },
+
     // 日期选择器强制更新方法
     dateChange(){
       this.$nextTick(() => {
@@ -265,16 +342,30 @@ export default {
       this.dialogVisible = true;
       api.getEquipStockId(id).then((response) => {
         this.sysEquipStock = response.data;
+        //获取数据以后进行分割。
+        this.taskCodeParts = this.taskCodeSplit(this.sysEquipStock.taskCode);
       });
     },
+
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipStock.id) {
-        this.saveEquipStock();
-      } else {
-        this.updateEquipStock();
-      }
+      //任务编号拼接
+      this.sysEquipStock.taskCode = this.taskCodeConcat(this.taskCodeParts);
+      //表单校验
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipStock.id) {
+            this.saveEquipStock();
+          } else {
+            this.updateEquipStock();
+          }
+        } else {
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
+
     //修改方法
     updateEquipStock() {
       api.update(this.sysEquipStock).then((response) => {
@@ -308,6 +399,7 @@ export default {
     add() {
       this.dialogVisible = true;
       this.sysEquipStock = {};
+      this.taskCodeParts = { year: '', number: '' },    
       this.sysEquipStock.equipmentDate =  new Date();
       this.sysEquipStock.userCode = this.name;
     },

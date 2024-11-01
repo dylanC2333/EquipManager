@@ -125,8 +125,19 @@
         <el-form-item label="管理编号"  prop = "equipmentCode">
           <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
-        <el-form-item label="任务单号" prop = "taskCode">
-          <el-input v-model="sysEquipUse.taskCode" />
+        <el-form-item label="任务单号" prop="taskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
         </el-form-item>
         <el-form-item label="使用人工号" prop = "employeeUseCode">
           <el-input disabled v-model="sysEquipUse.employeeUseCode" />
@@ -180,7 +191,6 @@
 <script>
 import api from "@/api/system/equipmentUse";
 import {  pcTextArr } from "element-china-area-data";
-// import { getUserQuery } from "@/api/system/user";
 import userapi from "@/api/system/user";
 import { mapGetters } from 'vuex'
 
@@ -208,6 +218,8 @@ export default {
       userqueryList:[],
       userIdList:[],
 
+      taskCodeParts: { year: '', number: '' },//任务单号组件数据
+
       rules:{// 表单校验规则
         employeeUseCode:[
           { required : true , message : "必填" },
@@ -219,7 +231,7 @@ export default {
           { required : true , message : "必填" },
         ],
         taskCode :[
-          { required : true , message : "必填" },
+          { validator: this.validateTaskCode, trigger:'blur' },
         ],
         employeeUseName : [
           { required : true , message : "必填" },
@@ -249,44 +261,42 @@ export default {
   },
   methods: {
 
-    //输入建议主方法
-    querySearch(queryString, cb){
-      var userNameList = this.userNameList;
-      var results = queryString ? userNameList.filter(this.createFilter(queryString)) : userNameList;
-      console.log(results);
-      cb(results);
+    //任务编号校验
+    validateTaskCode(rule, value ,callback){
+      const yearPattern = /^\d{4}$/; // 4位数字
+      const numberPattern = /^\d{3}$/; // 3位数字
+      
+      if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
+        callback(new Error("年份和序列号为必填项"));
+      } else if (!yearPattern.test(this.taskCodeParts.year)) {
+        callback(new Error("年份必须为4位数字"));
+      } else if (!numberPattern.test(this.taskCodeParts.number)) {
+        callback(new Error("序列号必须为3位数字"));
+      } else {
+        this.sysEquipUse.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        callback();
+      }
     },
 
-    //输入建议关键词筛选方法
-    createFilter(queryString){
-      const regExp = new RegExp(queryString,'i');
-      return (matchNameList) =>{
-        return (regExp.test(matchNameList.value));
-      };
-
-      // return (matchNameList) =>{
-      //   return (matchNameList.value.toLowerCase().indexOf(queryString.toLowerCase()) == 0);
-      // };
+    // 任务编号分割显示
+    taskCodeSplit(fullCode){
+      // 使用正则表达式匹配并提取年份和序列号
+      const regex = /^RW-(\d{4})-(\d{3})$/;
+      const matches = fullCode.match(regex);
+      if (matches) {
+        return {
+          year: matches[1],  // 提取年份
+          number: matches[2]  // 提取序列号
+        };
+      } else {
+        throw new Error("格式不正确");
+      }
     },
 
-    // 输入建议数据加载方法
-    loadUserQuery(){
-      userapi.getUserQuery("设备使用人员").then((response) =>{
-        this.userqueryList = response.data;
-        // console.log(this.userqueryList);
-        this.userNameList = this.userqueryList.map((user) => {
-          return {
-            value: user.name,
-            id : user.id,
-          };
-        });
-        // console.log(this.userNameList);
-      });
-    },
-
-    //输入建议提交触发方法
-    handleSubmit(item){
-      // console.log(item);
+    // 任务编号拼接
+    taskCodeConcat(parts){
+      let fullcode = "RW-" + parts.year +"-" + parts.number;
+      return fullcode;
     },
 
     // 日期选择器强制更新方法
@@ -368,6 +378,9 @@ export default {
       this.dialogVisible = true;
       api.getEquipUseId(id).then((response) => {
         this.sysEquipUse = response.data;
+        //获取任务单号以后进行分割。
+        this.taskCodeParts = this.taskCodeSplit(this.sysEquipUse.taskCode);
+        //获取地址信息以后尽心分割
         this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
       });
     },
@@ -414,6 +427,9 @@ export default {
     //添加或修改
     //增加表单校验判断。
     saveOrUpdate() {
+      //任务编号拼接
+      this.sysEquipUse.taskCode = this.taskCodeConcat(this.taskCodeParts);
+      //表单校验
       this.$refs.dataForm.validate((valid) =>{
         if(valid){
           if (!this.sysEquipUse.id) {
@@ -462,6 +478,7 @@ export default {
       this.dialogVisible = true;
       this.sysEquipUse = {};
       this.selectedLocations = [];
+      this.taskCodeParts = { year: '', number: '' },
       this.sysEquipUse.equipmentUseDate =  new Date();
       this.sysEquipUse.employeeUseCode = this.name;
     },
