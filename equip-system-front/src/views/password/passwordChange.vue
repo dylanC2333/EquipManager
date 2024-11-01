@@ -61,11 +61,10 @@ export default{
             searchObj : {},
 
             dataFormRules: {
-              newpassword: [{
-                required: true,
-                message: '请输入新密码',
-                trigger: 'blur'
-              }],
+              newpassword: [
+                { required: true,  message: '请输入新密码', trigger: 'blur' },
+                { min: 8, message: '密码长度不少于8个字符', trigger: 'blur' },
+              ],
               checkpassword: [{
                 required: true,
                 validator: checkNewPw,
@@ -103,11 +102,10 @@ export default{
 
         //修改密码，调用接口更改
         handlepasswordChange(){
-            console.log("new:"+this.dataForm.newpassword)
-            console.log("check:"+this.dataForm.checkpassword)
-            this.sysUser.password = this.dataForm.newpassword;
-            console.log(this.sysUser);
-            
+            // console.log("new:"+this.dataForm.newpassword)
+            // console.log("check:"+this.dataForm.checkpassword)
+            // this.sysUser.password = this.dataForm.newpassword;
+            // console.log(this.sysUser);
             this.$refs.dataForm.validate((valid) => {
               if (valid){
                 userapi.passwordChange(this.sysUser).then( res => {
@@ -124,7 +122,7 @@ export default{
                     }
                 })
               } else{
-                this.$message.error('密码不一致！');
+                this.$message.error('请检查密码输入！');
               }
             })
         }

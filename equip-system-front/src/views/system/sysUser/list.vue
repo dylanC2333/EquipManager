@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="userCode" label="用户编号" sortable="custom"/>
+      <el-table-column prop="userCode" label="用户工号" sortable="custom"/>
       <el-table-column prop="userName" label="用户姓名" sortable="custom"/>
       <el-table-column prop="description" label="用户详情" />
       <el-table-column prop="phone" label="电话号码" />
@@ -87,7 +87,7 @@
         <el-form-item label="用户姓名" prop = "userName">
           <el-input v-model="sysUser.userName"/>
         </el-form-item>
-        <el-form-item label="用户编号" prop = "userCode">
+        <el-form-item label="用户工号" prop = "userCode">
           <el-input v-model="sysUser.userCode"/>
         </el-form-item>
         <el-form-item label="密码"   v-if="!sysUser.id" prop="password">
@@ -109,15 +109,18 @@
     <!-- 角色分配弹框 -->
     <el-dialog title="分配角色" :visible.sync="dialogRoleVisible">
       <el-form label-width="80px">
-        <el-form-item label="用户名">
-          <el-input disabled :value="sysUser.username"></el-input>
+        <el-form-item label="用户姓名">
+          <el-input disabled :value="sysUser.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="用户工号">
+          <el-input disabled :value="sysUser.userCode"></el-input>
         </el-form-item>
 
         <el-form-item label="角色列表">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
           <div style="margin: 15px 0;"></div>
           <el-checkbox-group v-model="userRoleIds" @change="handleCheckedChange">
-            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.keyword}}</el-checkbox>
+            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.roleName}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -168,9 +171,9 @@ export default{
               ],
               password:[
                 { required : true , message : "必填" },
+                { min : 8 , message: "密码长度不少于8个字符",trigger: 'blur'},
               ],
               phone:[
-                { required : true , message : "必填" },
               ],
             },
         };
@@ -188,8 +191,10 @@ export default{
             this.userRoleIds = response.data.userRoleIds
             this.checkAll = this.userRoleIds.length == this.allRoles.length
             this.isIndeterminate = this.userRoleIds.length>0 && this.userRoleIds.length<this.allRoles.length
+            console.log(this.allRoles);
           })
       },
+
       /*
       全选勾选状态发生改变的监听
       */

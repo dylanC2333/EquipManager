@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
       <div style="padding: 20px 20px 0 20px;">
-        授权角色：{{ $route.query.keyword }}
+        授权角色：{{ $route.query.roleName }}
       </div>
       <el-tree
         style="margin: 20px 0"
@@ -66,6 +66,7 @@
             return pre
           }, initArr)
         },
+
 
         /*
         保存权限列表

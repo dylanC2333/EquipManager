@@ -122,12 +122,13 @@
           <el-input v-model="sysTask.taskCode"/>
         </el-form-item> -->
 
-        <el-form-item label="任务单号" prop="taskCode">
+        <el-form-item label="任务单号">
             <el-row>
               <el-col :span="12">
                 <el-input 
                   v-model="taskCodeParts.year" 
                   placeholder="    请输入年份,例如2024" 
+                  @blur="$refs.dataForm.validateField('year')"
                   >
                   <template slot="prefix">RW-</template>
                 </el-input>
@@ -136,6 +137,7 @@
                 <el-input 
                   v-model="taskCodeParts.number" 
                   placeholder="请输入序列号,例如001"
+                  @blur = "$refs.dataForm.validateField('number')"
                   >
                   <template slot="prefix" >-</template>
                 </el-input>
@@ -224,9 +226,16 @@ export default {
       pcTextArr,//省市二级数据纯文字
 
       rules:{// 表单校验规则
-        //任务编号自定义验证规则，验证两个组件。
+        //任务编号组件验证规则
+        year:[
+          { required : true , message : "必填" },
+        ],
+        number:[
+          { required : true , message : "必填" },
+        ],
+        
         taskCode:[
-          { validator: this.validateTaskCode, trigger:'blur'},
+          { required : true , message : "必填" },
         ],
         startDate:[
           { required : true , message : "必填" },
@@ -244,23 +253,6 @@ export default {
     this.fetchData();
   },
   methods: {
-
-    //任务编号校验
-    validateTaskCode(rule, value ,callback){
-      const yearPattern = /^\d{4}$/; // 4位数字
-      const numberPattern = /^\d{3}$/; // 3位数字
-      
-      if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
-        callback(new Error("年份和序列号为必填项"));
-      } else if (!yearPattern.test(this.taskCodeParts.year)) {
-        callback(new Error("年份必须为4位数字"));
-      } else if (!numberPattern.test(this.taskCodeParts.number)) {
-        callback(new Error("序列号必须为3位数字"));
-      } else {
-        this.sysTask.taskCode = this.taskCodeConcat(this.taskCodeParts);
-        callback();
-      }
-    },
 
     // 任务编号分割显示
     taskCodeSplit(fullCode){

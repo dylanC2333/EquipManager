@@ -76,11 +76,11 @@
 
     <!-- 添加、修改弹框 -->
     <el-dialog title="修改角色" :visible.sync="dialogVisible" width="40%" >
-      <el-form 
-        ref="dataForm" 
-        :model="sysRole" 
-        label-width="150px" 
-        size="small" 
+      <el-form
+        ref="dataForm"
+        :model="sysRole"
+        label-width="150px"
+        size="small"
         style="padding-right: 40px;"
         :rules = "rules"
       >
@@ -151,8 +151,8 @@ export default{
         },
 
         // 分配权限跳转方法
-        showAssignAuth(row){
-          this.$router.push('/system/assignAuth?id='+row.id+'&keyword='+row.keyword);
+        showAssignAuth(row) {
+          this.$router.push('/system/assignAuth?id='+row.id+'&roleName='+row.roleName);
         },
 
 
