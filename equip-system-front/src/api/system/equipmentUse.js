@@ -66,7 +66,7 @@ export default{
         })
     },
 
-    //7、任务所参与人员查询列表
+    //8、任务所参与人员查询列表
     taskUserFinder(page,limit,searchObj){
         return request({
             url: `${api_name}/taskUserFinder/${page}/${limit}`,
@@ -75,7 +75,7 @@ export default{
         })
     },
 
-    //8、该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
+    //9、该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
     equipmentUsageDays(page,limit,searchObj){
         return request({
             url: `${api_name}/equipmentUsageDays/${page}/${limit}`,
@@ -84,7 +84,14 @@ export default{
         })
     },
 
-    
+    //10、自动补充日期批量插入检测记录
+    saveBatchDateUsage(batchDateUsage) {
+        return request({
+            url: `${api_name}/batchSaveDate`,
+            method: 'post',
+            data: batchDateUsage
+        })
+    },
 
 
 

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -46,6 +48,7 @@ public class ViewTransferNameQuery implements Serializable {
     /**
      * 交接日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date transferDate;
 
     /**

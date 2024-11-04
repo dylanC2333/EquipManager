@@ -127,8 +127,8 @@ public class SysUserController {
         return sysUserService.removeByIds(ids)?Result.ok():Result.fail();
     }
 
-    // 9. 查询空闲人员
-    @ApiOperation("空闲目测人员名单")
+    // 9 查询空闲检测人员名单
+    @ApiOperation("空闲检测人员名单")
     @GetMapping("/detectionEmployees/{page}/{limit}")
     public Result<IPage<SysUser>> detectionEmployees(
             @ApiParam(name = "page", value = "当前页码", required = true)
@@ -147,5 +147,14 @@ public class SysUserController {
         return Result.ok(pageModel);
     }
 
+    // 9 修改密码
+    @ApiOperation("修改用户密码")
+    @PutMapping("passwordChange")
+    public Result<Void> passwordChange(@RequestBody SysUser sysUser) {
+        // 把输入密码进行MD5加密
+        String encrypt = DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes());
+        sysUser.setPassword(encrypt);
+        return sysUserService.updateById(sysUser) ? Result.ok() : Result.fail();
+    }
 }
 

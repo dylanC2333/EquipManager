@@ -128,7 +128,9 @@ public class SysEquipmentMaintenanceController {
         if(sysEquipmentMaintenanceQueryVo.getKeyword() !=null){
             queryWrapper.like("equipment_code",sysEquipmentMaintenanceQueryVo.getKeyword())
                     .or().like("employee_code",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("before_use_status",sysEquipmentMaintenanceQueryVo.getKeyword());
+                    .or().like("before_use_status",sysEquipmentMaintenanceQueryVo.getKeyword())
+                    .or().like("employee_name",sysEquipmentMaintenanceQueryVo.getKeyword())
+                    .or().like("equipment_name",sysEquipmentMaintenanceQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {

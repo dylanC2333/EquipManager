@@ -2,6 +2,10 @@ package com.equipment.system.service;
 
 import com.equipment.model.system.SysDetection;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.equipment.model.view.ViewDetectionNameQuery;
+import com.equipment.model.vo.SysDetectionDateBatchSaveVo;
+
+import java.util.List;
 
 /**
 * @author A
@@ -10,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SysDetectionService extends IService<SysDetection> {
 
+    ViewDetectionNameQuery getLastOne(String employeeCode);
+
+    boolean dateBatchSupplement(SysDetectionDateBatchSaveVo sysDetectionDateBatchSaveVo);
 }

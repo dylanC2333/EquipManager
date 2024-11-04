@@ -119,13 +119,13 @@
         style="padding-right: 40px"
       >
         <el-form-item label="员工编号">
-          <el-input v-model="sysEquipMain.employeeCode" />
+          <el-input disabled v-model="sysEquipMain.employeeCode" />
         </el-form-item>
         <el-form-item label="设备编号">
           <el-input v-model="sysEquipMain.equipmentCode" />
         </el-form-item>
         <el-form-item label="保养日期">
-          <el-date-picker
+          <el-date-picker disabled 
             v-model="sysEquipMain.maintenanceDate"
             type="date"
             placeholder="选择日期"
@@ -164,6 +164,8 @@
 </template>
 <script>
 import api from "@/api/system/equipMaintenance";
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -184,6 +186,11 @@ export default {
   },
   created() {
     this.fetchData();
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   methods: {
     dateChange(){
@@ -296,6 +303,7 @@ export default {
       this.dialogVisible = true;
       this.sysEquipMain = {};
       this.sysEquipMain.maintenanceDate =  new Date();
+      this.sysEquipMain.employeeCode = this.name;
     },
 
     // 根据id删除数据

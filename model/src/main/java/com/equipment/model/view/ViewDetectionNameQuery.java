@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -14,7 +16,7 @@ import lombok.Data;
 @Data
 public class ViewDetectionNameQuery implements Serializable {
     /**
-     * 目测id
+     * 检测id
      */
     private Long id;
 
@@ -29,14 +31,16 @@ public class ViewDetectionNameQuery implements Serializable {
     private String taskCode;
 
     /**
-     * 目测开始时间
+     * 检测时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    /**
-     * 目测结束时间
-     */
-    private Date endDate;
+//    /**
+//     * 目测结束时间(已弃用)
+//     */
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    private Date endDate;
 
     /**
      * 目测地点

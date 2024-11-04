@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -31,6 +33,7 @@ public class ViewMaintenanceNameQuery implements Serializable {
     /**
      * 保养时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date maintenanceDate;
 
     /**

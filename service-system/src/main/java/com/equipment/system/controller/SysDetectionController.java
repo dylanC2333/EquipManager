@@ -7,6 +7,7 @@ import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.view.ViewDetectionNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.equipment.model.vo.StatisticTaskAndDetection;
+import com.equipment.model.vo.SysDetectionDateBatchSaveVo;
 import com.equipment.model.vo.SysEquipmentDetectionQueryVo;
 import com.equipment.model.vo.UserIDAndDateRageVo;
 import com.equipment.model.system.SysDetection;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author atguigu
  * @since 2024-08-21
  */
-@Api(tags = "检测接口")
+@Api(tags = "检测记录接口")
 @RestController
 @RequestMapping("/admin/system/sysEquipDetection")
 public class SysDetectionController {
@@ -138,7 +139,8 @@ public class SysDetectionController {
         if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
             queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword());
+                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword())
+                    .or().like("employee_name",sysEquipmentDetectionQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -169,7 +171,7 @@ public class SysDetectionController {
     }
 
     //6 根据id查询
-    @ApiOperation("根据id查询设备检测")
+    @ApiOperation("根据id查询检测记录")
     @GetMapping("findDetectionById/{id}")
     public Result<SysDetection> findDetectionById(@PathVariable String id) {
         SysDetection sysDetection = sysDetectionService.getById(id);
@@ -253,6 +255,21 @@ public class SysDetectionController {
         IPage<StatisticTaskAndDetection> pageModel = viewDetectionNameQueryService.UserDetectionCountForBoss(pageParam,sysTaskDeviceQueryVo);
         //返回
         return  Result.ok(pageModel);
+    }
+
+    // 10 查询用户编号最近的一条检测记录
+    @ApiOperation("根据用户编号查询最近的一条检测记录")
+    @GetMapping("findLastOne/{employeeCode}")
+    public Result<ViewDetectionNameQuery> findLastOne(@PathVariable String employeeCode) {
+        ViewDetectionNameQuery lastOne =  sysDetectionService.getLastOne(employeeCode);
+        return Result.ok(lastOne);
+    }
+
+    // 11 自动补充日期批量插入检测记录
+    @ApiOperation("自动补充日期批量插入检测记录")
+    @PostMapping("batchSaveDate")
+    public Result<Void> batchSaveDate(@RequestBody SysDetectionDateBatchSaveVo sysDetectionDateBatchSaveVo) {
+        return sysDetectionService.dateBatchSupplement(sysDetectionDateBatchSaveVo) ? Result.ok() : Result.fail();
     }
 }
 

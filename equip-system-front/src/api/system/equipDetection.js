@@ -23,7 +23,7 @@ export default{
         })
     },
     //3、添加
-    saveEquipDection(equipDet) {
+    saveEquipDetection(equipDet) {
         return request({
           url: `${api_name}/save`,
           method: 'post',
@@ -31,7 +31,7 @@ export default{
         })
     },
     //4、根据id查询
-    getEquipDetctionId(id) {
+    getEquipDetectionId(id) {
         return request({
             url: `${api_name}/findDetectionById/${id}`,
             method: 'get'
@@ -71,8 +71,24 @@ export default{
             params:searchObj
         })
     }
-    
-    
-  
-    
+
+    },
+
+    //9、根据employeeCode查询最近一条检测记录
+    getLastOneDetection(employeeCode) {
+        return request({
+            url: `${api_name}/findLastOne/${employeeCode}`,
+            method: 'get'
+        })
+    },
+
+    //10、自动补充日期批量插入检测记录
+    saveBatchDateDetection(batchDateDetection) {
+        return request({
+          url: `${api_name}/batchSaveDate`,
+          method: 'post',
+          data: batchDateDetection
+        })
+    },
+
 }

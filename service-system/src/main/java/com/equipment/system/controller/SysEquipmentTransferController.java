@@ -141,7 +141,10 @@ public class SysEquipmentTransferController {
                     .or().like("deliver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
                     .or().like("receiver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
                     .or().like("old_task_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("new_task_code",sysEquipmentTransferQueryVo.getKeyword());
+                    .or().like("new_task_code",sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like("deliver_employee_name",sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like("receiver_employee_name",sysEquipmentTransferQueryVo.getKeyword())
+                    .or().like("equipment_name",sysEquipmentTransferQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {
