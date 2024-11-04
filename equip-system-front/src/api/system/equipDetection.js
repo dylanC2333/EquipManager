@@ -70,8 +70,6 @@ export default{
             method: 'get',
             params:searchObj
         })
-    }
-
     },
 
     //9、根据employeeCode查询最近一条检测记录
