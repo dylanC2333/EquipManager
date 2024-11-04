@@ -178,7 +178,7 @@
           <el-form-item label="备注"  prop = "remarks">
             <el-input v-model="sysEquipUse.remarks" />
           </el-form-item>
-          <el-form-item label="是否为补充记录">
+          <el-form-item label="是否为补充记录" prop="isAdditional">
             <el-radio v-model="sysEquipUse.isAdditional" :label="1">是</el-radio>
             <el-radio v-model="sysEquipUse.isAdditional" :label="0">否</el-radio>
           </el-form-item>
@@ -355,6 +355,13 @@
           equipmentUseDate : [
             { required : true , message : "必填" },
           ],
+          //批量插入用到startDate、endDate
+          startDate:[
+            { required : true , message : "必填" },
+          ],
+          endDate:[
+            { required : true , message : "必填" },
+          ],
           location:[
             { required : true , message : "必填" },
           ],
@@ -424,11 +431,11 @@
       },
 
 
-      //自动填充日期批量插入检测记录
+      //自动填充日期批量插入设备使用记录
       batchSave(){
         //从sysEquipUse数据模型中拿到拼接以后的数据。
         this.batchDateUsage.location = this.sysEquipUse.location
-        this.batchDateUsage.taskCode = this.sysEquipUse.taskCode
+        this.batchDateUsage.taskCode = this.taskCodeConcat(this.taskCodeParts)
         this.$refs.dataForm.validate((valid) =>{
           if(valid){
             this.$confirm("此操作将插入大量记录，请再次检查数据填写是否正确！", "提示", {
@@ -538,7 +545,7 @@
           this.sysEquipUse = response.data;
         //获取任务单号以后进行分割。
         this.taskCodeParts = this.taskCodeSplit(this.sysEquipUse.taskCode);
-        //获取地址信息以后尽心分割
+        //获取地址信息以后进行分割
         this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
         });
       },

@@ -78,7 +78,12 @@
         <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
         <el-table-column prop="startDate" label="开始日期" sortable="custom"/>
         <el-table-column prop="detectionLocation" label="任务地点" sortable="custom"/>
-        <el-table-column prop="isAdditional" label="是否补充记录" />
+        <el-table-column prop="isAdditional" label="是否补充记录" >
+          <template scope="scope">
+            <span v-if="scope.row.isAdditional === 1">是</span>
+            <span v-else-if="scope.row.isAdditional === 0">否</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
@@ -118,14 +123,26 @@
           label-width="150px"
           size="small"
           style="padding-right: 40px"
+          :rules="rules"
         >
-          <el-form-item label="检测人工号">
+          <el-form-item label="检测人工号" prop="employeeCode">
             <el-input v-model="sysEquipDetection.employeeCode" />
           </el-form-item>
-          <el-form-item label="任务单号">
-            <el-input v-model="sysEquipDetection.taskCode" />
+          <el-form-item label="任务单号" prop="taskCode">
+              <el-row>  
+                <el-col :span="12">
+                  <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                    <template slot="prefix">RW-</template>
+                  </el-input>
+                </el-col>
+                <el-col  :span="12">
+                  <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                    <template slot="prefix" >-</template>
+                  </el-input>
+                </el-col>
+              </el-row>
           </el-form-item>
-          <el-form-item label="开始日期">
+          <el-form-item label="检测日期"  prop="startDate">
             <el-date-picker
               v-model="sysEquipDetection.startDate"
               type="date"
@@ -134,7 +151,7 @@
               @input="dateChange">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="任务地点">
+          <el-form-item label="任务地点" prop="detectionLocation">
             <el-select v-model="sysEquipDetection.detectionLocation" placeholder="请选择">
             <el-option
               v-for="item in pcTextArr"
@@ -143,7 +160,7 @@
             </el-option>
           </el-select>
           </el-form-item>
-          <el-form-item label="是否为补充记录">
+          <el-form-item label="是否为补充记录" prop="isAdditional">
             <el-radio v-model="sysEquipDetection.isAdditional" :label="1">是</el-radio>
             <el-radio v-model="sysEquipDetection.isAdditional" :label="0">否</el-radio>
           </el-form-item>
@@ -173,14 +190,26 @@
           label-width="150px"
           size="small"
           style="padding-right: 40px"
+          :rules="rules"
         >
-          <el-form-item label="检测人工号">
+          <el-form-item label="检测人工号" prop="employeeCode">
             <el-input v-model="batchDateDetection.employeeCode" />
           </el-form-item>
-          <el-form-item label="任务单号">
-            <el-input v-model="batchDateDetection.taskCode" />
-          </el-form-item>
-          <el-form-item label="自动填充开始日期">
+        <el-form-item label="任务单号" prop="taskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
+        </el-form-item>
+          <el-form-item label="自动填充开始日期" prop="startDate">
             <el-date-picker
               v-model="batchDateDetection.startDate"
               type="date"
@@ -189,7 +218,7 @@
               @input="dateChange">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="自动填充结束日期">
+          <el-form-item label="自动填充结束日期" prop="endDate">
             <el-date-picker
               v-model="batchDateDetection.endDate"
               type="date"
@@ -198,7 +227,7 @@
               @input="dateChange">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="任务地点">
+          <el-form-item label="任务地点" prop="detectionLocation">
             <el-select v-model="batchDateDetection.detectionLocation" placeholder="请选择">
             <el-option
               v-for="item in pcTextArr"
@@ -207,7 +236,7 @@
             </el-option>
           </el-select>
           </el-form-item>
-          <el-form-item label="是否为补充记录">
+          <el-form-item label="是否为补充记录" prop="isAdditional">
             <el-radio v-model="batchDateDetection.isAdditional" :label="1">是</el-radio>
             <el-radio v-model="batchDateDetection.isAdditional" :label="0">否</el-radio>
           </el-form-item>
@@ -264,37 +293,116 @@
         batchDateDetection: defaultBatchForm,//批量添加数据
   
         pcTextArr,//全国地址数据
+
+        taskCodeParts: { year: '', number: '' },//任务编号组件
+
+        rules:{// 表单校验规则
+          //任务编号自定义验证规则，验证两个组件。
+          taskCode:[
+            { validator: this.validateTaskCode, trigger:'blur'},
+          ],
+          startDate:[
+            { required : true , message : "必填" },
+          ],
+          //批量插入用到endDate
+          endDate:[
+            { required : true , message : "必填" },
+          ],
+          employeeCode:[
+            { required : true , message : "必填" },
+          ],
+          detectionLocation:[
+            { required : true , message : "必填" },
+          ],
+          isAdditional:[
+            { required : true , message : "必填" },
+          ],
+        },
       };
     },
     created() {
       this.fetchData();
     },
     methods: {
+      //任务编号校验
+      validateTaskCode(rule, value ,callback){
+        const yearPattern = /^\d{4}$/; // 4位数字
+        const numberPattern = /^\d{3}$/; // 3位数字
+        
+        if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
+          callback(new Error("年份和序列号为必填项"));
+        } else if (!yearPattern.test(this.taskCodeParts.year)) {
+          callback(new Error("年份必须为4位数字"));
+        } else if (!numberPattern.test(this.taskCodeParts.number)) {
+          callback(new Error("序列号必须为3位数字"));
+        } else {
+          this.sysEquipDetection.taskCode = this.taskCodeConcat(this.taskCodeParts);
+          callback();
+        }
+      },
+
+      // 任务编号分割显示
+      taskCodeSplit(fullCode){
+        // 使用正则表达式匹配并提取年份和序列号
+        const regex = /^RW-(\d{4})-(\d{3})$/;
+        const matches = fullCode.match(regex);
+        if (matches) {
+          return {
+            year: matches[1],  // 提取年份
+            number: matches[2]  // 提取序列号
+          };
+        } else {
+          throw new Error("格式不正确");
+        }
+      },
+
+      // 任务编号拼接
+      taskCodeConcat(parts){
+        let fullcode = "RW-" + parts.year +"-" + parts.number;
+        return fullcode;
+      },
+
 
       //批量添加弹框弹出方法
       batchAdd() {
         this.dialogBatchVisible = true;
         this.batchDateDetection = {};
-        //获取当前日期没有生效
         this.batchDateDetection.startDate =  new Date();
         this.batchDateDetection.endDate =  new Date();
+        //任务编号组件置空
+        this.taskCodeParts = { year: '', number: '' };
       },
 
       //自动填充日期批量插入检测记录
       batchSave(){
-        api.saveBatchDateDetection(this.batchDateDetection).then((response) => {
-            
-          console.log(this.batchDateDetection)
-          //提示
-          this.$message({
-            type: "success",
-            message: "添加成功!",
-          });
-          //关闭弹框
-          this.dialogBatchVisible = false;
-          //刷新页面
-          this.fetchData();
-        });
+        //任务编号拼接
+        this.batchDateDetection.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        //表单校验
+        this.$refs.dataForm.validate((valid) =>{
+          if(valid){
+            this.$confirm("此操作将插入大量记录，请再次检查数据填写是否正确！","提示",{
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
+            }).then(()=>{
+              api.saveBatchDateDetection(this.batchDateDetection).then((response) => {
+                // console.log(this.batchDateDetection)
+                //提示
+                this.$message({
+                  type: "success",
+                  message: "添加成功!",
+                });
+                //关闭弹框
+                this.dialogBatchVisible = false;
+                //刷新页面
+                this.fetchData();
+              });
+            })
+          } else {
+            this.$message.error('请完善表单相关信息！');
+            return false;
+          }
+        })
       },
   
       // 日期选择器强制更新方法
@@ -359,21 +467,33 @@
           });
         });
       },
+
       //修改-数据回显
       edit(id) {
         this.dialogVisible = true;
         api.getEquipDetectionId(id).then((response) => {
           this.sysEquipDetection = response.data;
-  
+          //获取任务单号以后进行分割。
+          this.taskCodeParts = this.taskCodeSplit(this.sysEquipDetection.taskCode);
         });
       },
       //添加或修改
       saveOrUpdate() {
-        if (!this.sysEquipDetection.id) {
-          this.saveEquipDetection();
-        } else {
-          this.updateEquipDetection();
-        }
+        //任务编号拼接
+        this.sysEquipDetection.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        //表单校验
+        this.$refs.dataForm.validate((valid) =>{
+          if(valid){
+            if (!this.sysEquipDetection.id) {
+              this.saveEquipDetection();
+            } else {
+              this.updateEquipDetection();
+            }
+          } else{
+            this.$message.error('请完善表单相关信息！');
+            return false;
+          }
+        })
       },
       //修改方法
       updateEquipDetection() {
@@ -410,6 +530,8 @@
         this.dialogVisible = true;
         this.sysEquipDetection = {};
         this.sysEquipDetection.startDate =  new Date();
+        //任务编号组件置空
+        this.taskCodeParts = { year: '', number: '' };
       },
       
       // 根据id删除数据

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    设备检测列表
+    检测记录列表
     <div class="search-div">
       <el-form label-width="70px" size="small">
         <el-row>
@@ -114,14 +114,26 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules="rules"
       >
-        <el-form-item label="检测人工号">
+        <el-form-item label="检测人工号" prop="employeeCode">
           <el-input disabled v-model="sysEquipDetection.employeeCode" />
         </el-form-item>
-        <el-form-item label="任务单号">
-          <el-input v-model="sysEquipDetection.taskCode" />
+        <el-form-item label="任务单号" prop="taskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input v-model="taskCodeParts.number" placeholder="请输入序列号,例如001">
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
         </el-form-item>
-        <el-form-item label="检测日期">
+        <el-form-item label="检测日期" prop="startDate">
           <el-date-picker disabled 
             v-model="sysEquipDetection.startDate"
             type="date"
@@ -130,7 +142,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务地点">
+        <el-form-item label="任务地点" prop="detectionLocation">
           <el-select v-model="sysEquipDetection.detectionLocation" placeholder="请选择">
           <el-option
             v-for="item in pcTextArr"
@@ -183,6 +195,24 @@ export default {
       createTimes: [],
 
       pcTextArr,
+
+      taskCodeParts: { year: '', number: '' },//任务编号组件
+
+      rules:{// 表单校验规则
+        //任务编号自定义验证规则，验证两个组件。
+        taskCode:[
+          { validator: this.validateTaskCode, trigger:'blur'},
+        ],
+        startDate:[
+          { required : true , message : "必填" },
+        ],
+        employeeCode:[
+          { required : true , message : "必填" },
+        ],
+        detectionLocation:[
+          { required : true , message : "必填" },
+        ],
+      },
     };
   },
   computed: {
@@ -194,6 +224,44 @@ export default {
     this.fetchData();
   },
   methods: {
+    
+    //任务编号校验
+    validateTaskCode(rule, value ,callback){
+      const yearPattern = /^\d{4}$/; // 4位数字
+      const numberPattern = /^\d{3}$/; // 3位数字
+      
+      if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
+        callback(new Error("年份和序列号为必填项"));
+      } else if (!yearPattern.test(this.taskCodeParts.year)) {
+        callback(new Error("年份必须为4位数字"));
+      } else if (!numberPattern.test(this.taskCodeParts.number)) {
+        callback(new Error("序列号必须为3位数字"));
+      } else {
+        this.sysEquipDetection.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        callback();
+      }
+    },
+
+	  // 任务编号分割显示
+    taskCodeSplit(fullCode){
+      // 使用正则表达式匹配并提取年份和序列号
+      const regex = /^RW-(\d{4})-(\d{3})$/;
+      const matches = fullCode.match(regex);
+      if (matches) {
+        return {
+          year: matches[1],  // 提取年份
+          number: matches[2]  // 提取序列号
+        };
+      } else {
+        throw new Error("格式不正确");
+      }
+    },
+
+    // 任务编号拼接
+    taskCodeConcat(parts){
+      let fullcode = "RW-" + parts.year +"-" + parts.number;
+      return fullcode;
+    },
 
     // 日期选择器强制更新方法
     dateChange(){
@@ -262,15 +330,27 @@ export default {
       this.dialogVisible = true;
       api.getEquipDetectionId(id).then((response) => {
         this.sysEquipDetection = response.data;
+        //获取任务单号以后进行分割。
+        this.taskCodeParts = this.taskCodeSplit(this.sysEquipDetection.taskCode);
       });
     },
     //添加或修改
     saveOrUpdate() {
-      if (!this.sysEquipDetection.id) {
-        this.saveEquipDetection();
-      } else {
-        this.updateEquipDetection();
-      }
+      //任务编号拼接
+      this.sysEquipDetection.taskCode = this.taskCodeConcat(this.taskCodeParts);
+      //表单校验
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipDetection.id) {
+            this.saveEquipDetection();
+          } else {
+            this.updateEquipDetection();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
     //修改方法
     updateEquipDetection() {
@@ -308,8 +388,12 @@ export default {
         console.log(response.data);
         if (response.data != null) {
           this.sysEquipDetection = response.data;
+          //任务编号组件置空
+          this.taskCodeParts = this.taskCodeSplit(this.sysEquipDetection.taskCode);
         } else {
           this.sysEquipDetection = {};
+          //任务编号组件置空
+          this.taskCodeParts = { year: '', number: '' };
         }
         this.sysEquipDetection.id = null;
         this.sysEquipDetection.startDate = new Date();
