@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-      员工在一段时间经历的任务数和打卡天数
+        查询设备在一段时间的使用天数
       <div class="search-div">
         <el-form label-width="70px" size="small">
           <el-row>
@@ -9,7 +9,7 @@
                 <el-input
                   style="width: 95%"
                   v-model="searchObj.keyword"
-                  placeholder="员工工号"
+                  placeholder="设备编号"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -49,7 +49,7 @@
 
       
 
-      <!-- 参与任务的员工信息 -->
+      <!-- 设备信息 -->
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -64,27 +64,27 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="employeeName" label="检测人员姓名" />
-        <el-table-column prop="employeeCode" label="检测人员工号" />
-        <el-table-column prop="taskNum" label="任务数" />
-        <el-table-column prop="detectionNum" label="打卡天数" />
+        <el-table-column prop="equipmentName" label="设备名称" />
+        <el-table-column prop="equipmentCode" label="设备编号" />
+        <el-table-column prop="useDayCount" label="使用天数" />
       </el-table>
 
       <!-- 分页组件 -->
-      <el-pagination
-        :current-page="page"
-        :total="total"
-        :page-size="limit"
-        style="padding: 30px 0; text-align: center"
-        layout="total, prev, pager, next, jumper"
+    <el-pagination
+        @size-change="handleSizeChange"
         @current-change="fetchData"
-      />
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"/>
 
       
     </div>
   </template>
   <script>
-  import api from "@/api/system/equipDetection";
+  import api from "@/api/system/equip";
   export default {
     data() {
       return {
@@ -141,7 +141,16 @@
       search(){
         // 获取数据
         this.fetchData();
+        
       },  
+
+      // 每页显示记录数改变
+      handleSizeChange(currentLimit){
+        this.limit = currentLimit;
+        this.fetchData();
+        //console.log(this.limit);
+      },
+      
       // 重置查询表单
       resetData() {
         console.log("重置查询表单");
@@ -160,8 +169,7 @@
             this.searchObj.start = start;
             this.searchObj.end = end;
         }
-        
-        api.UserDetectionCountForBoss(this.page, this.limit, this.searchObj)
+        api.EquipmentUseDayCount(this.page, this.limit, this.searchObj)
           .then((response) => {
             console.log(response);
             this.list = response.data.records;
