@@ -7,10 +7,9 @@
             <el-col :span="8">
               <el-form-item label="关 键 字">
                 <el-input
-                  :disabled="true"
                   style="width: 95%"
                   v-model="searchObj.keyword"
-                  :placeholder="this.name"
+                  placeholder="员工工号"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -43,10 +42,9 @@
             <el-button icon="el-icon-refresh" size="mini" @click="resetData"
               >重置</el-button
             >
-            <el-col style="display: flex; justify-content: flex-start; align-items: center; margin-left: 40px;">  
-                <span v-if="isVisible">统 计 结 果： 员工参与了{{ taskNum }}个任务，填写了{{ total }}条检测记录</span>  
-            </el-col>
-
+            <el-button type="primary" icon="el-icon-download" size="mini" @click="exportCurrent"
+              >导出当前表格为Excel</el-button
+            >
           </el-row>
         </el-form>
       </div>
@@ -69,26 +67,27 @@
 
         <el-table-column prop="employeeName" label="检测人员姓名" />
         <el-table-column prop="employeeCode" label="检测人员工号" />
-        <el-table-column prop="taskCode" label="任务编号" />
-        <el-table-column prop="startDate" label="打卡时间" />
+        <el-table-column prop="taskNum" label="任务数" />
+        <el-table-column prop="detectionNum" label="打卡天数" />
       </el-table>
 
       <!-- 分页组件 -->
-      <el-pagination
-        :current-page="page"
-        :total="total"
-        :page-size="limit"
-        style="padding: 30px 0; text-align: center"
-        layout="total, prev, pager, next, jumper"
+    <el-pagination
+        @size-change="handleSizeChange"
         @current-change="fetchData"
-      />
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"/>
 
       
     </div>
   </template>
   <script>
-  import { mapGetters } from 'vuex'
   import api from "@/api/system/equipDetection";
+  import * as XLSX from 'xlsx';
   export default {
     data() {
       return {
@@ -102,7 +101,6 @@
         searchObj: {}, // 查询表单对象
         dialogVisible: false,
         sysTaskDevice: {},
-        user_code:'',
         // 下面是日期选择组件使用的变量
         pickerOptions: {
           shortcuts: [{
@@ -133,41 +131,73 @@
         },
         value2:'',
         //下面是统计的变量
-        isVisible:true,
-        taskNum:0,
+        //isVisible:false,
+        //taskNum:0,
         
       };
     },
     created() {
-      this.searchObj.keyword = this.name;
       this.fetchData();
     },
-    computed: {
-    ...mapGetters([
-      'name'
-    ])
-    },
     methods: {
+
+      //导出当前表格为Excel
+      exportCurrent(){
+        console.log("Export to Excel!");
+        this.limit = -1;
+        api.UserDetectionCountForBoss(this.page, this.limit, this.searchObj)
+          .then((response) => {
+            this.list = response.data.records;
+            this.total = response.data.total;
+            console.log(this.list);
+            const FilteredData = this.list.map(item => ({
+              检测人员姓名: item.employeeName,    // 修改字段名称
+              检测人员工号: item.employeeCode, // 修改字段名称
+              任务数: item.taskNum,
+              打卡天数: item.detectionNum,
+            }));
+            // 将数据转换为工作表
+            const worksheet = XLSX.utils.json_to_sheet(FilteredData,{header:['检测人员姓名','检测人员工号','任务数','打卡天数']});
+            
+            // 创建工作簿并添加工作表
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '检测人员出勤表');
+            
+            // 导出Excel文件
+            XLSX.writeFile(workbook, 'data.xlsx');
+          })          
+          .finally(() =>{
+            this.limit = 10;
+            this.fetchData();
+          });
+      },
+
       // 查询触发函数
       search(){
         // 获取数据
         this.fetchData();
-        // 使得统计结果可见
-        this.isVisible = true;
       },  
       // 重置查询表单
       resetData() {
         console.log("重置查询表单");
         this.searchObj = {};
-        this.searchObj.keyword = this.name;
         this.value2 = '';
-        this.isVisible = false;
+        //this.isVisible = false;
         this.fetchData();
       },
+
+      // 每页显示记录数改变
+      handleSizeChange(currentLimit){
+        this.limit = currentLimit;
+        this.fetchData();
+        //console.log(this.limit);
+      },
+
+      
       //列表
       fetchData(page = 1) {
         this.page = page;
-        //console.log(this.value2);
+        console.log(this.value2);
         if(this.value2 != ''){
             var start = this.value2[0];
             var end  = this.value2[1];
@@ -175,14 +205,11 @@
             this.searchObj.end = end;
         }
         
-        api.UserDetectionCount(this.page, this.limit, this.searchObj)
+        api.UserDetectionCountForBoss(this.page, this.limit, this.searchObj)
           .then((response) => {
             console.log(response);
             this.list = response.data.records;
             this.total = response.data.total;
-            // 统计任务数
-            var uniqueTask = new Set(response.data.records.map(record => record.taskCode));  
-            this.taskNum = uniqueTask.size;
           });
       },
     },

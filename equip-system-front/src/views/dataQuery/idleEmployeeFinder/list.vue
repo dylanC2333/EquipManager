@@ -67,13 +67,14 @@
 
     <!-- 分页组件 -->
     <el-pagination
-      :current-page="page"
-      :total="total"
-      :page-size="limit"
-      style="padding: 30px 0; text-align: center"
-      layout="total, prev, pager, next, jumper"
-      @current-change="fetchData"
-    />
+        @size-change="handleSizeChange"
+        @current-change="fetchData"
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"/>
   </div>
 </template>
 <script>
@@ -101,7 +102,7 @@ export default {
     this.fetchData();
   },
   methods: {
-    
+
     //导出当前表格为Excel
     exportCurrent(){
       console.log("Export to Excel!");
@@ -117,14 +118,14 @@ export default {
           }));
           // 将数据转换为工作表
           const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['检测人员姓名','检测人员工号']});
-          
+
           // 创建工作簿并添加工作表
           const workbook = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(workbook, userworksheet, '空闲检测人员列表');
-          
+
           // 导出Excel文件
           XLSX.writeFile(workbook, 'data.xlsx');
-        })          
+        })
         .finally(() =>{
           this.limit = 10;
           this.fetchData();
@@ -138,7 +139,14 @@ export default {
       this.createTimes = [];
       this.fetchData();
     },
-    
+
+    // 每页显示记录数改变
+    handleSizeChange(currentLimit){
+        this.limit = currentLimit;
+        this.fetchData();
+        //console.log(this.limit);
+    },
+
     //列表
     fetchData(page = 1) {
       this.page = page;
@@ -151,7 +159,6 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
-          console.log(this.list);
         });
     },
   },

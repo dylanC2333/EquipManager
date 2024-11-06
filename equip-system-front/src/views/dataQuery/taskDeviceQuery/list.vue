@@ -56,15 +56,17 @@
         </el-table-column>
       </el-table>
 
+
       <!-- 分页组件 -->
-      <el-pagination
-        :current-page="page"
-        :total="total"
-        :page-size="limit"
-        style="padding: 30px 0; text-align: center"
-        layout="total, prev, pager, next, jumper"
+    <el-pagination
+        @size-change="handleSizeChange"
         @current-change="fetchData"
-      />
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"/>
 
       <!-- 参与任务的设备信息 -->
       <el-table
@@ -92,14 +94,15 @@
       </el-table>
 
       <!-- 分页组件 -->
-      <el-pagination
-        :current-page="page"
-        :total="total_eq"
-        :page-size="limit"
-        style="padding: 30px 0; text-align: center"
-        layout="total, prev, pager, next, jumper"
+    <el-pagination
+        @size-change="handleSizeChange"
         @current-change="fetchData"
-      />
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"/>
     </div>
   </template>
   <script>
@@ -117,13 +120,14 @@
         limit: 10, // 每页记录数
         searchObj: {}, // 查询表单对象
         dialogVisible: false,
+        sysTaskDevice: {},
       };
     },
     created() {
       this.fetchData();
     },
     methods: {
-      
+
       //导出当前表格为Excel
       exportCurrent(){
         console.log("Export to Excel!");
@@ -155,12 +159,12 @@
             // 将数据转换为工作表
             const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['任务编号','检测人员姓名','检测人员工号','是否为补充记录']});
             const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['任务编号','设备名称','设备编号','是否为补充记录']});
-            
+
             // 创建工作簿并添加工作表
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, userworksheet, '任务参与人员列表');
             XLSX.utils.book_append_sheet(workbook, equipmentworksheet, '任务所使用设备列表')
-            
+
             // 导出Excel文件
             XLSX.writeFile(workbook, 'data.xlsx');
           })
@@ -177,6 +181,13 @@
         this.fetchData();
       },
 
+      // 每页显示记录数改变
+      handleSizeChange(currentLimit){
+        this.limit = currentLimit;
+        this.fetchData();
+        //console.log(this.limit);
+      },
+
       //列表
       fetchData(page = 1) {
         this.page = page;
@@ -191,7 +202,7 @@
             console.log(response);
             this.list_eq = response.data.records;
             this.total_eq = response.data.total;
-          });  
+          });
       },
     },
   };

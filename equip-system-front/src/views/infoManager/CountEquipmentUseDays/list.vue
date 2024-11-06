@@ -71,14 +71,15 @@
       </el-table>
 
       <!-- 分页组件 -->
-      <el-pagination
-        :current-page="page"
-        :total="total"
-        :page-size="limit"
-        style="padding: 30px 0; text-align: center"
-        layout="total, prev, pager, next, jumper"
+    <el-pagination
+        @size-change="handleSizeChange"
         @current-change="fetchData"
-      />
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"/>
 
       
     </div>
@@ -175,6 +176,14 @@
         this.fetchData();
         
       },  
+
+      // 每页显示记录数改变
+      handleSizeChange(currentLimit){
+        this.limit = currentLimit;
+        this.fetchData();
+        //console.log(this.limit);
+      },
+      
       // 重置查询表单
       resetData() {
         console.log("重置查询表单");
