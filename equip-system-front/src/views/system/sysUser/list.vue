@@ -380,17 +380,17 @@ export default {
       // pageNum页数赋值
       this.page = pageNum
       // ajax调用后端接口
-      //console.log(this.searchObj)
+      // console.log(this.searchObj)
       api.getPageList(this.page, this.limit, this.searchObj, this.column, this.sortorder)
         .then(response => {
           console.log(response);
           // console.log(this.searchObj);
           // console.log(this.column);
           // console.log(this.sortorder);
-          //先用控制台输出查看参数如何对应。
-          //每页数据列表
+          // 先用控制台输出查看参数如何对应。
+          // 每页数据列表
           this.list = response.data.records
-          //总记录数
+          // 总记录数
           this.total = response.data.total
         })
     }

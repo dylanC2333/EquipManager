@@ -60,7 +60,6 @@
         stripe
         border
         style="width: 100%; margin-top: 10px"
-        @selection-change="handleSelectionChange"
       >
         <el-table-column label="序号" width="70" align="center">
           <template slot-scope="scope">

@@ -50,6 +50,9 @@
           <el-button icon="el-icon-refresh" size="mini" @click="resetData"
             >重置</el-button
           >
+          <el-button type="primary" icon="el-icon-download" size="mini" @click="exportCurrent"
+            >导出当前表格为Excel</el-button
+          >
         </el-row>
       </el-form>
     </div>
@@ -60,7 +63,6 @@
       stripe
       border
       style="width: 100%; margin-top: 10px"
-      @selection-change="handleSelectionChange"
     >
       <el-table-column label="序号" width="70" align="center">
         <template slot-scope="scope">
@@ -85,14 +87,8 @@
 </template>
 <script>
 import api from "@/api/system/equipStock";
-import {
-  provinceAndCityData,
-  pcTextArr,
-  regionData,
-  pcaTextArr,
-  codeToText,
-  TextToCode,
-} from "element-china-area-data";
+import {  pcTextArr  } from "element-china-area-data";
+import * as XLSX from 'xlsx';
 export default {
   data() {
     return {
@@ -109,14 +105,43 @@ export default {
       sysEquipFinder: [],
       pcTextArr, //省市二级地址，纯汉字
       selectedLocations: [], // 选中的省市地址数据
-
-      dialogRoleVisible: false,
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
+          
+    //导出当前表格为Excel
+    exportCurrent(){
+      console.log("Export to Excel!");
+      this.limit = -1;
+      api.equipmentFinder(this.page, this.limit, this.searchObj)
+        .then((response) => {
+          this.list = response.data.records;
+          this.total = response.data.total;
+          console.log(this.list);
+          const equipmentFilteredData = this.list.map(item => ({
+            设备名称: item.equipmentName,    // 修改字段名称
+            设备编号: item.equipmentCode, // 修改字段名称
+          }));
+
+          // 将数据转换为工作表
+          const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['设备名称','设备编号']});
+          
+          // 创建工作簿并添加工作表
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, equipmentworksheet, '空闲设备列表')
+          
+          // 导出Excel文件
+          XLSX.writeFile(workbook, 'data.xlsx');
+        })
+        .finally(() =>{
+          this.limit = 10;
+          this.fetchData();
+        });
+    },
+
     // 重置查询表单
     resetData() {
       console.log("重置查询表单");
@@ -132,8 +157,7 @@ export default {
         this.searchObj.startTime = this.createTimes[0];
         this.searchObj.endTime = this.createTimes[1];
       }
-      api
-        .equipmentFinder(this.page, this.limit, this.searchObj)
+      api.equipmentFinder(this.page, this.limit, this.searchObj)
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
