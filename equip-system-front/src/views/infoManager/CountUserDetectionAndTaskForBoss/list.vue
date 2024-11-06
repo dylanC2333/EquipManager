@@ -65,8 +65,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="employeeName" label="检测人员姓名" />
-        <el-table-column prop="employeeCode" label="检测人员工号" />
+        <el-table-column prop="employeeName" label="检测人姓名" />
+        <el-table-column prop="employeeCode" label="检测人编号" />
         <el-table-column prop="taskNum" label="任务数" />
         <el-table-column prop="detectionNum" label="打卡天数" />
       </el-table>
@@ -151,13 +151,13 @@
             this.total = response.data.total;
             console.log(this.list);
             const FilteredData = this.list.map(item => ({
-              检测人员姓名: item.employeeName,    // 修改字段名称
-              检测人员工号: item.employeeCode, // 修改字段名称
+              检测人姓名: item.employeeName,    // 修改字段名称
+              检测人编号: item.employeeCode, // 修改字段名称
               任务数: item.taskNum,
               打卡天数: item.detectionNum,
             }));
             // 将数据转换为工作表
-            const worksheet = XLSX.utils.json_to_sheet(FilteredData,{header:['检测人员姓名','检测人员工号','任务数','打卡天数']});
+            const worksheet = XLSX.utils.json_to_sheet(FilteredData,{header:['检测人姓名','检测人编号','任务数','打卡天数']});
             
             // 创建工作簿并添加工作表
             const workbook = XLSX.utils.book_new();

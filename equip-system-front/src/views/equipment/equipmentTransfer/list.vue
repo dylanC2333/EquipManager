@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="旧任务编号/新任务编号/设备编号/交付员工编号/接收员工编号"
+                placeholder="旧任务编号/新任务编号/设备编号/交付人编号/接收人编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -74,10 +74,10 @@
       <el-table-column prop="newTaskCode" label="新任务编号" sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
       <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
-      <el-table-column prop="deliverEmployeeCode" label="交付员工编号" sortable="custom"/>
-      <el-table-column prop="deliverEmployeeName" label="交付员工姓名" sortable="custom"/>
-      <el-table-column prop="receiverEmployeeCode" label="接收员工编号" sortable="custom"/>
-      <el-table-column prop="receiverEmployeeName" label="接收员工姓名" sortable="custom"/>
+      <el-table-column prop="deliverEmployeeCode" label="交付人编号" sortable="custom"/>
+      <el-table-column prop="deliverEmployeeName" label="交付人姓名" sortable="custom"/>
+      <el-table-column prop="receiverEmployeeCode" label="接收人编号" sortable="custom"/>
+      <el-table-column prop="receiverEmployeeName" label="接收人姓名" sortable="custom"/>
       <el-table-column prop="transferDate" label="交接时间" sortable="custom"/>
       <el-table-column prop="transferLocation" label="新任务地点" />
       <el-table-column prop="remarks" label="备注" />
@@ -153,10 +153,10 @@
         <el-form-item label="设备编号" prop = "equipmentCode">
           <el-input v-model="sysEquipTransfer.equipmentCode" />
         </el-form-item>
-        <el-form-item label="交付员工编号" prop = "deliverEmployeeCode">
+        <el-form-item label="交付人编号" prop = "deliverEmployeeCode">
           <el-input disabled v-model="sysEquipTransfer.deliverEmployeeCode" />
         </el-form-item>
-        <el-form-item label="接收员工编号" prop = "receiverEmployeeCode">
+        <el-form-item label="接收人编号" prop = "receiverEmployeeCode">
           <el-input v-model="sysEquipTransfer.receiverEmployeeCode" />
         </el-form-item>
         <el-form-item label="交接日期" prop = "transferDate">

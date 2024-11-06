@@ -45,8 +45,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="userName" label="检测人员姓名" />
-        <el-table-column prop="employeeCode" label="检测人员工号" />
+        <el-table-column prop="userName" label="检测人姓名" />
+        <el-table-column prop="employeeCode" label="检测人编号" />
         <el-table-column prop="taskCode" label="任务编号" />
         <el-table-column prop="isAdditional" label="是否补充记录" >
           <template scope="scope">
@@ -145,8 +145,8 @@
             console.log(this.list_eq);
             const userFilteredData = this.list.map(item => ({
               任务编号: item.taskCode,
-              检测人员姓名: item.userName,    // 修改字段名称
-              检测人员工号: item.employeeCode, // 修改字段名称
+              检测人姓名: item.userName,    // 修改字段名称
+              检测人编号: item.employeeCode, // 修改字段名称
               是否为补充记录: item.isAdditional === 1 ? '是': '否', // 修改字段名称
             }));
             const equipmentFilteredData = this.list_eq.map(item => ({
@@ -157,7 +157,7 @@
             }));
 
             // 将数据转换为工作表
-            const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['任务编号','检测人员姓名','检测人员工号','是否为补充记录']});
+            const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['任务编号','检测人姓名','检测人编号','是否为补充记录']});
             const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['任务编号','设备名称','设备编号','是否为补充记录']});
 
             // 创建工作簿并添加工作表

@@ -71,11 +71,11 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
+      <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
       <el-table-column prop="equipmentUseName" label="设备名称" sortable="custom"/>
-      <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
+      <el-table-column prop="taskCode" label="任务编号" sortable="custom"/>
       <el-table-column prop="equipmentUseDate" label="使用日期" sortable="custom"/>
-      <el-table-column prop="employeeUseCode" label="使用人工号"/>
+      <el-table-column prop="employeeUseCode" label="使用人编号"/>
       <el-table-column prop="employeeUseName" label="使用人姓名"/>
       <el-table-column prop="location" label="地点" />
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
@@ -125,7 +125,7 @@
         <el-form-item label="管理编号"  prop = "equipmentCode">
           <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
-        <el-form-item label="任务单号" prop="taskCode">
+        <el-form-item label="任务编号" prop="taskCode">
             <el-row>
               <el-col :span="12">
                 <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
@@ -139,7 +139,7 @@
               </el-col>
             </el-row>
         </el-form-item>
-        <el-form-item label="使用人工号" prop = "employeeUseCode">
+        <el-form-item label="使用人编号" prop = "employeeUseCode">
           <el-input disabled v-model="sysEquipUse.employeeUseCode" />
         </el-form-item>
         <el-form-item label="使用日期"  prop = "equipmentUseDate">
@@ -224,17 +224,11 @@ export default {
         employeeUseCode:[
           { required : true , message : "必填" },
         ],
-        equipmentName: [
-          { required : true , message : "必填" },
-        ],
         equipmentCode : [
           { required : true , message : "必填" },
         ],
         taskCode :[
           { validator: this.validateTaskCode, trigger:'blur' },
-        ],
-        employeeUseName : [
-          { required : true , message : "必填" },
         ],
         equipmentUseDate : [
           { required : true , message : "必填" },
@@ -442,8 +436,8 @@ export default {
           return false;
         }
       })
-
     },
+    
     //修改方法
     updateEquipUse() {
       api.update(this.sysEquipUse).then((response) => {

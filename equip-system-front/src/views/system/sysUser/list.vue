@@ -36,7 +36,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="userCode" label="用户工号" sortable="custom" />
+      <el-table-column prop="userCode" label="用户编号" sortable="custom" />
       <el-table-column prop="userName" label="用户姓名" sortable="custom" />
       <el-table-column prop="description" label="用户详情" />
       <el-table-column prop="phone" label="电话号码" />
@@ -72,7 +72,7 @@
         <el-form-item label="用户姓名" prop="userName">
           <el-input v-model="sysUser.userName" />
         </el-form-item>
-        <el-form-item label="用户工号" prop="userCode">
+        <el-form-item label="用户编号" prop="userCode">
           <el-input v-model="sysUser.userCode" />
         </el-form-item>
         <el-form-item label="密码" v-if="!sysUser.id" prop="password">
@@ -101,7 +101,7 @@
         <el-form-item label="用户姓名">
           <el-input disabled :value="sysUser.userName"></el-input>
         </el-form-item>
-        <el-form-item label="用户工号">
+        <el-form-item label="用户编号">
           <el-input disabled :value="sysUser.userCode"></el-input>
         </el-form-item>
 

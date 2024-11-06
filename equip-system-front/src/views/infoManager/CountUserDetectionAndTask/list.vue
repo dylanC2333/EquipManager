@@ -67,8 +67,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="employeeName" label="检测人员姓名" />
-        <el-table-column prop="employeeCode" label="检测人员工号" />
+        <el-table-column prop="employeeName" label="检测人姓名" />
+        <el-table-column prop="employeeCode" label="检测人编号" />
         <el-table-column prop="taskCode" label="任务编号" />
         <el-table-column prop="startDate" label="打卡时间" />
       </el-table>

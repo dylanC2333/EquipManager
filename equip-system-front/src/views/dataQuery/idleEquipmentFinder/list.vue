@@ -70,7 +70,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="equipmentCode" label="设备编码" />
+      <el-table-column prop="equipmentCode" label="设备编号" />
       <el-table-column prop="equipmentName" label="设备名称" />
     </el-table>
 
