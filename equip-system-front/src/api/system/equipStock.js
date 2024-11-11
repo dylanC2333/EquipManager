@@ -64,6 +64,15 @@ export default{
             method: 'get',
             params:searchObj
         })
+    },
+
+    //8、空闲设备查询: 出库设备且任务地在搜索条件内,无使用记录
+    equipmentFinder2(page,limit,searchObj){
+        return request({
+            url: `${api_name}/idleEquipmentFinder2/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
     }
 
 

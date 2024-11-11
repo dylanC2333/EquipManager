@@ -196,8 +196,8 @@ public class SysEquipmentStockController {
         return Result.ok();
     }
 
-    //8、查询空闲设备列表
-    @ApiOperation("查询空闲设备列表")
+    //8、查询空闲设备列表: 在库设备
+    @ApiOperation("查询空闲设备列表: 在库设备")
     @GetMapping("idleEquipmentFinder/{page}/{limit}")
     public Result idleEquipmentFinder(
             @ApiParam(name = "page", value = "当前页码", required = true)
@@ -212,6 +212,26 @@ public class SysEquipmentStockController {
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         //调用service方法
         IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.idleEquipmentFinder(pageParam,sysIdleEquipmentFinderQueryVo);
+        //返回
+        return  Result.ok(pageModel);
+    }
+
+    //9、查询空闲设备列表: 出库设备且任务地在搜索条件内
+    @ApiOperation("查询空闲设备列表: 出库设备且任务地在搜索条件内,无使用记录")
+    @GetMapping("idleEquipmentFinder2/{page}/{limit}")
+    public Result idleEquipmentFinder2(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable Long limit,
+
+            @ApiParam(name = "SysIdleEquipmentFinderQueryVo", value = "查询对象", required = false)
+            SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo){
+        //创建page对象
+        Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
+        //调用service方法
+        IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.idleEquipmentFinder2(pageParam,sysIdleEquipmentFinderQueryVo);
         //返回
         return  Result.ok(pageModel);
     }
