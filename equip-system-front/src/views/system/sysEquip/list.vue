@@ -112,7 +112,7 @@
         <el-form-item label="设备名称"  prop = "equipmentName">
           <el-input v-model="sysEquip.equipmentName"/>
         </el-form-item>
-        <el-form-item label="设备编码" prop = "equipmentCode">
+        <el-form-item label="设备编号" prop = "equipmentCode">
           <el-input v-model="sysEquip.equipmentCode" />
         </el-form-item>
         <el-form-item label="设备状态" prop="status">

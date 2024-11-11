@@ -50,6 +50,9 @@
           <el-button icon="el-icon-refresh" size="mini" @click="resetData"
             >重置</el-button
           >
+          <el-button type="primary" icon="el-icon-download" size="mini" @click="exportCurrent"
+            >导出当前表格为Excel</el-button
+          >
         </el-row>
       </el-form>
     </div>
@@ -67,7 +70,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="equipmentCode" label="设备编码" />
+      <el-table-column prop="equipmentCode" label="设备编号" />
       <el-table-column prop="equipmentName" label="设备名称" />
     </el-table>
 
@@ -109,19 +112,13 @@
         :page-size="limit"
         style="padding: 30px 0; text-align: center;"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total2"/>    
+        :total="total2"/>
   </div>
 </template>
 <script>
 import api from "@/api/system/equipStock";
-import {
-  provinceAndCityData,
-  pcTextArr,
-  regionData,
-  pcaTextArr,
-  codeToText,
-  TextToCode,
-} from "element-china-area-data";
+import {  pcTextArr  } from "element-china-area-data";
+import * as XLSX from 'xlsx';
 export default {
   data() {
     return {
@@ -147,6 +144,37 @@ export default {
     this.fetchData();
   },
   methods: {
+
+    //导出当前表格为Excel
+    exportCurrent(){
+      console.log("Export to Excel!");
+      this.limit = -1;
+      api.equipmentFinder(this.page, this.limit, this.searchObj)
+        .then((response) => {
+          this.list = response.data.records;
+          this.total = response.data.total;
+          console.log(this.list);
+          const equipmentFilteredData = this.list.map(item => ({
+            设备名称: item.equipmentName,    // 修改字段名称
+            设备编号: item.equipmentCode, // 修改字段名称
+          }));
+
+          // 将数据转换为工作表
+          const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['设备名称','设备编号']});
+
+          // 创建工作簿并添加工作表
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, equipmentworksheet, '空闲设备列表')
+
+          // 导出Excel文件
+          XLSX.writeFile(workbook, 'data.xlsx');
+        })
+        .finally(() =>{
+          this.limit = 10;
+          this.fetchData();
+        });
+    },
+
     // 重置查询表单
     resetData() {
       console.log("重置查询表单");
@@ -161,7 +189,7 @@ export default {
         this.fetchData();
         //console.log(this.limit);
       },
-    
+
     //列表
     fetchData(page = 1) {
       this.page = page;
@@ -170,16 +198,13 @@ export default {
         this.searchObj.startTime = this.createTimes[0];
         this.searchObj.endTime = this.createTimes[1];
       }
-      api
-        .equipmentFinder(this.page, this.limit, this.searchObj)
+      api.equipmentFinder(this.page, this.limit, this.searchObj)
         .then((response) => {
-          console.log(this.searchObj.location);
           this.list = response.data.records;
           this.total = response.data.total;
         });
-      
-      api
-        .equipmentFinder2(this.page, this.limit, this.searchObj)
+
+      api.equipmentFinder2(this.page, this.limit, this.searchObj)
         .then((response) => {
           this.list2 = response.data.records;
           this.total2 = response.data.total;

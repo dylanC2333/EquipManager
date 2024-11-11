@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="任务编号/员工编号/地点"
+                placeholder="任务编号/检测人编号/地点"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -70,11 +70,11 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column prop="employeeCode" label="检测人工号" sortable="custom"/>
+      <el-table-column prop="employeeCode" label="检测人编号" sortable="custom"/>
       <el-table-column prop="employeeName" label="检测人姓名" sortable="custom"/>
-      <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
+      <el-table-column prop="taskCode" label="任务编号" sortable="custom"/>
       <el-table-column prop="startDate" label="检测日期" sortable="custom"/>
-      <el-table-column prop="detectionLocation" label="任务地点" sortable="custom"/>
+      <el-table-column prop="detectionLocation" label="检测地点" sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -116,10 +116,10 @@
         style="padding-right: 40px"
         :rules="rules"
       >
-        <el-form-item label="检测人工号" prop="employeeCode">
+        <el-form-item label="检测人编号" prop="employeeCode">
           <el-input disabled v-model="sysEquipDetection.employeeCode" />
         </el-form-item>
-        <el-form-item label="任务单号" prop="taskCode">
+        <el-form-item label="任务编号" prop="taskCode">
             <el-row>
               <el-col :span="12">
                 <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
@@ -142,7 +142,7 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="任务地点" prop="detectionLocation">
+        <el-form-item label="检测地点" prop="detectionLocation">
           <el-select v-model="sysEquipDetection.detectionLocation" placeholder="请选择">
           <el-option
             v-for="item in pcTextArr"
@@ -330,7 +330,7 @@ export default {
       this.dialogVisible = true;
       api.getEquipDetectionId(id).then((response) => {
         this.sysEquipDetection = response.data;
-        //获取任务单号以后进行分割。
+        //获取任务编号以后进行分割。
         this.taskCodeParts = this.taskCodeSplit(this.sysEquipDetection.taskCode);
       });
     },

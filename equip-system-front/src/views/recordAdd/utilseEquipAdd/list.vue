@@ -10,7 +10,7 @@
                 <el-input
                   style="width: 100%"
                   v-model="searchObj.keyword"
-                  placeholder="设备编号/操作人工号/任务编号"
+                  placeholder="设备编号/使用人编号/任务编号"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -76,9 +76,9 @@
         </el-table-column>
         <el-table-column prop="equipmentCode" label="管理编号" sortable="custom"/>
         <el-table-column prop="equipmentUseName" label="设备名称" sortable="custom"/>
-        <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
+        <el-table-column prop="taskCode" label="任务编号" sortable="custom"/>
         <el-table-column prop="equipmentUseDate" label="使用日期" sortable="custom"/>
-        <el-table-column prop="employeeUseCode" label="使用人工号"/>
+        <el-table-column prop="employeeUseCode" label="使用人编号"/>
         <el-table-column prop="employeeUseName" label="使用人姓名"/>
         <el-table-column prop="location" label="地点" />
         <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
@@ -134,7 +134,7 @@
           <el-form-item label="管理编号"  prop = "equipmentCode">
             <el-input v-model="sysEquipUse.equipmentCode" />
           </el-form-item>
-          <el-form-item label="任务单号" prop="taskCode">
+          <el-form-item label="任务编号" prop="taskCode">
               <el-row>
                 <el-col :span="12">
                   <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
@@ -148,7 +148,7 @@
                 </el-col>
               </el-row>
           </el-form-item>
-          <el-form-item label="使用人工号" prop = "employeeUseCode">
+          <el-form-item label="使用人编号" prop = "employeeUseCode">
             <el-input v-model="sysEquipUse.employeeUseCode" />
           </el-form-item>
           <el-form-item label="使用日期"  prop = "equipmentUseDate">
@@ -214,7 +214,7 @@
           <el-form-item label="管理编号"  prop = "equipmentCode">
             <el-input v-model="batchDateUsage.equipmentCode" />
           </el-form-item>
-          <el-form-item label="任务单号" prop="taskCode">
+          <el-form-item label="任务编号" prop="taskCode">
               <el-row>
                 <el-col :span="12">
                   <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
@@ -228,7 +228,7 @@
                 </el-col>
               </el-row>
           </el-form-item>
-          <el-form-item label="使用人工号" prop = "employeeUseCode">
+          <el-form-item label="使用人编号" prop = "employeeUseCode">
             <el-input v-model="batchDateUsage.employeeUseCode" />
           </el-form-item>
           <el-form-item label="自动填充开始日期">
@@ -334,7 +334,7 @@
         userqueryList:[],
         userIdList:[],
 
-        taskCodeParts: { year: '', number: '' },//任务单号组件数据
+        taskCodeParts: { year: '', number: '' },//任务编号组件数据
   
         rules:{// 表单校验规则
           employeeUseCode:[
@@ -543,7 +543,7 @@
         this.dialogVisible = true;
         api.getEquipUseId(id).then((response) => {
           this.sysEquipUse = response.data;
-        //获取任务单号以后进行分割。
+        //获取任务编号以后进行分割。
         this.taskCodeParts = this.taskCodeSplit(this.sysEquipUse.taskCode);
         //获取地址信息以后进行分割
         this.selectedLocations = this.locationSplit(this.sysEquipUse.location);

@@ -10,7 +10,7 @@
                 <el-input
                   style="width: 100%"
                   v-model="searchObj.keyword"
-                  placeholder="设备编号/任务单号/出入库日期/员工编号"
+                  placeholder="设备编号/任务编号/出入库日期/员工编号"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -73,12 +73,12 @@
         <el-table-column prop="type" label="出入库类型"  sortable="custom"/>
         <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
         <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
-        <el-table-column prop="equipmentDate" label="设备出入库日期" sortable="custom"/>
-        <el-table-column prop="userName" label="出库人姓名" />
-        <el-table-column prop="userCode" label="出入库人工号" />
-        <el-table-column prop="taskCode" label="任务单号" sortable="custom"/>
+        <el-table-column prop="equipmentDate" label="出入库日期" sortable="custom"/>
+        <el-table-column prop="userName" label="出入库人姓名" />
+        <el-table-column prop="userCode" label="出入库人编号" />
+        <el-table-column prop="taskCode" label="任务编号" sortable="custom"/>
         <el-table-column prop="warehouseManagerName" label="仓库管理员姓名" />
-        <el-table-column prop="warehouseManagerCode" label="仓库管理员工号" />
+        <el-table-column prop="warehouseManagerCode" label="仓库管理员编号" />
         <el-table-column prop="remarks" label="备注" />
         <el-table-column prop="isAdditional" label="是否补充记录" >
           <template scope="scope">
@@ -130,7 +130,7 @@
           <el-form-item label="设备编号" prop="equipmentCode">
             <el-input v-model="sysEquipStock.equipmentCode" />
           </el-form-item>
-          <el-form-item label="设备出/入库日期" prop="equipmentDate">
+          <el-form-item label="出入库日期" prop="equipmentDate">
             <el-date-picker
               v-model="sysEquipStock.equipmentDate"
               type="date"
@@ -139,10 +139,10 @@
               @input="dateChange">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="出/入库人工号" prop="userCode">
+          <el-form-item label="出入库人编号" prop="userCode">
             <el-input v-model="sysEquipStock.userCode" />
           </el-form-item>
-          <el-form-item label="任务单号" prop="taskCode">
+          <el-form-item label="任务编号" prop="taskCode">
             <el-row>
               <el-col :span="12">
                 <el-input v-model="taskCodeParts.year" placeholder="    请输入年份,例如2024">
@@ -156,7 +156,7 @@
               </el-col>
             </el-row>
         </el-form-item>
-          <el-form-item label="仓库管理员工号" prop="warehouseManagerCode">
+          <el-form-item label="仓库管理员编号" prop="warehouseManagerCode">
             <el-input v-model="sysEquipStock.warehouseManagerCode" />
           </el-form-item>
           <el-form-item label="出入库类型" prop="type">
