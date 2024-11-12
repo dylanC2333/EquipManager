@@ -1,12 +1,14 @@
 <template>
-    <view class="bottom-btn">
-        <tm-button block @click="fetchAll()">获取所有记录1</tm-button>
-    </view>
-	<view class="bottom-btn">
-	    <tm-button block @click="fetchData()">获取记录2</tm-button>
-		<tm-button block @click="add" size="mini">添加 </tm-button>
-	</view>
-	
+	<tm-text :font-size="48" _class="text-weight-b" label="设备使用列表"></tm-text>
+	<tm-sheet>
+		<tm-text :font-size="30" _class="text-weight-b" label="请输入搜索关键字"></tm-text>
+		<tm-input v-model="searchObj.keyword" placeholder="设备编号/操作人编号/任务编号"></tm-input>
+		<view class="flex flex-row flex-wrap">
+			<tm-button  :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
+			<tm-button  :margin="[10]" @click="resetData()" size="normal">重置</tm-button>
+		</view>		
+		<tm-button  :margin="[10]" @click="add" size="normal">添加 </tm-button>
+	</tm-sheet>
 	<view class="recordTable" style="height: 500px">
 		<zb-table
 		            :show-header="true"
@@ -31,7 +33,7 @@
 			splitBtn
 			title="添加/修改"
 			:width="700"
-			:height="1000"
+			:height="1200"
 			v-model:show="showModel"
 			@ok="SaveorUpdate"
 		>
@@ -80,14 +82,33 @@
 <script setup lang="ts">
 	//使用<script setup>，组合式 API 单文件组件，语法糖。所有顶层绑定均能在模板中直接使用。
 	import {
-		findAllRecords,
 		getPageList,
 		saveEquipUtilise,
-		removeId
+		removeId,
+		update,
+		getEquipUtiliseById
 	} from '@/api/system/equipmentUtilise'
 	import { ref , reactive ,computed } from 'vue'
 	import * as dayjs from '@/tmui/tool/dayjs/esm/index'
 	
+	//定义数据模型，用于ts类型检查
+	interface sysEquipUseType {
+	  id?: number;
+	  createTime?: string;
+	  updateTime?: string;
+	  employeeUseCode?: string;
+	  employeeUseName?: string | null;
+	  equipmentCode?: string;
+	  equipmentUseDate?: string;
+	  equipmentUseName?: string | null;
+	  isAdditional?: number;
+	  isDeleted?: number;
+	  location?: string;
+	  maintenanceStatus?: string;
+	  preUseEquipmentStatus?: string;
+	  taskCode?: string;
+	}
+
 	//定义响应式变量
 	const list = ref([])//存储获得的数据
 	const loading = ref(false)
@@ -104,7 +125,7 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
-	const sysEquipUse = ref({
+	const sysEquipUse = ref<sysEquipUseType>({
 		equipmentCode :'',
 		taskCode :'',
 		employeeUseCode :'',
@@ -112,7 +133,6 @@
 		location :'',
 		preUseEquipmentStatus :'',
 		maintenanceStatus :'',
-		remarks :'',	
 	})
 	const showCal = ref(false)// 日历显示控制
 	const DayJs = dayjs.default// 日历组件
@@ -147,19 +167,6 @@
 	              },
 	            ]},
 	])
-	// const data = ref([
-	//           {
-	//             date: '2016-05-02',
-	//             name: '王小虎1',
-	//             province: '上海',
-	//             sex:'男',
-	//             age:'18',
-	//             img:"https://img1.baidu.com/it/u=300787145,1214060415&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-	//             city: '普陀区',
-	//             address: '上海市普',
-	//             zip: 200333
-	//           },
- //    ])
  
 	// 日历渲染
 	const caleStr = computed(() => {
@@ -186,7 +193,10 @@
 		} else {
 			console.log("edit processing!")
 			console.log(sysEquipUse.value)
+			const res = await update(sysEquipUse.value)
+			console.log(res)
 		}
+		fetchData()
 	}
 	
 	// 添加按钮
@@ -197,18 +207,19 @@
 	} 
 	
 	// 修改按钮
-	const buttonEdit = async (item: object,index: number) =>{
+	const buttonEdit = async (item: sysEquipUseType,index: number) =>{
 		showModel.value = true
-		sysEquipUse.value = item
+		sysEquipUse.value = await getEquipUtiliseById(item.id!)
+		//(item.id!)表示非空断言
 		console.log(sysEquipUse.value)
 		console.log("edit!")
 	}
 	
 	// 删除按钮
-	const removeById = async (item: object,index: number) =>{
+	const removeById = async (item: sysEquipUseType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
-		const res = await removeId(item.id)
+		const res = await removeId(item.id!)
 		console.log("res: "+res)
 		fetchData()
 	}
@@ -218,11 +229,9 @@
 		console.log("detail!")
 	}
 	
-	// 获取所有数据
-	const fetchAll = async () =>{
-		// console.log("getAllRecords")
-		const list = await findAllRecords()
-		console.log(list)
+	const resetData = async () =>{
+		initialObject(searchObj.value)
+		fetchData()
 	}
 	
 	//条件分页排序查询

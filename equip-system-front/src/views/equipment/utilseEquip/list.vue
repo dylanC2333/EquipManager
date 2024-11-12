@@ -10,7 +10,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="设备编号/操作人工号/任务编号"
+                placeholder="设备编号/操作人编号/任务编号"
               ></el-input>
             </el-form-item>
           </el-col>
