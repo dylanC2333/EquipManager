@@ -22,6 +22,12 @@
 		</zb-table>
 	</view>
 	
+	<tm-app>
+			<tm-sheet :padding="[12, 0]" :margin="[0, 0]">
+				<tm-pagination v-model:current="pagination.page" @change="handlePageChange" color="primary" :total="pagination.total"></tm-pagination>
+			</tm-sheet>
+	</tm-app>
+	
 	<tm-app ref="app" color="grey-5">
 		<tm-modal
 			color="white"
@@ -85,8 +91,13 @@
 		saveEquipUtilise,
 		removeId
 	} from '@/api/system/equipmentUtilise'
-	import { ref , reactive ,computed } from 'vue'
+	import { ref , reactive ,computed, getCurrentInstance } from 'vue'
 	import * as dayjs from '@/tmui/tool/dayjs/esm/index'
+	import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
+	import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
+	import { onShow, onLoad } from '@dcloudio/uni-app'
+	import tmApp from '@/tmui/components/tm-app/tm-app.vue'
+	import tmText from '@/tmui/components/tm-text/tm-text.vue'
 	
 	//定义响应式变量
 	const list = ref([])//存储获得的数据
@@ -238,11 +249,19 @@
 			sortOption.value.sortorder
 		)
 		list.value = res.records
+		// 这个total是总记录数不是总页数
 		pagination.value.total = res.total
-		console.log(res)
+		console.log(pagination.value.page)
 		console.log(list.value)
 		// console.log(pagination.value.total)
 	}
+	
+	// 定义事件处理函数  
+	const handlePageChange = (newPage : number) => {  
+		console.log(newPage); 
+		pagination.value.page = newPage; // 更新当前页码  
+		fetchData(newPage); // 使用最新的页码调用 fetchData  
+	}; 
 	
 	
 </script>
