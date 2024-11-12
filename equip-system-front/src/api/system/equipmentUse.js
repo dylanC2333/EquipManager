@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/equipment/equipmentUse/'
+const api_name = '/admin/equipment/equipmentUse'
 
 
 export default{
@@ -22,6 +22,7 @@ export default{
           method: 'delete'
         })
     },
+    
     //3、添加
     saveEquipUse(equipUse) {
         return request({

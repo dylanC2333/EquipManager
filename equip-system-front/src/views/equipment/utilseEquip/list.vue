@@ -80,7 +80,6 @@
       <el-table-column prop="location" label="地点" />
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
       <el-table-column prop="maintenanceStatus" label="维护保养情况" />
-      <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -122,7 +121,7 @@
         style="padding-right: 40px"
         :rules = "rules"
       >
-        <el-form-item label="管理编号"  prop = "equipmentCode">
+        <el-form-item label="设备编号"  prop = "equipmentCode">
           <el-input v-model="sysEquipUse.equipmentCode" />
         </el-form-item>
         <el-form-item label="任务编号" prop="taskCode">
@@ -165,9 +164,6 @@
         </el-form-item>
         <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
           <el-input v-model="sysEquipUse.maintenanceStatus" />
-        </el-form-item>
-        <el-form-item label="备注"  prop = "remarks">
-          <el-input v-model="sysEquipUse.remarks" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
