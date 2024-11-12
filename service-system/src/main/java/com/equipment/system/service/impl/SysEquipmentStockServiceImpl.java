@@ -22,6 +22,11 @@ public class SysEquipmentStockServiceImpl extends ServiceImpl<SysEquipmentStockM
     public IPage<SysEquipmentStock> idleEquipmentFinder(Page<SysEquipmentStock> pageParam, SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo) {
         return baseMapper.idleEquipmentFinder(pageParam,sysIdleEquipmentFinderQueryVo);
     }
+
+    @Override
+    public IPage<SysEquipmentStock> idleEquipmentFinder2(Page<SysEquipmentStock> pageParam, SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo) {
+        return baseMapper.idleEquipmentFinder2(pageParam,sysIdleEquipmentFinderQueryVo);
+    }
 }
 
 

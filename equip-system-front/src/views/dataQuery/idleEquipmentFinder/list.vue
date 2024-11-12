@@ -15,7 +15,7 @@
           </el-col>
           <el-col :span="7">
             <el-form-item label="地点">
-              <el-select v-model="sysEquipFinder.location" placeholder="请选择">
+              <el-select v-model="searchObj.location" placeholder="请选择">
                 <el-option
                   v-for="item in pcTextArr"
                   :key="item.value"
@@ -56,7 +56,7 @@
         </el-row>
       </el-form>
     </div>
-
+    <el-header style="text-align: center; margin-bottom: -10px; padding: 0; line-height: 80px;">选择时段内在库的设备</el-header>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -84,6 +84,35 @@
         style="padding: 30px 0; text-align: center;"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"/>
+
+    <el-header style="text-align: center; margin-bottom: -10px; padding: 0; line-height: 75px;">选择时段内已出库但无使用记录的设备</el-header>
+    <el-table
+      v-loading="listLoading"
+      :data="list2"
+      stripe
+      border
+      style="width: 100%; margin-top: 10px"
+    >
+      <el-table-column label="序号" width="70" align="center">
+        <template slot-scope="scope">
+          {{ (page - 1) * limit + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="equipmentCode" label="设备编码" />
+      <el-table-column prop="equipmentName" label="设备名称" />
+    </el-table>
+
+    <!-- 分页组件 -->
+    <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="fetchData"
+        :current-page="page"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="limit"
+        style="padding: 30px 0; text-align: center;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total2"/>
   </div>
 </template>
 <script>
@@ -95,7 +124,9 @@ export default {
     return {
       listLoading: false, // 数据是否正在加载
       list: null, // banner列表
+      list2: null, // banner列表
       total: 0, // 数据库中的总记录数
+      total2: 0, // 数据库中的总记录数
       page: 1, // 默认页码
       limit: 10, // 每页记录数
       searchObj: {}, // 查询表单对象
@@ -105,14 +136,15 @@ export default {
       dialogVisible: false,
       sysEquipFinder: [],
       pcTextArr, //省市二级地址，纯汉字
-      selectedLocations: [], // 选中的省市地址数据
+
+      dialogRoleVisible: false,
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
-          
+
     //导出当前表格为Excel
     exportCurrent(){
       console.log("Export to Excel!");
@@ -129,11 +161,11 @@ export default {
 
           // 将数据转换为工作表
           const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['设备名称','设备编号']});
-          
+
           // 创建工作簿并添加工作表
           const workbook = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(workbook, equipmentworksheet, '空闲设备列表')
-          
+
           // 导出Excel文件
           XLSX.writeFile(workbook, 'data.xlsx');
         })
@@ -157,7 +189,7 @@ export default {
         this.fetchData();
         //console.log(this.limit);
       },
-    
+
     //列表
     fetchData(page = 1) {
       this.page = page;
@@ -170,6 +202,12 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
+        });
+
+      api.equipmentFinder2(this.page, this.limit, this.searchObj)
+        .then((response) => {
+          this.list2 = response.data.records;
+          this.total2 = response.data.total;
         });
     },
   },

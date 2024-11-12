@@ -16,6 +16,8 @@ import org.apache.ibatis.annotations.Param;
 public interface SysEquipmentStockMapper extends BaseMapper<SysEquipmentStock> {
 
     IPage<SysEquipmentStock> idleEquipmentFinder(Page<SysEquipmentStock> pageParam, @Param("equipFinderVo")SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo);
+
+    IPage<SysEquipmentStock> idleEquipmentFinder2(Page<SysEquipmentStock> pageParam, @Param("equipFinderVo") SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo);
 }
 
 
