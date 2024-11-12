@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tm-calendar-view": "../tm-calendar-view/tm-calendar-view",
+    "tm-drawer": "../tm-drawer/tm-drawer"
+  }
+}

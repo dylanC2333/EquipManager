@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tm-text": "../../../tmui/components/tm-text/tm-text",
+    "tm-input": "../../../tmui/components/tm-input/tm-input",
+    "tm-app": "../../../tmui/components/tm-app/tm-app"
+  }
+}

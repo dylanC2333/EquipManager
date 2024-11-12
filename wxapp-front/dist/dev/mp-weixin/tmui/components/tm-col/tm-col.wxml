@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" hover-class="{{i}}" bindtap="{{j}}" class="flex relative" style="{{k + ';' + l}}"><view eventPenetrationEnabled="{{true}}" style="{{b + ';' + c + ';' + d + ';' + e + ';' + f}}" class="{{['flex flex-col flex-1 ', g, h]}}"><slot></slot></view></view>

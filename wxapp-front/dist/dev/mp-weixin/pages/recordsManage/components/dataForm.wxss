@@ -1,0 +1,28 @@
+.container.data-v-85de2756 {
+  margin: 80rpx 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 40rpx;
+  -moz-column-gap: 40rpx;
+       column-gap: 40rpx;
+}
+.container .chunk.data-v-85de2756 {
+  position: relative;
+}
+.container .chunk .overlap.data-v-85de2756 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 32px;
+}
+@media screen and (max-width: 768px) {
+.container .chunk .overlap.data-v-85de2756 {
+    height: 64px;
+}
+}
+@media screen and (max-width: 768px) {
+.container.data-v-85de2756 {
+    grid-template-columns: 1fr;
+}
+}

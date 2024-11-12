@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tm-button": "../../../tmui/components/tm-button/tm-button",
+    "content-modal": "../../../components/contentModal"
+  }
+}

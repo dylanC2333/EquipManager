@@ -1,0 +1,1 @@
+<tm-app class="data-v-ca296120" u-s="{{['d']}}" u-i="ca296120-0" bind:__l="__l"><view class="table data-v-ca296120"><tm-table wx:if="{{b}}" class="data-v-ca296120" bindrowClick="{{a}}" u-i="ca296120-1,ca296120-0" bind:__l="__l" u-p="{{b}}"></tm-table></view></tm-app>

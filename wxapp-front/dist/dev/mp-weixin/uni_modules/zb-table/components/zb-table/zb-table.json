@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "table-checkbox": "./components/table-checkbox",
+    "table-summary": "./components/table-summary",
+    "zb-load-more": "./components/zb-load-more"
+  }
+}

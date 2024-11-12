@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "设备使用",
+  "usingComponents": {
+    "tm-button": "../../tmui/components/tm-button/tm-button",
+    "zb-table": "../../uni_modules/zb-table/components/zb-table/zb-table",
+    "tm-input": "../../tmui/components/tm-input/tm-input",
+    "tm-form-item": "../../tmui/components/tm-form-item/tm-form-item",
+    "tm-form": "../../tmui/components/tm-form/tm-form",
+    "tm-modal": "../../tmui/components/tm-modal/tm-modal",
+    "tm-calendar": "../../tmui/components/tm-calendar/tm-calendar",
+    "tm-app": "../../tmui/components/tm-app/tm-app"
+  }
+}

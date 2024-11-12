@@ -1,0 +1,5 @@
+.bottom-btns.data-v-805a5d1b {
+  width: 100%;
+  display: grid;
+  grid-template-columns: var(--311ae231);
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "我的",
+  "backgroundColor": "#5555ff",
+  "usingComponents": {
+    "tm-text": "../../tmui/components/tm-text/tm-text",
+    "tm-app": "../../tmui/components/tm-app/tm-app"
+  }
+}

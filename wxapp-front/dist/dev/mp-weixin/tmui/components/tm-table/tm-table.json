@@ -1,0 +1,11 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tm-text": "../tm-text/tm-text",
+    "tm-icon": "../tm-icon/tm-icon",
+    "tm-button": "../tm-button/tm-button",
+    "tm-row": "../tm-row/tm-row",
+    "tm-col": "../tm-col/tm-col",
+    "tm-divider": "../tm-divider/tm-divider"
+  }
+}

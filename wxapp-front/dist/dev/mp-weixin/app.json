@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/profile/index",
+    "pages/tableSelect/index",
+    "pages/recordsManage/index",
+    "pages/dbTest/index",
+    "pages/commonTest/index",
+    "pages/equipment/equipmentUtilise"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#55aaff",
+    "backgroundColor": "#5555ff",
+    "pageOrientation": "auto"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#007AFF",
+    "borderStyle": "black",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/login/index",
+        "iconPath": "static/tabbar/list.png",
+        "selectedIconPath": "static/tabbar/list_active.png",
+        "text": "登录"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "iconPath": "static/tabbar/me.png",
+        "selectedIconPath": "static/tabbar/me_active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "darkmode": false,
+  "usingComponents": {}
+}

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tm-cell": "../../../tmui/components/tm-cell/tm-cell"
+  }
+}

@@ -1,0 +1,13 @@
+.container.data-v-199ed355 {
+  margin: 80rpx 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 40rpx;
+  -moz-column-gap: 40rpx;
+       column-gap: 40rpx;
+}
+@media screen and (max-width: 768px) {
+.container.data-v-199ed355 {
+    grid-template-columns: 1fr;
+}
+}

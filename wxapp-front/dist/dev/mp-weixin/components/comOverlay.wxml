@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" class="data-v-813158a5"><view class="{{['data-v-813158a5', 'mask', 'overlap', b]}}" style="{{'transition-duration:' + c}}"></view><view class="{{['data-v-813158a5', 'close-area', d]}}" style="{{'transition-duration:' + e}}" catchtap="{{f}}"><slot></slot></view></view>
