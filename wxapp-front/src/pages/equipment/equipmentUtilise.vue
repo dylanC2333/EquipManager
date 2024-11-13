@@ -5,24 +5,25 @@
 		<tm-input v-model="searchObj.keyword" placeholder="设备编号/操作人编号/任务编号"></tm-input>
 		<view class="flex flex-row flex-wrap">
 			<tm-button  :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
-			<tm-button  :margin="[10]" @click="resetData()" size="normal">重置</tm-button>
+			<tm-button  :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
 		</view>		
 		<tm-button  :margin="[10]" @click="add" size="normal">添加 </tm-button>
 	</tm-sheet>
-	<view class="recordTable" style="height: 500px">
-		<zb-table
-		            :show-header="true"
-		            :columns="column"
-		            :stripe="true"
-		            :fit="false"
-		            :show-summary="false"
-		            :border="true"
-		            @edit="buttonEdit"
-		            @remove="removeById"
-					@detail="detail"
-		            :data="list">
-		</zb-table>
-	</view>
+	<tm-sheet>
+		<view class="recordTable" style="height: 500px">
+			<zb-table
+						:show-header="true"
+						:columns="column"
+						:stripe="true"
+						:fit="false"
+						:border="true"
+						@edit="buttonEdit"
+						@remove="removeById"
+						@detail="detail"
+						:data="list">
+			</zb-table>
+		</view>
+	</tm-sheet>
 	
 	<tm-app ref="app" color="grey-5">
 		<tm-modal
@@ -32,19 +33,21 @@
 			okLinear="left"
 			splitBtn
 			title="添加/修改"
+			hideCancel=true
 			:width="700"
 			:height="1200"
 			v-model:show="showModel"
-			@ok="SaveorUpdate"
+			okText="返回"
 		>
-			<tm-form ref="form" :label-width="80" >
+			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipUse">
 				<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
 					<!-- 不要问我为什么用v-model.lazy，我很受伤。 -->
-					<!-- <tm-text :font-size ="35" label="任务编号"></tm-text> -->
+					<!-- <tm-text :font-size ="35" label="设备编号"></tm-text> -->
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.taskCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					<tm-input :inputPadding="[0, 0]"  v-model.lazy="sysEquipUse.taskCode" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+					<tm-input :inputPadding="[49, 0]" v-model.lazy="sysEquipUse.taskCode" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
@@ -67,7 +70,16 @@
 				<tm-form-item required label="维护保养情况" field="maintenanceStatus" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				
+				<tm-form-item :border="false">
+					<view class="flex flex-row">
+						<view class="flex-1 mr-32">
+							<tm-button form-type="submit" label="提交表单" block></tm-button>
+						</view>
+						<view class="flex-1">
+							<tm-button :shadow="0" text form-type="reset" label="重置表单" block></tm-button>
+						</view>
+					</view>
+				</tm-form-item>
 			</tm-form>		
 		</tm-modal>
 		
@@ -108,6 +120,15 @@
 	  preUseEquipmentStatus?: string;
 	  taskCode?: string;
 	}
+	interface validateResultType{ 
+		data: sysEquipUseType
+		// 所有与form-item绑定的filed字段校验的结果数组。
+		result:{
+			message:string,//校验后的提示文本
+			validator: boolean,//是否校验通过
+		}[],
+		isPass:boolean //是否校验通过
+	}
 
 	//定义响应式变量
 	const list = ref([])//存储获得的数据
@@ -138,7 +159,6 @@
 	const DayJs = dayjs.default// 日历组件
 	
 	const column = reactive([
-	          { type:'selection', fixed:true, align:'right', width:40 },
 			  { name: 'operation', type:'operation',fixed:true,label: '操作',renders:[
 			      {
 			        name:'详情',
@@ -183,7 +203,18 @@
 	};
 	
 	// 提交表单
-	const SaveorUpdate = async() =>{
+	const confirm = async (validateResult: validateResultType) => {
+		console.log("confirm!")
+		console.log(validateResult)
+		if(validateResult.isPass){
+			console.log(validateResult.data)
+			await saveorUpdate()
+			showModel.value = false
+		}
+	}
+	
+	// 提交验证后的表单数据
+	const saveorUpdate = async() =>{
 		console.log("form submit!")
 		if(!sysEquipUse.value.id){
 			console.log("add processing!")
