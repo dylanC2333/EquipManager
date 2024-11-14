@@ -45,9 +45,9 @@
 					<!-- <tm-text :font-size ="35" label="设备编号"></tm-text> -->
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :inputPadding="[0, 0]"  v-model.lazy="sysEquipUse.taskCode" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
-					<tm-input :inputPadding="[49, 0]" v-model.lazy="sysEquipUse.taskCode" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
@@ -67,7 +67,7 @@
 				<tm-form-item required label="设备使用前情况" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="维护保养情况" field="maintenanceStatus" :rules="[{ required: true, message: '必填' }]" >
+				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
 				<tm-form-item :border="false">
@@ -100,6 +100,7 @@
 		update,
 		getEquipUtiliseById
 	} from '@/api/system/equipmentUtilise'
+	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
 	import { ref , reactive ,computed } from 'vue'
 	import * as dayjs from '@/tmui/tool/dayjs/esm/index'
 	
@@ -155,6 +156,13 @@
 		preUseEquipmentStatus :'',
 		maintenanceStatus :'',
 	})
+	const taskCodeParts = ref<{
+		year: string,
+		number: string
+	}>({// 任务编号组件
+		year: '',
+		number: ''
+	})
 	const showCal = ref(false)// 日历显示控制
 	const DayJs = dayjs.default// 日历组件
 	
@@ -195,12 +203,28 @@
 		return DayJs(sysEquipUse.value.equipmentUseDate[0]).format('YYYY-MM-DD')
 	})
 	
+	//任务编号校验
+	const  validateTaskCode = () =>{
+	      const yearPattern = /^\d{4}$/; // 4位数字
+	      const numberPattern = /^\d{3}$/; // 3位数字
+	      
+	      if (!taskCodeParts.value.year || !taskCodeParts.value.number) {
+	        return false
+	      } else if (!yearPattern.test(taskCodeParts.value.year)) {
+	        return false
+	      } else if (!numberPattern.test(taskCodeParts.value.number)) {
+	        return false
+	      } else {
+	        return true;
+	      }
+	    }
+	
 	// 清空对象
 	const initialObject = (obj: any) => {
 	  Object.keys(obj).forEach(key => {
 	    obj[key] = ''; // 重置为初始值，根据需要也可以重置为 null 或其他
 	  });
-	};
+	}
 	
 	// 提交表单
 	const confirm = async (validateResult: validateResultType) => {
@@ -215,6 +239,8 @@
 	
 	// 提交验证后的表单数据
 	const saveorUpdate = async() =>{
+		//任务编号拼接
+		sysEquipUse.value.taskCode = taskCodeConcat(taskCodeParts.value)
 		console.log("form submit!")
 		if(!sysEquipUse.value.id){
 			console.log("add processing!")
@@ -234,6 +260,7 @@
 	const add = async() =>{
 		showModel.value = true
 		initialObject(sysEquipUse.value)
+		initialObject(taskCodeParts.value)
 		console.log("add!")
 	} 
 	
@@ -242,7 +269,10 @@
 		showModel.value = true
 		sysEquipUse.value = await getEquipUtiliseById(item.id!)
 		//(item.id!)表示非空断言
+		initialObject(taskCodeParts.value)
+		taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
 		console.log(sysEquipUse.value)
+		console.log(taskCodeParts.value)
 		console.log("edit!")
 	}
 	
@@ -260,6 +290,7 @@
 		console.log("detail!")
 	}
 	
+	// 重置查询
 	const resetData = async () =>{
 		initialObject(searchObj.value)
 		fetchData()
