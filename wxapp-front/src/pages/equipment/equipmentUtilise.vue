@@ -39,6 +39,7 @@
 			:width="700"
 			:height="1000"
 			v-model:show="showModel"
+			:zIndex = "zindexNum"
 			@ok="SaveorUpdate"
 		>
 			<tm-form ref="form" :label-width="80" >
@@ -59,12 +60,34 @@
 						<tm-icon :userInteractionEnabled="false" :font-size="24" name="tmicon-angle-right"></tm-icon>
 					</view>
 				</tm-form-item> -->
-				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' }]" >
+				<!-- <tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentUseDate" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item> -->
+				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' }]" >
+					<tm-cell @click="handleTimePicker"  :right-text="dateSar || '请选择日期'"></tm-cell>
+					<tm-time-picker
+								:showDetail="{
+									year: true,
+									month: true,
+									day: true,
+									hour:false,
+									minute:false,
+									second:false
+								}"
+								v-model:show="showdate"
+								v-model="dateSAva"
+								format="YYYY-MM-DD"
+								@cancel="handleTimePickerCancel"
+								:defaultValue="dateSAva"
+								v-model:model-str="dateSar"
+							></tm-time-picker>
 				</tm-form-item>
 				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.location" :transprent="true" :showBottomBotder="false"> </tm-input>
-				</tm-form-item>
+					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.location" :transprent="true" :showBottomBotder="false"> </tm-input>
+				 -->
+					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
+					<tm-city-picker selectedModel="name" v-model="citydate" v-model:show="showCitydate" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
+				 </tm-form-item>
 				<tm-form-item required label="设备使用前情况" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
@@ -98,8 +121,32 @@
 	import { onShow, onLoad } from '@dcloudio/uni-app'
 	import tmApp from '@/tmui/components/tm-app/tm-app.vue'
 	import tmText from '@/tmui/components/tm-text/tm-text.vue'
+	import tmCell from '@/tmui/components/tm-cell/tm-cell.vue'
+	import tmTimePicker from '@/tmui/components/tm-time-picker/tm-time-picker.vue'
+	import tmDivider from '@/tmui/components/tm-divider/tm-divider.vue'
+	import tmTimeView from '@/tmui/components/tm-time-view/tm-time-view.vue'
+	import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
+	import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
+	import { List } from 'echarts'
+	
+	// 地点选择器变量
+	const cityStr = ref('')
+	const citydate = ref([])
+	const showCitydate = ref(false)
 	
 	//定义响应式变量
+	// 日期选择器
+	const dateSar = ref('') 
+	const showdate = ref(false)
+	const today = new Date()  
+	const year = today.getFullYear() 
+	const month = String(today.getMonth() + 1).padStart(2, '0') // 月份从0开始  
+	const day = String(today.getDate()).padStart(2, '0') 
+	const formattedDate = `${year}/${month}/${day}`
+	const dateSAva = ref(formattedDate)
+	
+	const zindexNum = ref(999)
+	
 	const list = ref([])//存储获得的数据
 	const loading = ref(false)
 	const pagination = ref({//存储分页控制数据
@@ -171,7 +218,52 @@
 	//             zip: 200333
 	//           },
  //    ])
- 
+	// 点击时间选择器让form不显示，让
+	const handleTimePicker = () => {
+		// 让form层级变小，让选择器显示
+		zindexNum.value = 10
+		showdate.value = true
+		console.log(citydate.value)
+	};
+	// 取消时让选择器不显示，把表单的层级写回来
+	const handleTimePickerCancel = () =>{
+		zindexNum.value = 999
+		showdate.value = false
+		console.log(dateSAva.value)
+		console.log(dateSar.value)
+	};
+	
+	// 处理时间选择器确认后把表单重新显示回来
+	// const handleTimePickerConfirm = (selectedTime: string) => {
+	// 	// 为空就是 选择的是当天，还没有动轮盘
+	// 	if(selectedTime != ''){
+	// 		dateSAva.value = formatDate(selectedTime);
+	// 		console.log(typeof selectedTime)
+	// 	}
+	// 	console.log(selectedTime)
+	// 	console.log(dateSAva.value)
+	// 	zindexNum.value = 999
+	// 	showdate.value = false
+	// };
+	
+	// 点击地点选择器让form不显示，让
+	const handleCityPicker = () => {
+		// 让form层级变小，让选择器显示
+		zindexNum.value = 10
+		showCitydate.value = true
+		
+	};
+	
+	// // 处理地点选择器确认后把表单重新显示回来
+	// const handleCityPickerConfirm = (selectedCity: Array<string>) => {
+	// 	console.log(selectedCity)
+	// 	//citydate.value = selectedCity
+	// 	console.log(citydate)
+	// 	zindexNum.value = 999
+	// 	showCitydate.value = false
+	// 	console.log(cityStr.value)
+	// };
+	
 	// 日历渲染
 	const caleStr = computed(() => {
 		if (!sysEquipUse.value.equipmentUseDate || !Array.isArray(sysEquipUse.value.equipmentUseDate)) return ''
@@ -184,11 +276,26 @@
 	  Object.keys(obj).forEach(key => {
 	    obj[key] = ''; // 重置为初始值，根据需要也可以重置为 null 或其他
 	  });
+	  
+	  // 清空时间选择器
+	  dateSAva.value = ''
+	  dateSar.value = ''
+	  
+	  // 清空地点选择器
+	  cityStr.value=''
+	  //console.log(cityStr.value)
+	  citydate.value = []
 	};
 	
 	// 提交表单
 	const SaveorUpdate = async() =>{
 		console.log("form submit!")
+		// 时间赋值
+		sysEquipUse.value.equipmentUseDate = dateSar.value
+		
+		// 地点赋值
+		sysEquipUse.value.location = cityStr.value
+		
 		if(!sysEquipUse.value.id){
 			console.log("add processing!")
 			console.log(sysEquipUse.value)
@@ -205,6 +312,11 @@
 		showModel.value = true
 		initialObject(sysEquipUse.value)
 		console.log("add!")
+		// 清空时间和地点选择器绑定变量
+		dateSAva.value = ''
+		dateSar.value = ''
+		citydate.value = []
+		cityStr.value = ''
 	} 
 	
 	// 修改按钮
@@ -262,6 +374,15 @@
 		pagination.value.page = newPage; // 更新当前页码  
 		fetchData(newPage); // 使用最新的页码调用 fetchData  
 	}; 
+	
+// 	function formatDate(dateString: string): string {  
+// 		// 按空格分割  
+// 		const datePart = dateString.split(' ')[0]; // 获取日期部分  
+// 		// 将日期部分按斜杠分割  
+// 		const [year, month, day] = datePart.split('/');  
+// 		// 重新组合为 "YYYY-MM-DD" 格式  
+// 		return `${year}-${month}-${day}`;  
+// }  
 	
 	
 </script>
