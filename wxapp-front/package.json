@@ -49,6 +49,7 @@
         "@dcloudio/uni-mp-xhs": "3.0.0-4010420240430001",
         "@dcloudio/uni-quickapp-webview": "3.0.0-4010420240430001",
         "@dcloudio/uni-ui": "^1.5.2",
+        "cheerio": "^1.0.0",
         "echarts": "5.4.2",
         "pinia": "^2.0.33",
         "sass": "^1.69.5",

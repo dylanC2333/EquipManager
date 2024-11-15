@@ -51,6 +51,7 @@
 					<!-- 不要问我为什么用v-model.lazy，我很受伤。 -->
 					<!-- <tm-text :font-size ="35" label="设备编号"></tm-text> -->
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="normal" outlined label="扫码获取设备编号" :disabled="needScan"></tm-button>
 				</tm-form-item>
 				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
@@ -66,7 +67,7 @@
 					</view>
 				</tm-form-item> -->
 				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' }]" >
-					<tm-cell @click="handleTimePicker"  :right-text="dateSar || '请选择日期'"></tm-cell>
+					<tm-cell @click="handleTimePicker"  :right-text="sysEquipUse.equipmentUseDate || '请选择日期'"></tm-cell>
 					<tm-time-picker
 								:showDetail="{
 									year: true,
@@ -81,7 +82,7 @@
 								format="YYYY-MM-DD"
 								@cancel="handleTimePickerCancel"
 								:defaultValue="dateSAva"
-								v-model:model-str="dateSar"
+								v-model:model-str="sysEquipUse.equipmentUseDate"
 							></tm-time-picker>
 				</tm-form-item>
 				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' }]" >
@@ -127,9 +128,8 @@
 		update,
 		getEquipUtiliseById
 	} from '@/api/system/equipmentUtilise'
-	import { ref , reactive ,computed, getCurrentInstance } from 'vue'
+	import { ref , reactive ,computed, getCurrentInstance, nextTick } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
-	import { ref , reactive ,computed } from 'vue'
 	import * as dayjs from '@/tmui/tool/dayjs/esm/index'
 	import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
 	import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
@@ -143,6 +143,7 @@
 	import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
 	import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
 	import { List } from 'echarts'
+	import * as cheerio from 'cheerio'
 
 	// 地点选择器变量
 	const cityStr = ref('')
@@ -186,7 +187,7 @@
 	//const day = String(today.getDate()).padStart(2, '0')
 	//const formattedDate = `${year}/${month}/${day}`
 	const dateSAva = ref('')
-
+	const needScan = ref(false)
 	const zindexNum = ref(999)
 
 	const list = ref([])//存储获得的数据
@@ -286,6 +287,42 @@
 		return DayJs(sysEquipUse.value.equipmentUseDate[0]).format('YYYY-MM-DD')
 	})
 	
+	// 扫码处理函数
+	const scanCode = () =>  {  
+	    uni.scanCode({  
+	        success: function (res: { scanType: string; result: string }): void{  
+	            console.log('条码类型：' + res.scanType);  
+	            console.log('条码内容：' + res.result);  
+				
+	            uni.request({  
+	                url: res.result, //仅为示例，并非真实接口地址  
+	                success(requestRes) {  
+	                    const resData = requestRes.data;  
+	                    console.log(typeof resData);  
+	                    // 处理resData,在里面查找想要的内容，并打印出来  
+	                    // 使用 cheerio 加载 HTML 字符串  
+	                    const $ = cheerio.load(resData as string); // 虽然本来就是string, 但是不转换会报错。也许是因为允许的参数中不全部一样 
+	                    
+	                    // 查找设备编号对应的 <span> 内容  
+	                    const deviceNumber = $('div.lr-form-item-title:contains("设备编号")').next('span').text();  
+	                    sysEquipUse.value.equipmentCode = deviceNumber;
+	                    // 输出设备编号  
+	                    console.log(sysEquipUse.value.equipmentCode);   
+	                    // buttonText = deviceNumber; // Assuming buttonText is declared elsewhere  
+	                },   
+	                fail(err) {  
+	                    console.error('请求失败:', err);  
+	                },  
+	            });  
+	        },  
+	        fail: (err: any) => {  
+	            console.error('扫码失败:', err);  
+	        }  
+	    });  
+	};
+	  
+	
+	
 	//任务编号校验
 	const  validateTaskCode = () =>{
 	      const yearPattern = /^\d{4}$/; // 4位数字
@@ -355,7 +392,7 @@
 	}
 	
 	// 添加按钮
-	const add = async() =>{
+	const add = () =>{
 		showModel.value = true
 		initialObject(sysEquipUse.value)
 		initialObject(taskCodeParts.value)
@@ -365,6 +402,10 @@
 		dateSar.value = ''
 		citydate.value = []
 		cityStr.value = ''
+		
+		// 打开扫码按钮
+		needScan.value = false;
+		//console.log(needScan.value)
 	}
 	
 	// 修改按钮
@@ -374,6 +415,11 @@
 		//(item.id!)表示非空断言
 		initialObject(taskCodeParts.value)
 		taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
+		
+		//dateSar.value = "20120201"
+		// 修改表单有设备编号回显，不需要扫码功能
+		needScan.value = true
+		
 		console.log(sysEquipUse.value)
 		console.log(taskCodeParts.value)
 		console.log("edit!")
