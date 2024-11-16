@@ -68,6 +68,48 @@
           "bounce": "none"
         }
       }
+    },
+    {
+    	"path" : "pages/equipmentStock/equipmentStock",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    },
+    {
+    	"path" : "pages/equipmentTransfer/equipmentTransfer",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    },
+    {
+    	"path" : "pages/equipmentMaintain/equipmentMaintain",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    },
+    {
+    	"path" : "pages/available_employee/availableEmployee",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    },
+    {
+    	"path" : "pages/functionNavigator/functionNavigator",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    },
+    {
+    	"path" : "pages/availableEquipment/availableEquipment",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
     }
 
   ],
