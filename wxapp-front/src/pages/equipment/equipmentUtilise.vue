@@ -39,7 +39,8 @@
 			okLinear="left"
 			splitBtn
 			title="添加/修改"
-			hideCancel=true
+			:hideCancel="true"
+			:closeable="true"
 			:width="700"
 			:height="1200"
 			v-model:show="showModel"
@@ -59,14 +60,8 @@
 				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-<!-- 				<tm-form-item required label="使用日期" field="cale" :rules="[{ required: true, message: '请选择日期哦' }]">
-					<view @click="showCal = !showCal" class="flex flex-row flex-row-center-between">
-						<tm-text :userInteractionEnabled="false" :label="caleStr || '请选择有效日期'"></tm-text>
-						<tm-icon :userInteractionEnabled="false" :font-size="24" name="tmicon-angle-right"></tm-icon>
-					</view>
-				</tm-form-item> -->
-				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' }]" >
-					<tm-cell @click="handleTimePicker"  :right-text="dateSar || '请选择日期'"></tm-cell>
+				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+					<tm-cell @click="handleTimePicker"  :right-text="dateStr || '请选择日期'"></tm-cell>
 					<tm-time-picker
 								:showDetail="{
 									year: true,
@@ -81,14 +76,14 @@
 								format="YYYY-MM-DD"
 								@cancel="handleTimePickerCancel"
 								:defaultValue="dateSAva"
-								v-model:model-str="dateSar"
+								v-model:model-str="dateStr"
 							></tm-time-picker>
 				</tm-form-item>
-				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' }]" >
+				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
 					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.location" :transprent="true" :showBottomBotder="false"> </tm-input>
 				 -->
 					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
-					<tm-city-picker selectedModel="name" v-model="citydate" v-model:show="showCitydate" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
+					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item required label="设备使用前情况" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
@@ -101,15 +96,13 @@
 						<view class="flex-1 mr-32">
 							<tm-button form-type="submit" label="提交表单" block></tm-button>
 						</view>
-						<view class="flex-1">
+<!-- 						<view class="flex-1">
 							<tm-button :shadow="0" text form-type="reset" label="重置表单" block></tm-button>
-						</view>
+						</view> -->
 					</view>
 				</tm-form-item>
 			</tm-form>		
 		</tm-modal>
-		
-		<tm-calendar v-model="sysEquipUse.equipmentUseDate" v-model:show="showCal" :default-value="sysEquipUse.equipmentUseDate"></tm-calendar>
 		
 	</tm-app>
 			
@@ -120,7 +113,6 @@
 <script setup lang="ts">
 	//使用<script setup>，组合式 API 单文件组件，语法糖。所有顶层绑定均能在模板中直接使用。
 	import {
-		findAllRecords,
 		getPageList,
 		saveEquipUtilise,
 		removeId,
@@ -129,8 +121,6 @@
 	} from '@/api/system/equipmentUtilise'
 	import { ref , reactive ,computed, getCurrentInstance } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
-	import { ref , reactive ,computed } from 'vue'
-	import * as dayjs from '@/tmui/tool/dayjs/esm/index'
 	import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
 	import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
 	import { onShow, onLoad } from '@dcloudio/uni-app'
@@ -143,11 +133,6 @@
 	import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
 	import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
 	import { List } from 'echarts'
-
-	// 地点选择器变量
-	const cityStr = ref('')
-	const citydate = ref([])
-	const showCitydate = ref(false)
 
 	//定义数据模型，用于ts类型检查
 	interface sysEquipUseType {
@@ -177,8 +162,14 @@
 	}
 
 	//定义响应式变量
+	
+	// 地点选择器变量
+	const cityStr = ref('')
+	const citydata = ref([])
+	const showcitydata = ref(false)
+	
 	// 日期选择器
-	const dateSar = ref('')
+	const dateStr = ref('')
 	const showdate = ref(false)
 	//const today = new Date()
 	//const year = today.getFullYear()
@@ -208,7 +199,7 @@
 		equipmentCode :'',
 		taskCode :'',
 		employeeUseCode :'',
-		equipmentUseDate :'',
+		equipmentUseDate : '',
 		location :'',
 		preUseEquipmentStatus :'',
 		maintenanceStatus :'',
@@ -220,8 +211,6 @@
 		year: '',
 		number: ''
 	})
-	const showCal = ref(false)// 日历显示控制
-	const DayJs = dayjs.default// 日历组件
 	
 	const column = reactive([
 			  { name: 'operation', type:'operation',fixed:true,label: '操作',renders:[
@@ -258,7 +247,7 @@
 		// 让form层级变小，让选择器显示
 		zindexNum.value = 10
 		showdate.value = true
-		console.log(citydate.value)
+		console.log(citydata.value)
 	};
 
 	// 取消时让选择器不显示，把表单的层级写回来
@@ -266,7 +255,7 @@
 		zindexNum.value = 999
 		showdate.value = false
 		console.log(dateSAva.value)
-		console.log(dateSar.value)
+		console.log(dateStr.value)
 	};
 
 
@@ -274,17 +263,34 @@
 	const handleCityPicker = () => {
 		// 让form层级变小，让选择器显示
 		zindexNum.value = 10
-		showCitydate.value = true
+		showcitydata.value = true
 
 	};
 
-
-	// 日历渲染
-	const caleStr = computed(() => {
-		if (!sysEquipUse.value.equipmentUseDate || !Array.isArray(sysEquipUse.value.equipmentUseDate)) return ''
-		if (sysEquipUse.value.equipmentUseDate.length == 0) return ''
-		return DayJs(sysEquipUse.value.equipmentUseDate[0]).format('YYYY-MM-DD')
-	})
+	// 地点格式处理，从数组中拼接
+	const cityFormat = (cityString: string) =>{
+		// 如果字符串包含 `/`，将其替换为空字符串
+		const formattedCity = cityString.replace("/", "");
+		return formattedCity.trim(); // 确保去除两端多余的空格
+	}
+	
+	// 日期校验
+	const validateDate = () =>{
+		if (!dateStr.value) {
+			return false
+		} else{
+			return true
+		}
+	}
+	
+	// 地点校验
+	const validateLocation = () =>{
+		if (!cityStr.value) {
+			return false
+		} else{
+			return true
+		}
+	}
 	
 	//任务编号校验
 	const  validateTaskCode = () =>{
@@ -298,7 +304,7 @@
 	      } else if (!numberPattern.test(taskCodeParts.value.number)) {
 	        return false
 	      } else {
-	        return true;
+	        return true
 	      }
 	    }
 
@@ -307,16 +313,15 @@
 	  Object.keys(obj).forEach(key => {
 	    obj[key] = ''; // 重置为初始值，根据需要也可以重置为 null 或其他
 	  });
-
-	  // 清空时间选择器
-	  dateSAva.value = ''
-	  dateSar.value = ''
-
-	  // 清空地点选择器
-	  cityStr.value=''
-	  //console.log(cityStr.value)
-	  citydate.value = []
 	};
+	
+	// 清空时间和地点选择器绑定变量
+	const initialLocNDate = () =>{
+		dateSAva.value = ''
+		dateStr.value = ''
+		citydata.value = []
+		cityStr.value = ''
+	}
 	
 	// 提交表单
 	const confirm = async (validateResult: validateResultType) => {
@@ -335,20 +340,31 @@
 		sysEquipUse.value.taskCode = taskCodeConcat(taskCodeParts.value)
 		console.log("form submit!")
 		// 时间赋值
-		sysEquipUse.value.equipmentUseDate = dateSar.value
-
+		sysEquipUse.value.equipmentUseDate = dateStr.value
 		// 地点赋值
-		sysEquipUse.value.location = cityStr.value
+		sysEquipUse.value.location = cityFormat(cityStr.value)		
 
 		if(!sysEquipUse.value.id){
 			console.log("add processing!")
 			console.log(sysEquipUse.value)
-			const res = await saveEquipUtilise(sysEquipUse.value)
-			console.log(res)
+			sysEquipUse.value.id = 16
+			const res = await saveEquipUtilise(sysEquipUse.value).then(() =>{
+				uni.showToast({
+					title: '操作成功!',
+					duration: 2000
+				});
+				console.log("操作成功!")
+			})
 		} else {
 			console.log("edit processing!")
 			console.log(sysEquipUse.value)
-			const res = await update(sysEquipUse.value)
+			const res = await update(sysEquipUse.value).then(() =>{
+				uni.showToast({
+					title: '操作成功!',
+					duration: 2000
+				});
+				console.log("操作成功!")
+			})
 			console.log(res)
 		}
 		fetchData()
@@ -360,21 +376,33 @@
 		initialObject(sysEquipUse.value)
 		initialObject(taskCodeParts.value)
 		console.log("add!")
-		// 清空时间和地点选择器绑定变量
-		dateSAva.value = ''
-		dateSar.value = ''
-		citydate.value = []
-		cityStr.value = ''
+		
+		initialLocNDate()
+		// // 清空时间和地点选择器绑定变量
+		// dateSAva.value = ''
+		// dateStr.value = ''
+		// citydata.value = []
+		// cityStr.value = ''
 	}
 	
 	// 修改按钮
 	const buttonEdit = async (item: sysEquipUseType,index: number) =>{
 		showModel.value = true
-		sysEquipUse.value = await getEquipUtiliseById(item.id!)
+		//数据回显
 		//(item.id!)表示非空断言
+		sysEquipUse.value = await getEquipUtiliseById(item.id!)
+		
 		initialObject(taskCodeParts.value)
 		taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
+		dateStr.value = sysEquipUse.value.equipmentUseDate!
+		cityStr.value = sysEquipUse.value.location!
+		console.log("dateStr:"+dateStr.value)
+		console.log("cityStr:"+cityStr.value)
+		
+		
+		console.log(sysEquipUse.value.equipmentUseDate)
 		console.log(sysEquipUse.value)
+		console.log(JSON.parse(JSON.stringify(sysEquipUse.value))); // 打印对象的深拷贝
 		console.log(taskCodeParts.value)
 		console.log("edit!")
 	}
@@ -419,7 +447,7 @@
 		// console.log(pagination.value.total)
 	}
 	
-	// 定义事件处理函数
+	// 定义页码改变处理函数
 	const handlePageChange = (newPage : number) => {
 		console.log(newPage);
 		pagination.value.page = newPage; // 更新当前页码

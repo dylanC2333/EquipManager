@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<Object> error(Exception e){
         e.printStackTrace();
-        return Result.fail().message("执行了全局异常处理");
+        return Result.fail().message("执行了全局异常处理:请检查输入数据是否正确");
     }
 
     // 2 特定异常
