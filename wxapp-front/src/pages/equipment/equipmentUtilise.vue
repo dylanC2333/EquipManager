@@ -86,7 +86,11 @@
 					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item required label="设备使用前情况" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
+					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
+					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
+						<tm-radio label="正常" value="正常"></tm-radio>
+						<tm-radio label="异常" value="异常"></tm-radio>
+					</tm-radio-group>
 				</tm-form-item>
 				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
@@ -119,20 +123,20 @@
 		update,
 		getEquipUtiliseById
 	} from '@/api/system/equipmentUtilise'
-	import { ref , reactive ,computed, getCurrentInstance } from 'vue'
+	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
-	import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
-	import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
-	import { onShow, onLoad } from '@dcloudio/uni-app'
-	import tmApp from '@/tmui/components/tm-app/tm-app.vue'
-	import tmText from '@/tmui/components/tm-text/tm-text.vue'
-	import tmCell from '@/tmui/components/tm-cell/tm-cell.vue'
-	import tmTimePicker from '@/tmui/components/tm-time-picker/tm-time-picker.vue'
-	import tmDivider from '@/tmui/components/tm-divider/tm-divider.vue'
-	import tmTimeView from '@/tmui/components/tm-time-view/tm-time-view.vue'
-	import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
-	import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
-	import { List } from 'echarts'
+	// import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
+	// import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
+	// import { onShow, onLoad } from '@dcloudio/uni-app'
+	// import tmApp from '@/tmui/components/tm-app/tm-app.vue'
+	// import tmText from '@/tmui/components/tm-text/tm-text.vue'
+	// import tmCell from '@/tmui/components/tm-cell/tm-cell.vue'
+	// import tmTimePicker from '@/tmui/components/tm-time-picker/tm-time-picker.vue'
+	// import tmDivider from '@/tmui/components/tm-divider/tm-divider.vue'
+	// import tmTimeView from '@/tmui/components/tm-time-view/tm-time-view.vue'
+	// import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
+	// import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
+	// import { List } from 'echarts'
 
 	//定义数据模型，用于ts类型检查
 	interface sysEquipUseType {
@@ -266,6 +270,13 @@
 		showcitydata.value = true
 
 	};
+	
+	// 定义页码改变处理函数
+	const handlePageChange = (newPage : number) => {
+		console.log(newPage);
+		pagination.value.page = newPage; // 更新当前页码
+		fetchData(newPage); // 使用最新的页码调用 fetchData
+	};
 
 	// 地点格式处理，从数组中拼接
 	const cityFormat = (cityString: string) =>{
@@ -347,7 +358,6 @@
 		if(!sysEquipUse.value.id){
 			console.log("add processing!")
 			console.log(sysEquipUse.value)
-			sysEquipUse.value.id = 16
 			const res = await saveEquipUtilise(sysEquipUse.value).then(() =>{
 				uni.showToast({
 					title: '操作成功!',
@@ -373,9 +383,11 @@
 	// 添加按钮
 	const add = async() =>{
 		showModel.value = true
-		initialObject(sysEquipUse.value)
+		// initialObject(sysEquipUse.value)
+		sysEquipUse.value = ({})
 		initialObject(taskCodeParts.value)
 		console.log("add!")
+		console.log(sysEquipUse.value)
 		
 		initialLocNDate()
 		// // 清空时间和地点选择器绑定变量
@@ -447,21 +459,8 @@
 		// console.log(pagination.value.total)
 	}
 	
-	// 定义页码改变处理函数
-	const handlePageChange = (newPage : number) => {
-		console.log(newPage);
-		pagination.value.page = newPage; // 更新当前页码
-		fetchData(newPage); // 使用最新的页码调用 fetchData
-	};
-
-// 	function formatDate(dateString: string): string {
-// 		// 按空格分割
-// 		const datePart = dateString.split(' ')[0]; // 获取日期部分
-// 		// 将日期部分按斜杠分割
-// 		const [year, month, day] = datePart.split('/');
-// 		// 重新组合为 "YYYY-MM-DD" 格式
-// 		return `${year}-${month}-${day}`;
-// }
+	// 在组件实例创建时立即调用,获取数据
+	fetchData();
 
 
 </script>
