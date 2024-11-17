@@ -1,7 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "tm-table": "../../../tmui/components/tm-table/tm-table",
-    "tm-app": "../../../tmui/components/tm-app/tm-app"
-  }
-}
