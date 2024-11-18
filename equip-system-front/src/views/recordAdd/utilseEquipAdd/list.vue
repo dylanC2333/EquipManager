@@ -81,7 +81,7 @@
         <el-table-column prop="employeeUseCode" label="使用人编号"/>
         <el-table-column prop="employeeUseName" label="使用人姓名"/>
         <el-table-column prop="location" label="地点" />
-        <el-table-column prop="preUseEquipmentStatus" label="设备使用前情况" />
+        <el-table-column prop="preUseEquipmentStatus" label="设备使用前状态" />
         <el-table-column prop="maintenanceStatus" label="维护保养情况" />
         <el-table-column prop="remarks" label="备注" />
         <el-table-column prop="isAdditional" label="是否补充记录" >
@@ -168,7 +168,7 @@
               @change="handleLocationChange">
             </el-cascader>
           </el-form-item>
-          <el-form-item label="设备使用前情况"  prop = "preUseEquipmentStatus">
+          <el-form-item label="设备使用前状态"  prop = "preUseEquipmentStatus">
             <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="正常">正常</el-radio>
             <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="异常">异常</el-radio>
           </el-form-item>
@@ -257,7 +257,7 @@
               @change="handleLocationChange">
             </el-cascader>
           </el-form-item>
-          <el-form-item label="设备使用前情况"  prop = "preUseEquipmentStatus">
+          <el-form-item label="设备使用前状态"  prop = "preUseEquipmentStatus">
             <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="正常">正常</el-radio>
             <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="异常">异常</el-radio>
           </el-form-item>

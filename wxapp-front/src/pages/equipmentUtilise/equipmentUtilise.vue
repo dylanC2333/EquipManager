@@ -49,10 +49,10 @@
 		>
 			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipUse">
 				<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
-					<!-- 不要问我为什么用v-model.lazy，我很受伤。 -->
+					<!-- 不要问我为什么用v-model.lazy，我很受伤。不用.lazy在小程序可能会出现字符闪烁或者输入过快时，字符丢失的问题。 -->
 					<!-- <tm-text :font-size ="35" label="设备编号"></tm-text> -->
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
-					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="normal" outlined label="扫码获取设备编号" :disabled="needScan"></tm-button>
+					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="small" outlined label="扫码获取" :disabled="needScan"></tm-button>
 				</tm-form-item>
 				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
@@ -86,7 +86,7 @@
 					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
 					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
-				<tm-form-item required label="设备使用前情况" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+				<tm-form-item required label="设备使用前状态" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
 					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
 					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
 						<tm-radio label="正常" value="正常"></tm-radio>
@@ -118,7 +118,6 @@
 <script setup lang="ts">
 	//使用<script setup>，组合式 API 单文件组件，语法糖。所有顶层绑定均能在模板中直接使用。
 	import {
-		findAllRecords,
 		getPageList,
 		saveEquipUtilise,
 		removeId,
@@ -127,7 +126,10 @@
 	} from '@/api/system/equipmentUtilise'
 	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
+	import { useMainStore } from '@/store'
+
 	import * as cheerio from 'cheerio'
+
 
 	//定义数据模型，用于ts类型检查
 	interface sysEquipUseType {
@@ -137,8 +139,8 @@
 	  employeeUseCode?: string;
 	  employeeUseName?: string | null;
 	  equipmentCode?: string;
-	  equipmentUseDate?: string;
 	  equipmentUseName?: string | null;
+	  equipmentUseDate?: string;
 	  isAdditional?: number;
 	  isDeleted?: number;
 	  location?: string;
@@ -228,7 +230,7 @@
 	          { name: 'employeeUseCode', label: '使用人编号' },
 	          { name: 'employeeUseName', label: '使用人姓名',sorter:true },
 	          { name: 'location', label: '地点' },
-	          { name: 'preUseEquipmentStatus', label: '设备使用前情况' },
+	          { name: 'preUseEquipmentStatus', label: '设备使用前状态' },
 	          { name: 'maintenanceStatus', label: '维护保养情况' },
 	          { name: 'operation', type:'operation',label: '操作',renders:[
 	              {
