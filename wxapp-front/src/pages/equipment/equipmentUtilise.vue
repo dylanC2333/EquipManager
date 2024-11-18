@@ -58,7 +58,7 @@
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					<tm-input :disabled="true" :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
 					<tm-cell @click="handleTimePicker"  :right-text="dateStr || '请选择日期'"></tm-cell>
@@ -125,6 +125,8 @@
 	} from '@/api/system/equipmentUtilise'
 	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
+	import { useMainStore } from '@/store'
+	
 	// import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
 	// import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
 	// import { onShow, onLoad } from '@dcloudio/uni-app'
@@ -175,11 +177,17 @@
 	// 日期选择器
 	const dateStr = ref('')
 	const showdate = ref(false)
-	//const today = new Date()
-	//const year = today.getFullYear()
-	//const month = String(today.getMonth() + 1).padStart(2, '0') // 月份从0开始
-	//const day = String(today.getDate()).padStart(2, '0')
-	//const formattedDate = `${year}/${month}/${day}`
+	
+	const setToday = () =>{
+		const today = new Date()
+		const year = today.getFullYear()
+		const month = String(today.getMonth() + 1).padStart(2, '0') // 月份从0开始
+		const day = String(today.getDate()).padStart(2, '0')
+		const formattedDate = `${year}-${month}-${day}`
+		return formattedDate
+	}
+
+	
 	const dateSAva = ref('')
 
 	const zindexNum = ref(999)
@@ -245,13 +253,18 @@
 	              },
 	            ]},
 	])
+	
+	// 从pinia中获取存储的内容
+	const mainStore = useMainStore()
 
 	// 点击时间选择器让form不显示，让
 	const handleTimePicker = () => {
 		// 让form层级变小，让选择器显示
-		zindexNum.value = 10
-		showdate.value = true
-		console.log(citydata.value)
+		
+		// // 锁定为当前日期，因此将弹出时间选择器注释
+		// zindexNum.value = 10
+		// showdate.value = true
+		// console.log(citydata.value)
 	};
 
 	// 取消时让选择器不显示，把表单的层级写回来
@@ -385,11 +398,18 @@
 		showModel.value = true
 		// initialObject(sysEquipUse.value)
 		sysEquipUse.value = ({})
+		// 将用户编号设为当前用户的用户编号
+		sysEquipUse.value.employeeUseCode = mainStore.username
+		
 		initialObject(taskCodeParts.value)
 		console.log("add!")
 		console.log(sysEquipUse.value)
 		
 		initialLocNDate()
+		dateStr.value = setToday()
+		
+		console.log(dateStr.value)
+		
 		// // 清空时间和地点选择器绑定变量
 		// dateSAva.value = ''
 		// dateStr.value = ''
