@@ -128,21 +128,21 @@
 		update,
 		getEquipUtiliseById
 	} from '@/api/system/equipmentUtilise'
-	import { ref , reactive ,computed, getCurrentInstance, nextTick } from 'vue'
+	import { ref , reactive ,computed } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
-	import * as dayjs from '@/tmui/tool/dayjs/esm/index'
-	import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
-	import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
-	import { onShow, onLoad } from '@dcloudio/uni-app'
-	import tmApp from '@/tmui/components/tm-app/tm-app.vue'
-	import tmText from '@/tmui/components/tm-text/tm-text.vue'
-	import tmCell from '@/tmui/components/tm-cell/tm-cell.vue'
-	import tmTimePicker from '@/tmui/components/tm-time-picker/tm-time-picker.vue'
-	import tmDivider from '@/tmui/components/tm-divider/tm-divider.vue'
-	import tmTimeView from '@/tmui/components/tm-time-view/tm-time-view.vue'
-	import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
-	import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
-	import { List } from 'echarts'
+	 import * as dayjs from '@/tmui/tool/dayjs/esm/index'
+	// import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
+	// import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
+	// import { onShow, onLoad } from '@dcloudio/uni-app'
+	// import tmApp from '@/tmui/components/tm-app/tm-app.vue'
+	// import tmText from '@/tmui/components/tm-text/tm-text.vue'
+	// import tmCell from '@/tmui/components/tm-cell/tm-cell.vue'
+	// import tmTimePicker from '@/tmui/components/tm-time-picker/tm-time-picker.vue'
+	// import tmDivider from '@/tmui/components/tm-divider/tm-divider.vue'
+	// import tmTimeView from '@/tmui/components/tm-time-view/tm-time-view.vue'
+	// import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
+	// import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
+	// import { List } from 'echarts'
 	import * as cheerio from 'cheerio'
 
 	// 地点选择器变量
@@ -471,6 +471,7 @@
 		pagination.value.page = newPage; // 更新当前页码
 		fetchData(newPage); // 使用最新的页码调用 fetchData
 	};
+	
 
 // 	function formatDate(dateString: string): string {
 // 		// 按空格分割

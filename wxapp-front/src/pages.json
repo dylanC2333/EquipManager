@@ -61,7 +61,7 @@
         }
     },
     {
-      "path": "pages/equipment/equipmentUtilise",
+      "path": "pages/equipmentUtilise/equipmentUtilise",
       "style": {
         "navigationBarTitleText": "设备使用",
         "app-plus": {
@@ -91,7 +91,7 @@
     	}
     },
     {
-    	"path" : "pages/available_employee/availableEmployee",
+    	"path" : "pages/availableEmployee/availableEmployee",
     	"style" : 
     	{
     		"navigationBarTitleText" : ""
@@ -106,6 +106,13 @@
     },
     {
     	"path" : "pages/availableEquipment/availableEquipment",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
+    },
+    {
+    	"path" : "pages/detection/detection",
     	"style" : 
     	{
     		"navigationBarTitleText" : ""

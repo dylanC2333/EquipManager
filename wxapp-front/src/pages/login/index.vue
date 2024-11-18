@@ -86,7 +86,7 @@ const hdLogin = async () => {
   console.log(res.token)
   uni.navigateTo({
     // url: '/pages/tableSelect/index',
-    url:'/pages/equipment/equipmentUtilise'
+    url:'/pages/functionNavigator/functionNavigator'
   })
 }
 
