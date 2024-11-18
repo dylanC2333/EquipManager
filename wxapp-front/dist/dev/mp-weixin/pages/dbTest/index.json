@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "数据库",
-  "usingComponents": {
-    "tm-button": "../../tmui/components/tm-button/tm-button",
-    "tm-app": "../../tmui/components/tm-app/tm-app"
-  }
-}
