@@ -129,11 +129,6 @@
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
 	import * as cheerio from 'cheerio'
 
-	// 地点选择器变量
-	const cityStr = ref('')
-	const citydate = ref([])
-	const showCitydate = ref(false)
-
 	//定义数据模型，用于ts类型检查
 	interface sysEquipUseType {
 	  id?: number;
