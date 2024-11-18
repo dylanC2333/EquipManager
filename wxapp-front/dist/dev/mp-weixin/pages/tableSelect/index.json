@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "表单选择",
-  "usingComponents": {
-    "tm-button": "../../tmui/components/tm-button/tm-button",
-    "tm-app": "../../tmui/components/tm-app/tm-app",
-    "cell-picker": "./components/cellPicker"
-  }
-}

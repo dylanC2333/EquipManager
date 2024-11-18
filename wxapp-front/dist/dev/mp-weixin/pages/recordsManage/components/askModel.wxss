@@ -1,8 +1,0 @@
-.bottom-btns.data-v-cf7ee239 {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-}
-.content.data-v-cf7ee239 {
-  text-align: center;
-}
