@@ -57,6 +57,7 @@ export default{
           data: idList
         })
     },
+    
     //7、空闲设备查询
     equipmentFinder(page,limit,searchObj){
         return request({

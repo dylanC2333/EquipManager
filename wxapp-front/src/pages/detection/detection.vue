@@ -1,8 +1,8 @@
 <template>
-	<tm-text :font-size="48" _class="text-weight-b" label="设备使用列表"></tm-text>
+	<tm-text :font-size="48" _class="text-weight-b" label="检测记录列表"></tm-text>
 	<tm-sheet>
 		<tm-text :font-size="30" _class="text-weight-b" label="请输入搜索关键字"></tm-text>
-		<tm-input v-model="searchObj.keyword" placeholder="设备编号/操作人编号/任务编号"></tm-input>
+		<tm-input v-model="searchObj.keyword" placeholder="任务编号/检测人编号/地点"></tm-input>
 		<view class="flex flex-row flex-wrap">
 			<tm-button  :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
 			<tm-button  :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
@@ -47,21 +47,15 @@
 			:zIndex = "zindexNum"
 			okText="返回"
 		>
-			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipUse">
-				<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
-					<!-- 不要问我为什么用v-model.lazy，我很受伤。 -->
-					<!-- <tm-text :font-size ="35" label="设备编号"></tm-text> -->
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
-					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="normal" outlined label="扫码获取设备编号" :disabled="needScan"></tm-button>
-				</tm-form-item>
+			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysDetection">
 				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :disabled="true" :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				<tm-form-item required label="检测人编号" field="employeeCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input :disabled="true" :inputPadding="[0, 0]" v-model.lazy="sysDetection.employeeCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+				<tm-form-item required label="检测日期" field="startDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
 					<tm-cell @click="handleTimePicker"  :right-text="dateStr || '请选择日期'"></tm-cell>
 					<tm-time-picker
 								:showDetail="{
@@ -80,22 +74,10 @@
 								v-model:model-str="dateStr"
 							></tm-time-picker>
 				</tm-form-item>
-				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
-					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.location" :transprent="true" :showBottomBotder="false"> </tm-input>
-				 -->
+				<tm-form-item required label="检测地点" field="detectionLocation" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
 					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
-					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
+					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="province" ></tm-city-picker>
 				 </tm-form-item>
-				<tm-form-item required label="设备使用前情况" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
-					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
-						<tm-radio label="正常" value="正常"></tm-radio>
-						<tm-radio label="异常" value="异常"></tm-radio>
-					</tm-radio-group>
-				</tm-form-item>
-				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
-				</tm-form-item>
 				<tm-form-item :border="false">
 					<view class="flex flex-row">
 						<view class="flex-1 mr-32">
@@ -119,11 +101,11 @@
 	//使用<script setup>，组合式 API 单文件组件，语法糖。所有顶层绑定均能在模板中直接使用。
 	import {
 		getPageList,
-		saveEquipUtilise,
+		saveDetection,
 		removeId,
 		update,
-		getEquipUtiliseById
-	} from '@/api/system/equipmentUtilise'
+		getDetectionById
+	} from '@/api/system/detection'
 	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
 	import { useMainStore } from '@/store'
@@ -140,32 +122,23 @@
 	// import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
 	// import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
 	// import { List } from 'echarts'
-	import * as cheerio from 'cheerio'
-
-	// 地点选择器变量
-	const cityStr = ref('')
-	const citydate = ref([])
-	const showCitydate = ref(false)
-  import * as cheerio from 'cheerio'
+	
+	
 	//定义数据模型，用于ts类型检查
-	interface sysEquipUseType {
+	interface sysDetectionType {
 	  id?: number;
 	  createTime?: string;
 	  updateTime?: string;
-	  employeeUseCode?: string;
-	  employeeUseName?: string | null;
-	  equipmentCode?: string;
-	  equipmentUseDate?: string;
-	  equipmentUseName?: string | null;
 	  isAdditional?: number;
 	  isDeleted?: number;
-	  location?: string;
-	  maintenanceStatus?: string;
-	  preUseEquipmentStatus?: string;
+	  employeeCode?: string;
+	  employeeName?: string | null;
 	  taskCode?: string;
+	  startDate?: string;
+	  detectionLocation?: string;
 	}
 	interface validateResultType{
-		data: sysEquipUseType
+		data: sysDetectionType
 		// 所有与form-item绑定的filed字段校验的结果数组。
 		result:{
 			message:string,//校验后的提示文本
@@ -194,9 +167,7 @@
 		return formattedDate
 	}
 
-
 	const dateSAva = ref('')
-	const needScan = ref(false)
 	const zindexNum = ref(999)
 
 	const list = ref([])//存储获得的数据
@@ -214,14 +185,11 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
-	const sysEquipUse = ref<sysEquipUseType>({
-		equipmentCode :'',
+	const sysDetection = ref<sysDetectionType>({
+		employeeCode :'',
 		taskCode :'',
-		employeeUseCode :'',
-		equipmentUseDate :'',
-		location :'',
-		preUseEquipmentStatus :'',
-		maintenanceStatus :'',
+		startDate :'',
+		detectionLocation :'',
 	})
 	const taskCodeParts = ref<{
 		year: string,
@@ -239,15 +207,11 @@
 			        func:'detail' // func 代表子元素点击的事件 父元素接收的事件 父元素 @edit
 			      },
 				]},
-	          { name: 'equipmentCode', label: '设备编号',fixed:false,width:130,emptyString:''},
-	          { name: 'equipmentUseName', label: '设备名称',sorter:false,emptyString:''},
 	          { name: 'taskCode', label: '任务编号'},
-	          { name: 'equipmentUseDate', label: '使用日期' },
-	          { name: 'employeeUseCode', label: '使用人编号' },
-	          { name: 'employeeUseName', label: '使用人姓名',sorter:true },
-	          { name: 'location', label: '地点' },
-	          { name: 'preUseEquipmentStatus', label: '设备使用前情况' },
-	          { name: 'maintenanceStatus', label: '维护保养情况' },
+	          { name: 'startDate', label: '检测日期' },
+	          { name: 'employeeCode', label: '检测人编号' },
+	          { name: 'employeeName', label: '检测人姓名',sorter:true },
+	          { name: 'detectionLocation', label: '检测地点' },
 	          { name: 'operation', type:'operation',label: '操作',renders:[
 	              {
 	                name:'编辑',
@@ -313,41 +277,6 @@
 			return true
 		}
 	}
-	
-	// 扫码处理函数
-	const scanCode = () =>  {
-	    uni.scanCode({
-	        success: function (res: { scanType: string; result: string }): void{
-	            console.log('条码类型：' + res.scanType);
-	            console.log('条码内容：' + res.result);
-
-	            uni.request({
-	                url: res.result, //仅为示例，并非真实接口地址
-	                success(requestRes) {
-	                    const resData = requestRes.data;
-	                    console.log(typeof resData);
-	                    // 处理resData,在里面查找想要的内容，并打印出来
-	                    // 使用 cheerio 加载 HTML 字符串
-	                    const $ = cheerio.load(resData as string); // 虽然本来就是string, 但是不转换会报错。也许是因为允许的参数中不全部一样
-
-	                    // 查找设备编号对应的 <span> 内容
-	                    const deviceNumber = $('div.lr-form-item-title:contains("设备编号")').next('span').text();
-	                    sysEquipUse.value.equipmentCode = deviceNumber;
-	                    // 输出设备编号
-	                    console.log(sysEquipUse.value.equipmentCode);
-	                    // buttonText = deviceNumber; // Assuming buttonText is declared elsewhere
-	                },
-	                fail(err) {
-	                    console.error('请求失败:', err);
-	                },
-	            });
-	        },
-	        fail: (err: any) => {
-	            console.error('扫码失败:', err);
-	        }
-	    });
-	};
-
 
 
 	// 地点校验
@@ -404,17 +333,17 @@
 	// 提交验证后的表单数据
 	const saveorUpdate = async() =>{
 		//任务编号拼接
-		sysEquipUse.value.taskCode = taskCodeConcat(taskCodeParts.value)
+		sysDetection.value.taskCode = taskCodeConcat(taskCodeParts.value)
 		console.log("form submit!")
 		// 时间赋值
-		sysEquipUse.value.equipmentUseDate = dateStr.value
+		sysDetection.value.startDate = dateStr.value
 		// 地点赋值
-		sysEquipUse.value.location = cityFormat(cityStr.value)
+		sysDetection.value.detectionLocation = cityFormat(cityStr.value)
 
-		if(!sysEquipUse.value.id){
+		if(!sysDetection.value.id){
 			console.log("add processing!")
-			console.log(sysEquipUse.value)
-			const res = await saveEquipUtilise(sysEquipUse.value).then(() =>{
+			console.log(sysDetection.value)
+			const res = await saveDetection(sysDetection.value).then(() =>{
 				uni.showToast({
 					title: '操作成功!',
 					duration: 2000
@@ -423,8 +352,8 @@
 			})
 		} else {
 			console.log("edit processing!")
-			console.log(sysEquipUse.value)
-			const res = await update(sysEquipUse.value).then(() =>{
+			console.log(sysDetection.value)
+			const res = await update(sysDetection.value).then(() =>{
 				uni.showToast({
 					title: '操作成功!',
 					duration: 2000
@@ -439,18 +368,15 @@
 	// 添加按钮
 	const add = () =>{
 		showModel.value = true
-		// initialObject(sysEquipUse.value)
-		sysEquipUse.value = ({})
+		// initialObject(sysDetection.value)
+		sysDetection.value = ({})
 		// 将用户编号设为当前用户的用户编号
-		sysEquipUse.value.employeeUseCode = mainStore.username
+		sysDetection.value.employeeCode = mainStore.username
 
 		initialObject(taskCodeParts.value)
 		console.log("add!")
-
-		// 打开扫码按钮
-		needScan.value = false;
-		//console.log(needScan.value)
-		console.log(sysEquipUse.value)
+		
+		console.log(sysDetection.value)
 
 		initialLocNDate()
 		dateStr.value = setToday()
@@ -459,33 +385,28 @@
 	}
 	
 	// 修改按钮
-	const buttonEdit = async (item: sysEquipUseType,index: number) =>{
+	const buttonEdit = async (item: sysDetectionType,index: number) =>{
 		showModel.value = true
 		//数据回显
 		//(item.id!)表示非空断言
-		sysEquipUse.value = await getEquipUtiliseById(item.id!)
+		sysDetection.value = await getDetectionById(item.id!)
 
 		initialObject(taskCodeParts.value)
-		taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
+		taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
 
-		//dateSar.value = "20120201"
-		// 修改表单有设备编号回显，不需要扫码功能
-		needScan.value = true
-
-		dateStr.value = sysEquipUse.value.equipmentUseDate!
-		cityStr.value = sysEquipUse.value.location!
+		dateStr.value = sysDetection.value.startDate!
+		cityStr.value = sysDetection.value.detectionLocation!
 
 		// console.log("dateStr:"+dateStr.value)
 		// console.log("cityStr:"+cityStr.value)
-		// console.log(sysEquipUse.value.equipmentUseDate)
-		// console.log(sysEquipUse.value)
-		// console.log(JSON.parse(JSON.stringify(sysEquipUse.value))); // 打印对象的深拷贝
+		// console.log(sysDetection.value)
+		// console.log(JSON.parse(JSON.stringify(sysDetection.value))); // 打印对象的深拷贝
 		// console.log(taskCodeParts.value)
 		// console.log("edit!")
 	}
 	
 	// 删除按钮
-	const removeById = async (item: sysEquipUseType,index: number) =>{
+	const removeById = async (item: sysDetectionType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
 		const res = await removeId(item.id!)

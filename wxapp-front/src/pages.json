@@ -61,7 +61,7 @@
         }
     },
     {
-      "path": "pages/equipment/equipmentUtilise",
+      "path": "pages/equipmentUtilise/equipmentUtilise",
       "style": {
         "navigationBarTitleText": "设备使用",
         "app-plus": {
@@ -73,42 +73,49 @@
     	"path" : "pages/equipmentStock/equipmentStock",
     	"style" : 
     	{
-    		"navigationBarTitleText" : ""
+		  "navigationBarTitleText": "设备出入库"
     	}
     },
     {
     	"path" : "pages/equipmentTransfer/equipmentTransfer",
     	"style" : 
     	{
-    		"navigationBarTitleText" : ""
+			"navigationBarTitleText": "设备交接"
     	}
     },
     {
     	"path" : "pages/equipmentMaintain/equipmentMaintain",
     	"style" : 
     	{
-    		"navigationBarTitleText" : ""
+			"navigationBarTitleText": "设备保养"
     	}
     },
     {
-    	"path" : "pages/available_employee/availableEmployee",
+    	"path" : "pages/availableEmployee/availableEmployee",
     	"style" : 
     	{
-    		"navigationBarTitleText" : ""
+			"navigationBarTitleText": "空闲人员查询"
     	}
     },
     {
     	"path" : "pages/functionNavigator/functionNavigator",
     	"style" : 
     	{
-    		"navigationBarTitleText" : ""
+    		"navigationBarTitleText": "功能导航"
     	}
     },
     {
     	"path" : "pages/availableEquipment/availableEquipment",
     	"style" : 
     	{
-    		"navigationBarTitleText" : ""
+			"navigationBarTitleText": "空闲设备查询"
+    	}
+    },
+    {
+    	"path" : "pages/detection/detection",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : "检测记录"
     	}
     }
 

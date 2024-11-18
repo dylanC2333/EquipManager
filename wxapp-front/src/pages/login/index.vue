@@ -86,7 +86,7 @@ const hdLogin = async () => {
   console.log(res.token)
   uni.navigateTo({
     // url: '/pages/tableSelect/index',
-    url:'/pages/equipment/equipmentUtilise'
+	  url:'/pages/equipmentTransfer/equipmentTransfer'
   })
 }
 
@@ -94,7 +94,7 @@ const toTest = async () => {
   if (mainStore.getToken().length !== 0) {
     uni.navigateTo({
       // url: '/pages/tableSelect/index',
-	  url:'/pages/equipment/equipmentUtilise'
+		url:'/pages/equipmentUtilise/equipmentUtilise'
     })
     return
   }

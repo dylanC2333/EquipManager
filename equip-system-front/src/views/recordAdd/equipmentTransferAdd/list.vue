@@ -78,7 +78,7 @@
         <el-table-column prop="deliverEmployeeName" label="交付人姓名" sortable="custom"/>
         <el-table-column prop="receiverEmployeeCode" label="接收人编号" sortable="custom"/>
         <el-table-column prop="receiverEmployeeName" label="接收人姓名" sortable="custom"/>
-        <el-table-column prop="transferDate" label="交接时间" sortable="custom"/>
+        <el-table-column prop="transferDate" label="交接日期" sortable="custom"/>
         <el-table-column prop="transferLocation" label="新任务地点" />
         <el-table-column prop="remarks" label="备注" />
         <el-table-column prop="isAdditional" label="是否补充记录" >

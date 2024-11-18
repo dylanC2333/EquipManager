@@ -1,8 +1,8 @@
 <template>
-	<tm-text :font-size="48" _class="text-weight-b" label="设备保养列表"></tm-text>
+	<tm-text :font-size="48" _class="text-weight-b" label="设备使用列表"></tm-text>
 	<tm-sheet>
 		<tm-text :font-size="30" _class="text-weight-b" label="请输入搜索关键字"></tm-text>
-		<tm-input v-model="searchObj.keyword" placeholder="设备编号/员工编号"></tm-input>
+		<tm-input v-model="searchObj.keyword" placeholder="设备编号/操作人编号/任务编号"></tm-input>
 		<view class="flex flex-row flex-wrap">
 			<tm-button  :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
 			<tm-button  :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
@@ -15,7 +15,7 @@
 						:show-header="true"
 						:columns="column"
 						:stripe="true"
-						:fit="false" 
+						:fit="false"
 						:border="true"
 						@edit="buttonEdit"
 						@remove="removeById"
@@ -47,16 +47,21 @@
 			:zIndex = "zindexNum"
 			okText="返回"
 		>
-			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipMain">
+			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipUse">
 				<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
 					<!-- 不要问我为什么用v-model.lazy，我很受伤。不用.lazy在小程序可能会出现字符闪烁或者输入过快时，字符丢失的问题。 -->
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					<!-- <tm-text :font-size ="35" label="设备编号"></tm-text> -->
+					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="small" outlined label="扫码获取" :disabled="needScan"></tm-button>
 				</tm-form-item>
-				<tm-form-item required label="保养人编号" field="employeeCode" :rules="[{ required: true, message: '必填' }]" >
-					<tm-input :disabled="true" :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.employeeCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="保养日期" field="maintenanceDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input :disabled="true" :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
 					<tm-cell @click="handleTimePicker"  :right-text="dateStr || '请选择日期'"></tm-cell>
 					<tm-time-picker
 								:showDetail="{
@@ -75,18 +80,21 @@
 								v-model:model-str="dateStr"
 							></tm-time-picker>
 				</tm-form-item>
-				<tm-form-item required label="设备使用前状态" field="beforeUseStatus" :rules="[{ required: true, message: '必填' }]" >
-					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
-					<tm-radio-group v-model="sysEquipMain.beforeUseStatus">
+				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
+					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.location" :transprent="true" :showBottomBotder="false"> </tm-input>
+				 -->
+					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
+					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
+				 </tm-form-item>
+				<tm-form-item required label="设备使用前状态" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
+					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
 						<tm-radio label="正常" value="正常"></tm-radio>
 						<tm-radio label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
 				</tm-form-item>
-				<tm-form-item label="设备维护保养状态" field="maintenanceStatus" :rules="[{}]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
-				</tm-form-item>
-				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
-					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.remarks" :transprent="true" :showBottomBotder="false"> </tm-input>
+				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
+					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
 				<tm-form-item :border="false">
 					<view class="flex flex-row">
@@ -111,12 +119,13 @@
 	//使用<script setup>，组合式 API 单文件组件，语法糖。所有顶层绑定均能在模板中直接使用。
 	import {
 		getPageList,
-		saveEquipMain,
+		saveEquipUtilise,
 		removeId,
 		update,
-		getEquipMainById
-	} from '@/api/system/equipmentMaintain'
+		getEquipUtiliseById
+	} from '@/api/system/equipmentUtilise'
 	import { ref , reactive } from 'vue'
+	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
 	import { useMainStore } from '@/store'
 
 	// import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
@@ -135,22 +144,24 @@
 	
 	
 	//定义数据模型，用于ts类型检查
-	interface sysEquipMainType {
+	interface sysEquipUseType {
 	  id?: number;
 	  createTime?: string;
 	  updateTime?: string;
-	  isDeleted?: number;
-	  employeeCode?: string;
-	  employeeName?: string | null;
+	  employeeUseCode?: string;
+	  employeeUseName?: string | null;
 	  equipmentCode?: string;
-	  equipmentName?: string | null;
-	  maintenanceDate?: string;
-	  beforeUseStatus?: string;
+	  equipmentUseName?: string | null;
+	  equipmentUseDate?: string;
+	  isAdditional?: number;
+	  isDeleted?: number;
+	  location?: string;
 	  maintenanceStatus?: string;
-	  remarks?: string;
+	  preUseEquipmentStatus?: string;
+	  taskCode?: string;
 	}
 	interface validateResultType{
-		data: sysEquipMainType
+		data: sysEquipUseType
 		// 所有与form-item绑定的filed字段校验的结果数组。
 		result:{
 			message:string,//校验后的提示文本
@@ -160,6 +171,11 @@
 	}
 
 	//定义响应式变量
+
+	// 地点选择器变量
+	const cityStr = ref('')
+	const citydata = ref([])
+	const showcitydata = ref(false)
 
 	// 日期选择器
 	const dateStr = ref('')
@@ -194,13 +210,21 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
-	const sysEquipMain = ref<sysEquipMainType>({
-		employeeCode :'',
+	const sysEquipUse = ref<sysEquipUseType>({
 		equipmentCode :'',
-		maintenanceDate :'',
-		beforeUseStatus :'',
+		taskCode :'',
+		employeeUseCode :'',
+		equipmentUseDate :'',
+		location :'',
+		preUseEquipmentStatus :'',
 		maintenanceStatus :'',
-		remarks :'',
+	})
+	const taskCodeParts = ref<{
+		year: string,
+		number: string
+	}>({// 任务编号组件
+		year: '',
+		number: ''
 	})
 	
 	const column = reactive([
@@ -212,13 +236,14 @@
 			      },
 				]},
 	          { name: 'equipmentCode', label: '设备编号',fixed:false,width:130,emptyString:''},
-	          { name: 'equipmentName', label: '设备名称',sorter:false,emptyString:''},
-	          { name: 'maintenanceDate', label: '保养日期' },
-	          { name: 'employeeCode', label: '保养人编号' },
-	          { name: 'employeeName', label: '保养人姓名',sorter:true },
-	          { name: 'beforeUseStatus', label: '设备使用前状态' },
-	          { name: 'maintenanceStatus', label: '设备维护保养状态' },
-			  { name: 'remarks', label: '备注'},
+	          { name: 'equipmentUseName', label: '设备名称',sorter:false,emptyString:''},
+	          { name: 'taskCode', label: '任务编号'},
+	          { name: 'equipmentUseDate', label: '使用日期' },
+	          { name: 'employeeUseCode', label: '使用人编号' },
+	          { name: 'employeeUseName', label: '使用人姓名',sorter:true },
+	          { name: 'location', label: '地点' },
+	          { name: 'preUseEquipmentStatus', label: '设备使用前状态' },
+	          { name: 'maintenanceStatus', label: '维护保养情况' },
 	          { name: 'operation', type:'operation',label: '操作',renders:[
 	              {
 	                name:'编辑',
@@ -253,12 +278,28 @@
 		console.log(dateStr.value)
 	};
 
+
+	// 点击地点选择器让form不显示，让
+	const handleCityPicker = () => {
+		// 让form层级变小，让选择器显示
+		zindexNum.value = 10
+		showcitydata.value = true
+
+	};
+
 	// 定义页码改变处理函数
 	const handlePageChange = (newPage : number) => {
 		console.log(newPage);
 		pagination.value.page = newPage; // 更新当前页码
 		fetchData(newPage); // 使用最新的页码调用 fetchData
 	};
+
+	// 地点格式处理，从数组中拼接
+	const cityFormat = (cityString: string) =>{
+		// 如果字符串包含 `/`，将其替换为空字符串
+		const formattedCity = cityString.replace("/", "");
+		return formattedCity.trim(); // 确保去除两端多余的空格
+	}
 
 	// 日期校验
 	const validateDate = () =>{
@@ -287,9 +328,9 @@
 
 	                    // 查找设备编号对应的 <span> 内容
 	                    const deviceNumber = $('div.lr-form-item-title:contains("设备编号")').next('span').text();
-	                    sysEquipMain.value.equipmentCode = deviceNumber;
+	                    sysEquipUse.value.equipmentCode = deviceNumber;
 	                    // 输出设备编号
-	                    console.log(sysEquipMain.value.equipmentCode);
+	                    console.log(sysEquipUse.value.equipmentCode);
 	                    // buttonText = deviceNumber; // Assuming buttonText is declared elsewhere
 	                },
 	                fail(err) {
@@ -303,6 +344,33 @@
 	    });
 	};
 
+
+
+	// 地点校验
+	const validateLocation = () =>{
+		if (!cityStr.value) {
+			return false
+		} else{
+			return true
+		}
+	}
+
+	//任务编号校验
+	const  validateTaskCode = () =>{
+	      const yearPattern = /^\d{4}$/; // 4位数字
+	      const numberPattern = /^\d{3}$/; // 3位数字
+
+	      if (!taskCodeParts.value.year || !taskCodeParts.value.number) {
+	        return false
+	      } else if (!yearPattern.test(taskCodeParts.value.year)) {
+	        return false
+	      } else if (!numberPattern.test(taskCodeParts.value.number)) {
+	        return false
+	      } else {
+	        return true
+	      }
+	    }
+
 	// 清空对象
 	const initialObject = (obj: any) => {
 	  Object.keys(obj).forEach(key => {
@@ -310,10 +378,12 @@
 	  });
 	};
 
-	// 清空时间选择器绑定变量
-	const initialDate = () =>{
+	// 清空时间和地点选择器绑定变量
+	const initialLocNDate = () =>{
 		dateSAva.value = ''
 		dateStr.value = ''
+		citydata.value = []
+		cityStr.value = ''
 	}
 	
 	// 提交表单
@@ -329,14 +399,18 @@
 
 	// 提交验证后的表单数据
 	const saveorUpdate = async() =>{
+		//任务编号拼接
+		sysEquipUse.value.taskCode = taskCodeConcat(taskCodeParts.value)
 		console.log("form submit!")
 		// 时间赋值
-		sysEquipMain.value.maintenanceDate = dateStr.value
+		sysEquipUse.value.equipmentUseDate = dateStr.value
+		// 地点赋值
+		sysEquipUse.value.location = cityFormat(cityStr.value)
 
-		if(!sysEquipMain.value.id){
+		if(!sysEquipUse.value.id){
 			console.log("add processing!")
-			console.log(sysEquipMain.value)
-			const res = await saveEquipMain(sysEquipMain.value).then(() =>{
+			console.log(sysEquipUse.value)
+			const res = await saveEquipUtilise(sysEquipUse.value).then(() =>{
 				uni.showToast({
 					title: '操作成功!',
 					duration: 2000
@@ -345,8 +419,8 @@
 			})
 		} else {
 			console.log("edit processing!")
-			console.log(sysEquipMain.value)
-			const res = await update(sysEquipMain.value).then(() =>{
+			console.log(sysEquipUse.value)
+			const res = await update(sysEquipUse.value).then(() =>{
 				uni.showToast({
 					title: '操作成功!',
 					duration: 2000
@@ -361,48 +435,53 @@
 	// 添加按钮
 	const add = () =>{
 		showModel.value = true
-		// initialObject(sysEquipMain.value)
-		sysEquipMain.value = ({})
+		// initialObject(sysEquipUse.value)
+		sysEquipUse.value = ({})
 		// 将用户编号设为当前用户的用户编号
-		sysEquipMain.value.employeeCode = mainStore.username
-		
+		sysEquipUse.value.employeeUseCode = mainStore.username
+
+		initialObject(taskCodeParts.value)
 		console.log("add!")
 
 		// 打开扫码按钮
 		needScan.value = false;
 		//console.log(needScan.value)
-		console.log(sysEquipMain.value)
+		console.log(sysEquipUse.value)
 
-		initialDate()
+		initialLocNDate()
 		dateStr.value = setToday()
 
 		console.log(dateStr.value)
 	}
 	
 	// 修改按钮
-	const buttonEdit = async (item: sysEquipMainType,index: number) =>{
+	const buttonEdit = async (item: sysEquipUseType,index: number) =>{
 		showModel.value = true
 		//数据回显
 		//(item.id!)表示非空断言
-		sysEquipMain.value = await getEquipMainById(item.id!)
+		sysEquipUse.value = await getEquipUtiliseById(item.id!)
+
+		initialObject(taskCodeParts.value)
+		taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
 
 		//dateSar.value = "20120201"
 		// 修改表单有设备编号回显，不需要扫码功能
 		needScan.value = true
 
-		dateStr.value = sysEquipMain.value.maintenanceDate!
+		dateStr.value = sysEquipUse.value.equipmentUseDate!
+		cityStr.value = sysEquipUse.value.location!
 
 		// console.log("dateStr:"+dateStr.value)
 		// console.log("cityStr:"+cityStr.value)
-		// console.log(sysEquipMain.value.equipmentUseDate)
-		// console.log(sysEquipMain.value)
-		// console.log(JSON.parse(JSON.stringify(sysEquipMain.value))); // 打印对象的深拷贝
+		// console.log(sysEquipUse.value.equipmentUseDate)
+		// console.log(sysEquipUse.value)
+		// console.log(JSON.parse(JSON.stringify(sysEquipUse.value))); // 打印对象的深拷贝
 		// console.log(taskCodeParts.value)
 		// console.log("edit!")
 	}
 	
 	// 删除按钮
-	const removeById = async (item: sysEquipMainType,index: number) =>{
+	const removeById = async (item: sysEquipUseType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
 		const res = await removeId(item.id!)
