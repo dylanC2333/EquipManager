@@ -117,13 +117,6 @@
     	{
     		"navigationBarTitleText" : "检测记录"
     	}
-    },
-    {
-    	"path" : "pages/detection/detection",
-    	"style" : 
-    	{
-    		"navigationBarTitleText" : ""
-    	}
     }
 
   ],
