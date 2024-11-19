@@ -324,6 +324,13 @@
 			console.log(validateResult.data)
 			await saveorUpdate()
 			showModel.value = false
+		} else {
+			console.log("请完善表单相关信息！")
+			uni.showToast({
+				icon:'none',
+				title: '请完善表单相关信息！',
+				duration: 2000
+			});
 		}
 	}
 
