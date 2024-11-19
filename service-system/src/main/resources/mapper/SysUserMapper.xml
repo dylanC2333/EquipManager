@@ -43,22 +43,22 @@
         FROM sys_detection d
         RIGHT JOIN sys_user u on u.user_code = d.employee_code
         <where>
-            d.is_deleted =0 and u.is_deleted = 0
+            u.is_deleted = 0
             <if test="detVo.startTime != null and detVo.startTime != ''">
                 AND u.create_time &lt;= #{detVo.startTime}
             </if>
-        </where>
+
         AND NOT EXISTS (
         SELECT 1 FROM sys_detection sub
-        RIGHT JOIN sys_user u on u.user_code = sub.employee_code
         <where>
-               sub.employee_code = d.employee_code
+               sub.employee_code = d.employee_code and sub.is_deleted = 0
             <if test="detVo.startTime != null and detVo.startTime != ''">
                 AND sub.start_date >= #{detVo.startTime}
             </if>
             <if test="detVo.endTime != null and detVo.endTime != ''">
                 AND sub.start_date &lt;= #{detVo.endTime}
             </if>
+        </where>
         </where>
         )
     </select>
