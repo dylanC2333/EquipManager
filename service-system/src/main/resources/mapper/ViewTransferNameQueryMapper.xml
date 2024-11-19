@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.ViewTransferNameQueryMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.view.ViewTransferNameQuery">
+            <result property="id" column="id" jdbcType="BIGINT"/>
+            <result property="oldTaskCode" column="old_task_code" jdbcType="VARCHAR"/>
+            <result property="newTaskCode" column="new_task_code" jdbcType="VARCHAR"/>
+            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="deliverEmployeeCode" column="deliver_employee_code" jdbcType="VARCHAR"/>
+            <result property="receiverEmployeeCode" column="receiver_employee_code" jdbcType="VARCHAR"/>
+            <result property="transferDate" column="transfer_date" jdbcType="DATE"/>
+            <result property="transferLocation" column="transfer_location" jdbcType="VARCHAR"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="isAdditional" column="is_additional" jdbcType="TINYINT"/>
+            <result property="deliverEmployeeName" column="deliver_employee_name" jdbcType="VARCHAR"/>
+            <result property="receiverEmployeeName" column="receiver_employee_name" jdbcType="VARCHAR"/>
+            <result property="equipmentName" column="equipment_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,old_task_code,new_task_code,
+        equipment_code,deliver_employee_code,receiver_employee_code,
+        transfer_date,transfer_location,remarks,
+        create_time,update_time,is_deleted,
+        is_additional,deliver_employee_name,receiver_employee_name,
+        equipment_name
+    </sql>
+</mapper>

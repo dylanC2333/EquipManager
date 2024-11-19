@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    设备列表
+    任务列表
     <!--查询表单-->
     <div class="search-div">
       <el-form label-width="70px" size="small">
@@ -118,9 +118,31 @@
         style="padding-right: 40px"
         :rules = "rules"
       >
-        <el-form-item label="任务单号" prop = "taskCode">
+        <!-- <el-form-item label="任务单号" prop = "taskCode">
           <el-input v-model="sysTask.taskCode"/>
+        </el-form-item> -->
+
+        <el-form-item label="任务单号" prop="taskCode">
+            <el-row>
+              <el-col :span="12">
+                <el-input 
+                  v-model="taskCodeParts.year" 
+                  placeholder="    请输入年份,例如2024" 
+                  >
+                  <template slot="prefix">RW-</template>
+                </el-input>
+              </el-col>
+              <el-col  :span="12">
+                <el-input 
+                  v-model="taskCodeParts.number" 
+                  placeholder="请输入序列号,例如001"
+                  >
+                  <template slot="prefix" >-</template>
+                </el-input>
+              </el-col>
+            </el-row>
         </el-form-item>
+
         <el-form-item label="任务开始日期" prop = "startDate">
           <el-date-picker
             v-model="sysTask.startDate"
@@ -167,6 +189,17 @@
     </el-dialog>
   </div>
 </template>
+<style>
+  .el-select .el-input {
+    width: 130px;
+  }
+  .input-taskCode-parts .el-input-group__prepend {
+    background-color: #fff;
+  }
+  .input-taskCode-parts .el-input-group__append{
+    background-color: #fff;
+  }
+</style>
 <script>
 import api from "@/api/system/task";
 import {  pcTextArr } from "element-china-area-data";
@@ -186,12 +219,14 @@ export default {
       sysTask: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+      taskCodeParts: { year: '', number: '' },
       
       pcTextArr,//省市二级数据纯文字
 
       rules:{// 表单校验规则
+        //任务编号自定义验证规则，验证两个组件。
         taskCode:[
-          { required : true , message : "必填" },
+          { validator: this.validateTaskCode, trigger:'blur'},
         ],
         startDate:[
           { required : true , message : "必填" },
@@ -209,6 +244,44 @@ export default {
     this.fetchData();
   },
   methods: {
+
+    //任务编号校验
+    validateTaskCode(rule, value ,callback){
+      const yearPattern = /^\d{4}$/; // 4位数字
+      const numberPattern = /^\d{3}$/; // 3位数字
+      
+      if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
+        callback(new Error("年份和序列号为必填项"));
+      } else if (!yearPattern.test(this.taskCodeParts.year)) {
+        callback(new Error("年份必须为4位数字"));
+      } else if (!numberPattern.test(this.taskCodeParts.number)) {
+        callback(new Error("序列号必须为3位数字"));
+      } else {
+        this.sysTask.taskCode = this.taskCodeConcat(this.taskCodeParts);
+        callback();
+      }
+    },
+
+    // 任务编号分割显示
+    taskCodeSplit(fullCode){
+      // 使用正则表达式匹配并提取年份和序列号
+      const regex = /^RW-(\d{4})-(\d{3})$/;
+      const matches = fullCode.match(regex);
+      if (matches) {
+        return {
+          year: matches[1],  // 提取年份
+          number: matches[2]  // 提取序列号
+        };
+      } else {
+        throw new Error("格式不正确");
+      }
+    },
+
+    // 任务编号拼接
+    taskCodeConcat(parts){
+      let fullcode = "RW-" + parts.year +"-" + parts.number;
+      return fullcode;
+    },
 
     // 日期选择器强制更新方法
     dateChange(){
@@ -269,11 +342,24 @@ export default {
       this.dialogVisible = true;
       api.getTaskId(id).then((response) => {
         this.sysTask = response.data;
+        this.taskCodeParts = this.taskCodeSplit(this.sysTask.taskCode);
       });
+    },
+
+    //弹出添加的表单
+    add() {
+      this.dialogVisible = true;
+      this.sysTask = {};
+      this.taskCodeParts = { year: '', number: '' };
+      this.sysTask.startDate =  new Date();
+      this.sysTask.endDate = new Date();
     },
 
     //添加或修改
     saveOrUpdate() {
+      //任务编号拼接
+      this.sysTask.taskCode = this.taskCodeConcat(this.taskCodeParts);
+      //表单校验
       this.$refs.dataForm.validate((valid) =>{
         if(valid){
           if (!this.sysTask.id) {
@@ -290,6 +376,7 @@ export default {
 
     //修改方法
     updateTask() {
+      console.log(this.sysTask)
       api.update(this.sysTask).then((response) => {
         //提示
         this.$message({
@@ -305,6 +392,7 @@ export default {
 
     //添加
     saveTask() {
+      console.log(this.sysTask)
       api.saveTask(this.sysTask).then((response) => {
         //提示
         this.$message({
@@ -316,14 +404,6 @@ export default {
         //刷新页面
         this.fetchData();
       });
-    },
-
-    //弹出添加的表单
-    add() {
-      this.dialogVisible = true;
-      this.sysTask = {};
-      this.sysTask.startDate =  new Date();
-      this.sysTask.endDate = new Date();
     },
     
     // 根据id删除数据

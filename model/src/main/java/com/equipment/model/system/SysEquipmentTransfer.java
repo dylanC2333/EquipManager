@@ -55,14 +55,14 @@ public class SysEquipmentTransfer extends BaseEntity implements Serializable {
     private String transferLocation;
 
     /**
-     * 交接类型（虚拟/真实）
-     */
-    private String transferType;
-
-    /**
      * 备注
      */
     private String remarks;
+
+    /**
+     * 是否补充记录（0:否，真实 1:是，后续补充）
+     */
+    private Integer isAdditional;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -14,4 +14,6 @@ import com.equipment.model.vo.SysIdleEquipmentFinderQueryVo;
 public interface SysEquipmentStockService extends IService<SysEquipmentStock> {
 
     IPage<SysEquipmentStock> idleEquipmentFinder(Page<SysEquipmentStock> pageParam, SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo);
+
+    IPage<SysEquipmentStock> idleEquipmentFinder2(Page<SysEquipmentStock> pageParam, SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo);
 }

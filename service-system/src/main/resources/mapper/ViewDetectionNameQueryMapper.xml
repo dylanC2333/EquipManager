@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.ViewDetectionNameQueryMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.view.ViewDetectionNameQuery">
+            <result property="id" column="id" jdbcType="BIGINT"/>
+            <result property="employeeCode" column="employee_code" jdbcType="CHAR"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="startDate" column="start_date" jdbcType="DATE"/>
+            <result property="endDate" column="end_date" jdbcType="DATE"/>
+            <result property="detectionLocation" column="detection_location" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isAdditional" column="is_additional" jdbcType="TINYINT"/>
+            <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,employee_code,task_code,
+        start_date,end_date,detection_location,
+        is_deleted,create_time,update_time,
+        is_additional,employee_name
+    </sql>
+
+    <resultMap id="countTaskAndDetctionMap" type="com.equipment.model.vo.StatisticTaskAndDetection"></resultMap>
+    <select id="findUserDetectionCountForBoss" resultMap="countTaskAndDetctionMap">
+        SELECT d.employee_name, d.employee_code, COUNT(DISTINCT d.task_code) as task_num, COUNT(d.task_code) as detection_num
+        FROM view_detection_name_query d
+        <where>
+            d.is_deleted = 0
+            and d.is_additional = 0
+            <if test="taskAndDetectionVo.keyword != null and taskAndDetectionVo.keyword != ''">
+                and (d.employee_code = #{taskAndDetectionVo.keyword})
+            </if>
+            <if test="taskAndDetectionVo.start != null and taskAndDetectionVo.start != ''">
+                and (d.start_date >= #{taskAndDetectionVo.start})
+            </if>
+            <if test="taskAndDetectionVo.end != null and taskAndDetectionVo.end != ''">
+                and (d.start_date &lt;= #{taskAndDetectionVo.end})
+            </if>
+
+        </where>
+        GROUP BY d.employee_name , d.employee_code
+    </select>
+</mapper>

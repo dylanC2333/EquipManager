@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.equipment.system.mapper.ViewTaskUserEquipQueryMapper">
+
+    <resultMap id="BaseResultMap" type="com.equipment.model.view.ViewTaskUserEquipQuery">
+            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="employeeCode" column="employee_code" jdbcType="VARCHAR"/>
+            <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
+            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="isAdditional" column="is_additional" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_name,employee_code,task_code,
+        equipment_code,is_additional
+    </sql>
+
+<!--    <resultMap id="userDeviceMap" type="com.equipment.model.view.ViewTaskUserEquipQuery" ></resultMap>-->
+<!--    <select id="SearchUserDeviceByTaskcode" resultMap="userDeviceMap">-->
+<!--        SELECT v.user_name, v.employee_code, v.equipment_code, v.task_code, v.is_additional-->
+<!--        FROM view_task_user_equip_query v-->
+<!--        <where>-->
+<!--            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">-->
+<!--               AND (v.task_code = #{sysTaskDeviceQuery.keyword})-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+    <resultMap id="ViewTaskUserEquipQueryMap" type="com.equipment.model.view.ViewTaskUserEquipQuery">
+        <result property="userName" column="user_name"/>
+        <result property="employeeCode" column="user_code"/>
+        <result property="taskCode" column="task_code"/>
+        <result property="isAdditional" column="is_additional"/>
+    </resultMap>
+    <select id="SearchUserDeviceByTaskcode" resultMap="ViewTaskUserEquipQueryMap">
+        SELECT DISTINCT u.user_name, u.user_code, d.task_code, d.is_additional
+        FROM sys_detection d
+        JOIN sys_user u ON d.employee_code = u.user_code
+        <where>
+            d.is_deleted = 0
+            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
+                and d.task_code = #{sysTaskDeviceQuery.keyword}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="DeviceMap" type="com.equipment.model.vo.FindEquipByTaskCode" ></resultMap>
+    <select id="SearchEquipByTask" resultMap="DeviceMap">
+        SELECT DISTINCT  e.equipment_name,e.equipment_code,u.task_code, u.is_additional
+        FROM sys_equipment_use u
+        JOIN sys_equipment e on u.equipment_code = e.equipment_code
+        <where>
+            u.is_deleted = 0
+            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
+                and u.task_code = #{sysTaskDeviceQuery.keyword}
+            </if>
+        </where>
+    </select>
+</mapper>

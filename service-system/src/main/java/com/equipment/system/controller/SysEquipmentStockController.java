@@ -1,16 +1,17 @@
 package com.equipment.system.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.system.SysEquipmentStock;
+import com.equipment.model.view.ViewStockNameQuery;
 import com.equipment.model.vo.SysEquipmentStockQueryVo;
 import com.equipment.model.vo.SysIdleEquipmentFinderQueryVo;
 import com.equipment.system.service.SysEquipmentStockService;
+import com.equipment.system.service.ViewStockNameQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,30 +32,23 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/equipment/equipmentStock")
 public class SysEquipmentStockController {
+
+    @Autowired
+    private ViewStockNameQueryService viewStockNameQueryService;
+
     @Autowired
     private SysEquipmentStockService sysEquipmentStockService;
 
-    //1 查询所有入库记录
-    @ApiOperation("查询所有入库记录接口")
-    @GetMapping("findAllIn")
-    public Result<List<SysEquipmentStock>> findAllIn(){
-        LambdaQueryWrapper<SysEquipmentStock> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysEquipmentStock::getType, "入库");
-        List<SysEquipmentStock> list =  sysEquipmentStockService.list(wrapper);
+
+    //1 查询所有出入库记录
+    @ApiOperation("查询所有出入库记录接口")
+    @GetMapping("findAll")
+    public Result<List<SysEquipmentStock>> findAll(){
+        List<SysEquipmentStock> list =  sysEquipmentStockService.list();
         return Result.ok(list);
     }
 
-    //2 查询所有出库记录
-    @ApiOperation("查询所有出库记录接口")
-    @GetMapping("findAllOut")
-    public Result<List<SysEquipmentStock>> findAllOut(){
-        LambdaQueryWrapper<SysEquipmentStock> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysEquipmentStock::getType, "出库");
-        List<SysEquipmentStock> list =  sysEquipmentStockService.list(wrapper);
-        return Result.ok(list);
-    }
-
-    //3 删除记录接口
+    //2 删除记录接口
     @ApiOperation("根据id删除接口")
     @DeleteMapping("remove/{id}")
     public Result<Void> removeEquipStock(@PathVariable Long id){
@@ -67,11 +61,11 @@ public class SysEquipmentStockController {
         }
     }
 
-    //4 条件分页查询入库记录接口
+    //3 条件分页查询出入库记录接口
     //page表示当前页 limit每页记录
-    @ApiOperation("入库记录条件排序分页查询")
-    @GetMapping("in/{page}/{limit}/{column}/{order}")
-    public Result<IPage<SysEquipmentStock>> findPageQueryEquipIn(
+    @ApiOperation("出入库记录条件排序分页查询")
+    @GetMapping("{page}/{limit}/{column}/{order}")
+    public Result<IPage<SysEquipmentStock>> findPageQueryEquipUse(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
@@ -92,13 +86,13 @@ public class SysEquipmentStockController {
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type","入库");
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
             queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
-                            .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
+                    .or().eq("type", sysEquipmentStockQueryVo.getKeyword())
             );
         }
         //构造排序条件
@@ -116,11 +110,11 @@ public class SysEquipmentStockController {
         return  Result.ok(pageModel);
     }
 
-    //5 条件分页查询出库记录接口
+    //4 条件分页查询出入库记录接口带姓名
     //page表示当前页 limit每页记录
-    @ApiOperation("出库记录条件排序分页查询")
-    @GetMapping("out/{page}/{limit}/{column}/{order}")
-    public Result<IPage<SysEquipmentStock>> findPageQueryEquipOut(
+    @ApiOperation("出入库记录条件排序分页查询带姓名")
+    @GetMapping("name/{page}/{limit}/{column}/{order}")
+    public Result<IPage<ViewStockNameQuery>> findPageQueryEquipUseName(
 
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
@@ -138,17 +132,19 @@ public class SysEquipmentStockController {
             @PathVariable String order
     ){
         //创建page对象
-        Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
+        Page<ViewStockNameQuery> pageParam = new Page<>(page,limit);
         // 构造查询条件
-        QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type","出库");
+        QueryWrapper<ViewStockNameQuery> queryWrapper = new QueryWrapper<>();
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
-            queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
+            queryWrapper.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
-            );
+                    .or().eq("type", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("user_name", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("warehouse_manager_name", sysEquipmentStockQueryVo.getKeyword())
+                    .or().like("equipment_name", sysEquipmentStockQueryVo.getKeyword());
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -160,7 +156,7 @@ public class SysEquipmentStockController {
             }
         }
         //调用service方法
-        IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.page(pageParam,queryWrapper);
+        IPage<ViewStockNameQuery> pageModel = viewStockNameQueryService.page(pageParam,queryWrapper);
         //返回
         return  Result.ok(pageModel);
     }
@@ -200,8 +196,8 @@ public class SysEquipmentStockController {
         return Result.ok();
     }
 
-    //8、查询空闲设备列表
-    @ApiOperation("查询空闲设备列表")
+    //8、查询空闲设备列表: 在库设备
+    @ApiOperation("查询空闲设备列表: 在库设备")
     @GetMapping("idleEquipmentFinder/{page}/{limit}")
     public Result idleEquipmentFinder(
             @ApiParam(name = "page", value = "当前页码", required = true)
@@ -216,6 +212,26 @@ public class SysEquipmentStockController {
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         //调用service方法
         IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.idleEquipmentFinder(pageParam,sysIdleEquipmentFinderQueryVo);
+        //返回
+        return  Result.ok(pageModel);
+    }
+
+    //9、查询空闲设备列表: 出库设备且任务地在搜索条件内
+    @ApiOperation("查询空闲设备列表: 出库设备且任务地在搜索条件内,无使用记录")
+    @GetMapping("idleEquipmentFinder2/{page}/{limit}")
+    public Result idleEquipmentFinder2(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable Long limit,
+
+            @ApiParam(name = "SysIdleEquipmentFinderQueryVo", value = "查询对象", required = false)
+            SysIdleEquipmentFinderQueryVo sysIdleEquipmentFinderQueryVo){
+        //创建page对象
+        Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
+        //调用service方法
+        IPage<SysEquipmentStock> pageModel = sysEquipmentStockService.idleEquipmentFinder2(pageParam,sysIdleEquipmentFinderQueryVo);
         //返回
         return  Result.ok(pageModel);
     }

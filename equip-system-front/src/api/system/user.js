@@ -73,12 +73,23 @@ export default{
             method: 'get',
         })
     },
-    //查询空闲目测人员名单
+    //查询空闲检测人员名单
     getAvailableInspectionStaffList(page,limit,searchObj){
         return request({
             url: `${api_name}/detectionEmployees/${page}/${limit}`,
             method: 'get',
             params:searchObj
+        })
+    },
+
+    //修改密码
+    passwordChange(user){
+        return request({
+            // 接口路径
+            url: `${api_name}passwordChange`,
+            // 提交方式
+            method: 'put',
+            data: user
         })
     },
 }

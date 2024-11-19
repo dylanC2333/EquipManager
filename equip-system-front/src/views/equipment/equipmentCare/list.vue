@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="searchObj.keyword"
-                placeholder="设备编号/员工编号"
+                placeholder="设备编号/保养人编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -70,9 +70,10 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-
-      <el-table-column prop="employeeCode" label="员工编号" sortable="custom"/>
+      <el-table-column prop="employeeCode" label="保养人编号" sortable="custom"/>
+      <el-table-column prop="employeeName" label="保养人姓名" sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
+      <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
       <el-table-column prop="maintenanceDate" label="保养日期" sortable="custom"/>
       <el-table-column prop="beforeUseStatus" label="设备使用前状态" sortable="custom"/>
       <el-table-column prop="maintenanceStatus" label="设备维护保养状态" />
@@ -116,15 +117,16 @@
         label-width="150px"
         size="small"
         style="padding-right: 40px"
+        :rules="rules"
       >
-        <el-form-item label="员工编号">
-          <el-input v-model="sysEquipMain.employeeCode" />
+        <el-form-item label="保养人编号" prop="employeeCode">
+          <el-input disabled v-model="sysEquipMain.employeeCode" />
         </el-form-item>
-        <el-form-item label="设备编号">
+        <el-form-item label="设备编号" prop="equipmentCode">
           <el-input v-model="sysEquipMain.equipmentCode" />
         </el-form-item>
-        <el-form-item label="保养日期">
-          <el-date-picker
+        <el-form-item label="保养日期" prop="maintenanceDate">
+          <el-date-picker disabled 
             v-model="sysEquipMain.maintenanceDate"
             type="date"
             placeholder="选择日期"
@@ -132,14 +134,14 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="设备使用前状态">
+        <el-form-item label="设备使用前状态" prop="beforeUseStatus">
           <el-radio v-model="sysEquipMain.beforeUseStatus" label="正常">正常</el-radio>
           <el-radio v-model="sysEquipMain.beforeUseStatus" label="异常">异常</el-radio>
         </el-form-item>
-        <el-form-item label="设备维护保养状态">
+        <el-form-item label="设备维护保养状态" prop="maintenanceStatus">
           <el-input v-model="sysEquipMain.maintenanceStatus" />
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop="remarks">
           <el-input v-model="sysEquipMain.remarks" />
         </el-form-item>
       </el-form>
@@ -163,6 +165,8 @@
 </template>
 <script>
 import api from "@/api/system/equipMaintenance";
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -179,10 +183,34 @@ export default {
       sysEquipMain: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
       createTimes: [],
+
+      rules:{// 表单校验规则
+        employeeCode:[
+          { required : true , message : "必填" },
+        ],
+        equipmentCode : [
+          { required : true , message : "必填" },
+        ],
+        maintenanceDate : [
+          { required : true , message : "必填" },
+        ],
+        beforeUseStatus : [
+          { required : true , message : "必填" },
+        ],
+        maintenanceStatus : [
+        ],
+        remarks :[
+        ],
+      },
     };
   },
   created() {
     this.fetchData();
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   methods: {
     dateChange(){
@@ -253,14 +281,25 @@ export default {
         this.sysEquipMain = response.data;
       });
     },
+
     //添加或修改
+    //增加表单校验判断
     saveOrUpdate() {
-      if (!this.sysEquipMain.id) {
-        this.saveEquipMain();
-      } else {
-        this.updateEquipMain();
-      }
+      //表单校验
+      this.$refs.dataForm.validate((valid) =>{
+        if(valid){
+          if (!this.sysEquipMain.id) {
+            this.saveEquipMain();
+          } else {
+            this.updateEquipMain();
+          }
+        } else{
+          this.$message.error('请完善表单相关信息！');
+          return false;
+        }
+      })
     },
+
     //修改方法
     updateEquipMain() {
       api.update(this.sysEquipMain).then((response) => {
@@ -295,6 +334,7 @@ export default {
       this.dialogVisible = true;
       this.sysEquipMain = {};
       this.sysEquipMain.maintenanceDate =  new Date();
+      this.sysEquipMain.employeeCode = this.name;
     },
 
     // 根据id删除数据

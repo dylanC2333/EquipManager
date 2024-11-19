@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 //常量
-const api_name = '/admin/equipment/equipmentUse/'
+const api_name = '/admin/equipment/equipmentUse'
 
 
 export default{
@@ -9,7 +9,7 @@ export default{
     // 1 分页排序列表查询
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
+            url: `${api_name}/name/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
@@ -22,6 +22,7 @@ export default{
           method: 'delete'
         })
     },
+    
     //3、添加
     saveEquipUse(equipUse) {
         return request({
@@ -66,7 +67,16 @@ export default{
         })
     },
 
-    //8、该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
+    //8、任务所参与人员查询列表
+    taskUserFinder(page,limit,searchObj){
+        return request({
+            url: `${api_name}/taskUserFinder/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
+
+    //9、该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
     equipmentUsageDays(page,limit,searchObj){
         return request({
             url: `${api_name}/equipmentUsageDays/${page}/${limit}`,
@@ -75,6 +85,14 @@ export default{
         })
     },
 
+    //10、自动补充日期批量插入检测记录
+    saveBatchDateUsage(batchDateUsage) {
+        return request({
+            url: `${api_name}/batchSaveDate`,
+            method: 'post',
+            data: batchDateUsage
+        })
+    },
 
 
 

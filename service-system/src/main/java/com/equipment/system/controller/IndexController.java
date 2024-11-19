@@ -72,7 +72,7 @@ public class IndexController {
      * 退出
      */
     @PostMapping("logout")
-    public Result logout(){
+    public Result<Void> logout(){
         return Result.ok();
     }
 }

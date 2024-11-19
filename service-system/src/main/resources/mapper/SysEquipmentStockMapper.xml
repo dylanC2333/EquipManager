@@ -34,41 +34,112 @@
     </sql>
 
     <select id="idleEquipmentFinder" resultMap="SysEquipmentFinderMap">
-        select <include refid="equipmentFindercolumns" />
+        select distinct <include refid="equipmentFindercolumns" />
         from sys_equipment e
-        LEFT JOIN (
-        -- 获取设备在起始日期之前的最后一条出入库记录
-        SELECT s1.equipment_code, s1.type, s1.equipment_date, t.location
-        FROM sys_equipment_stock s1
-        JOIN sys_task t ON s1.task_code = t.task_code
-        <where>
-            <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
-                and s1.equipment_date &lt;= #{equipFinderVo.startTime}
-            </if>
-        </where>
-        ) AS last_stock ON e.equipment_code = last_stock.equipment_code
         <where>
             <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
-                and e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
+                e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
             </if>
-            AND (
-            -- 条件1：在库
-            last_stock.type = '入库'
-            OR last_stock.equipment_code IS NULL
-            -- 条件2：出库且满足条件
-            OR (
-            last_stock.type = '出库'
-            AND last_stock.location  LIKE CONCAT('%', #{equipFinderVo.location}, '%')
-            AND NOT EXISTS (
+        AND NOT EXISTS(
+        SELECT 1
+        FROM sys_equipment_stock s
+        <where>
+            s.equipment_code = e.equipment_code
+            <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
+                <if test="equipFinderVo.endTime != null and equipFinderVo.endTime !=''">
+                    and s.equipment_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
+                </if>
+            </if>
+        </where>
+        )
+        AND NOT EXISTS(
             SELECT 1
-            FROM sys_equipment_use u
-            WHERE u.equipment_code = e.equipment_code
-            AND u.equipment_use_date BETWEEN last_stock.equipment_date  AND #{equipFinderVo.startTime}
-            )
-            )
-            )
+            FROM (
+            SELECT s.*, t.location
+            FROM sys_equipment_stock s
+            LEFT JOIN sys_task t ON s.task_code = t.task_code
+            <where>
+                s.equipment_code = e.equipment_code
+                <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
+                    and s.equipment_date &lt; #{equipFinderVo.startTime}
+                </if>
+            </where>
+            ORDER BY s.equipment_date DESC,
+            CASE
+                WHEN s.type = '出库' THEN 1
+                ELSE 0
+            END DESC
+            LIMIT 1
+            ) as last_record
+            <where>
+                <if test="equipFinderVo.location != null and equipFinderVo.location !=''">
+                    and last_record.location = #{equipFinderVo.location}
+                </if>
+                AND last_record.type = '出库'
+            </where>
+        )
         </where>
 
+    </select>
+
+    <select id="idleEquipmentFinder2" resultMap="SysEquipmentFinderMap">
+        select e.equipment_code,e.equipment_name
+        from sys_equipment e
+        <where>
+            <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
+                e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
+            </if>
+            AND NOT EXISTS(
+            SELECT 1
+            FROM sys_equipment_stock s
+            <where>
+                s.equipment_code = e.equipment_code
+                <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
+                    <if test="equipFinderVo.endTime != null and equipFinderVo.endTime !=''">
+                        and s.equipment_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
+                    </if>
+                </if>
+            </where>
+            )
+            AND EXISTS(
+                SELECT 1
+                FROM (
+                    SELECT s.*, t.location
+                    FROM sys_equipment_stock s
+                    LEFT JOIN sys_task t ON s.task_code = t.task_code
+                    <where>
+                        s.equipment_code = e.equipment_code
+                        <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
+                                and s.equipment_date &lt; #{equipFinderVo.startTime}
+                        </if>
+                    </where>
+                    ORDER BY s.equipment_date DESC,
+                    CASE
+                        WHEN s.type = '出库' THEN 1
+                        ELSE 0
+                    END DESC
+                    LIMIT 1
+                    ) as last_record
+                <where>
+                    <if test="equipFinderVo.location != null and equipFinderVo.location !=''">
+                        and last_record.location = #{equipFinderVo.location}
+                    </if>
+                    AND last_record.type = '出库'
+                </where>
+            )
+            AND NOT EXISTS(
+                SELECT 1
+                FROM sys_equipment_use u
+                <where>
+                    u.equipment_code = e.equipment_code
+                    <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
+                        <if test="equipFinderVo.endTime != null and equipFinderVo.endTime !=''">
+                            and u.equipment_use_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
+                        </if>
+                    </if>
+                </where>
+            )
+        </where>
     </select>
 
 </mapper>

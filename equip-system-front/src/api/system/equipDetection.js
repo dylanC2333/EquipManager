@@ -9,7 +9,7 @@ export default{
     // 1 分页排序列表查询
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
-            url: `${api_name}/${page}/${limit}/${column}/${sortorder}`,
+            url: `${api_name}/name/${page}/${limit}/${column}/${sortorder}`,
             method: 'get',
             params:searchObj
         })
@@ -23,7 +23,7 @@ export default{
         })
     },
     //3、添加
-    saveEquipDection(equipDet) {
+    saveEquipDetection(equipDet) {
         return request({
           url: `${api_name}/save`,
           method: 'post',
@@ -31,7 +31,7 @@ export default{
         })
     },
     //4、根据id查询
-    getEquipDetctionId(id) {
+    getEquipDetectionId(id) {
         return request({
             url: `${api_name}/findDetectionById/${id}`,
             method: 'get'
@@ -52,9 +52,41 @@ export default{
           method: `delete`,
           data: idList
         })
-    }
-    
-    
-  
-    
+    },
+
+    //7、员工打卡次数和经历任务数查询
+    UserDetectionCount(page,limit,searchObj) {
+        return request({
+          url: `${api_name}/UserDetectionCount/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
+
+    //8、员工打卡次数和经历任务数查询领导版
+    UserDetectionCountForBoss(page,limit,searchObj) {
+        return request({
+          url: `${api_name}/UserDetectionCountForBoss/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
+
+    //9、根据employeeCode查询最近一条检测记录
+    getLastOneDetection(employeeCode) {
+        return request({
+            url: `${api_name}/findLastOne/${employeeCode}`,
+            method: 'get'
+        })
+    },
+
+    //10、自动补充日期批量插入检测记录
+    saveBatchDateDetection(batchDateDetection) {
+        return request({
+          url: `${api_name}/batchSaveDate`,
+          method: 'post',
+          data: batchDateDetection
+        })
+    },
+
 }

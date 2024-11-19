@@ -17,4 +17,23 @@
         id,equipment_code,equipment_name,
         create_time,update_time,is_deleted
     </sql>
+
+    <resultMap id="EquipmentUseDaysCountMap" type="com.equipment.model.vo.EquipmentUseDayCount"></resultMap>
+    <select id="EquipmentUseDaysCount_Mapper" resultMap="EquipmentUseDaysCountMap">
+        SELECT e.equipment_use_name as equipmentName, e.equipment_code as equipmentCode, COUNT(DISTINCT e.equipment_use_date) AS useDayCount
+        FROM view_use_name_query e
+        <where>
+            e.is_deleted = 0
+            <if test="CountEquipmentUseDaysVo.keyword != null and CountEquipmentUseDaysVo.keyword != ''">
+                and (e.equipment_code = #{CountEquipmentUseDaysVo.keyword})
+            </if>
+            <if test="CountEquipmentUseDaysVo.start != null and CountEquipmentUseDaysVo.start != ''">
+                and (e.equipment_use_date >= #{CountEquipmentUseDaysVo.start})
+            </if>
+            <if test="CountEquipmentUseDaysVo.end != null and CountEquipmentUseDaysVo.end != ''">
+                and (e.equipment_use_date &lt;= #{CountEquipmentUseDaysVo.end})
+            </if>
+        </where>
+        GROUP BY e.equipment_use_name, e.equipment_code
+    </select>
 </mapper>

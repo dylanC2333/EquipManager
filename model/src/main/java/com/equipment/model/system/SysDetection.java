@@ -29,21 +29,26 @@ public class SysDetection extends BaseEntity implements Serializable  {
     private String taskCode;
 
     /**
-     * 目测开始时间
+     * 检测时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    /**
-     * 目测结束时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date endDate;
+//    /**
+//     * 目测结束时间（已弃用）
+//     */
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    private Date endDate;
 
     /**
-     * 目测地点
+     * 检测地点
      */
     private String detectionLocation;
+
+    /**
+     * 是否补充记录（0:否，真实 1:是，后续补充）
+     */
+    private Integer isAdditional;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

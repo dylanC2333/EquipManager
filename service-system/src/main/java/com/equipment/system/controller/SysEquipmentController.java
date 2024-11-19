@@ -5,9 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
-import com.equipment.model.vo.SysEquipQueryVo;
+import com.equipment.model.vo.*;
 import com.equipment.model.system.SysEquipment;
-import com.equipment.model.vo.SysUserQueryVo;
 import com.equipment.system.service.SysEquipmentService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -134,7 +133,26 @@ public class SysEquipmentController {
         return sysEquipmentService.removeByIds(ids)?Result.ok():Result.fail();
     }
 
+    //8、 通过设备编号查询统计设备在一段时间使用的天数，包括真假的记录
+    @ApiOperation("通过设备编号查询统计设备在一段时间使用的天数，包括真假的记录")
+    @GetMapping("EquipmentUseDayCount/{page}/{limit}")
+    public Result<IPage<EquipmentUseDayCount>> EquipmentUseDayCount(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable int page,
 
+            @ApiParam(name = "limit", value = "每页记录数量", required = true)
+            @PathVariable int limit,
+
+            @ApiParam(name = "sysTaskDeviceQueryVo", value = "查询对象", required = false)
+            UserIDAndDateRageVo sysTaskDeviceQueryVo){// UserIDAndDateRageVo依旧使用，因为字段是一样的
+        //创建page对象
+        Page<EquipmentUseDayCount> pageParam = new Page<>(page,limit);
+
+        //调用service方法,不用管下面的函数名字，因为后来进行了修改，为了方便没有再修改名字
+        IPage<EquipmentUseDayCount> pageModel = sysEquipmentService.EquipmentUseDaysCount(pageParam,sysTaskDeviceQueryVo);
+        //返回
+        return  Result.ok(pageModel);
+    }
 
 }
 

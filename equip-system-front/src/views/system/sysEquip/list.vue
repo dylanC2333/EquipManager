@@ -62,6 +62,12 @@
       <el-table-column prop="equipmentName" label="设备名称"  sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号"  sortable="custom"/>
       <el-table-column prop="createTime" label="创建时间"  sortable="custom"/>
+      <el-table-column prop="status" label="设备状态">
+        <template scope="scope">
+          <span v-if="scope.row.status === 1">正常使用</span>
+          <span v-else-if="scope.row.status === 0">停用</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -106,8 +112,12 @@
         <el-form-item label="设备名称"  prop = "equipmentName">
           <el-input v-model="sysEquip.equipmentName"/>
         </el-form-item>
-        <el-form-item label="设备编码" prop = "equipmentCode">
+        <el-form-item label="设备编号" prop = "equipmentCode">
           <el-input v-model="sysEquip.equipmentCode" />
+        </el-form-item>
+        <el-form-item label="设备状态" prop="status">
+          <el-radio v-model="sysEquip.status" :label="1">正常使用</el-radio>
+          <el-radio v-model="sysEquip.status" :label="0">停用</el-radio>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -153,6 +163,9 @@ export default {
         equipmentCode:[
           { required : true , message : "必填" },
         ],
+        status:[
+          { required : true , message : "必填" },
+        ]
       },
     };
   },
@@ -311,6 +324,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
+          // console.log(this.list);
         });
     },
   },

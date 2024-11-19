@@ -55,7 +55,16 @@ export default{
           method: `delete`,
           data: idList
         })
-    }
+    },
+
+    //7、通过设备编号查询统计设备在一段时间使用的天数，包括真假的记录
+    EquipmentUseDayCount(page,limit,searchObj){
+        return request({
+            url: `${api_name}/EquipmentUseDayCount/${page}/${limit}`,
+            method: 'get',
+            params:searchObj
+        })
+    },
     
     
   
