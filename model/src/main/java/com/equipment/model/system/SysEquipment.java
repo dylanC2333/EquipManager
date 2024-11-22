@@ -29,6 +29,11 @@ public class SysEquipment extends BaseEntity implements Serializable {
     private String equipmentName;
 
     /**
+     * 规格型号
+     */
+    private String specification;
+
+    /**
      * 状态（1：正常 0：停用）
      */
     private Integer status;

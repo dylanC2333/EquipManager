@@ -87,8 +87,13 @@
 					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item required label="设备使用前状态" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
-					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
 					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
+						<tm-radio label="正常" value="正常"></tm-radio>
+						<tm-radio label="异常" value="异常"></tm-radio>
+					</tm-radio-group>
+				</tm-form-item>
+				<tm-form-item required label="设备使用前状态" field="postUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+					<tm-radio-group v-model="sysEquipUse.postUseEquipmentStatus">
 						<tm-radio label="正常" value="正常"></tm-radio>
 						<tm-radio label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
@@ -146,6 +151,7 @@
 	  location?: string;
 	  maintenanceStatus?: string;
 	  preUseEquipmentStatus?: string;
+	  postUseEquipmentStatus?: string;
 	  taskCode?: string;
 	}
 	interface validateResultType{
@@ -205,6 +211,7 @@
 		equipmentUseDate :'',
 		location :'',
 		preUseEquipmentStatus :'',
+		postUseEquipmentStatus :'',
 		maintenanceStatus :'',
 	})
 	const taskCodeParts = ref<{
@@ -231,6 +238,7 @@
 	          { name: 'employeeUseName', label: '使用人姓名',sorter:true },
 	          { name: 'location', label: '地点' },
 	          { name: 'preUseEquipmentStatus', label: '设备使用前状态' },
+	          { name: 'postUseEquipmentStatus', label: '设备使用前状态' },
 	          { name: 'maintenanceStatus', label: '维护保养情况' },
 	          { name: 'operation', type:'operation',label: '操作',renders:[
 	              {
@@ -516,6 +524,8 @@
 	}
 	
 	// 在组件实例创建时立即调用,获取数据
+	// 初始化时，以当前用户编号作为查询条件
+	searchObj.value.keyword = mainStore.username
 	fetchData();
 
 

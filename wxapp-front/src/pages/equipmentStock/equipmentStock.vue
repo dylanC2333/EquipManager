@@ -486,6 +486,8 @@
 	}
 	
 	// 在组件实例创建时立即调用,获取数据
+	// 初始化时，以当前用户编号作为查询条件
+	searchObj.value.keyword = mainStore.username
 	fetchData();
 
 

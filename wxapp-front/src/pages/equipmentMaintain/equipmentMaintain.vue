@@ -75,13 +75,6 @@
 								v-model:model-str="dateStr"
 							></tm-time-picker>
 				</tm-form-item>
-				<tm-form-item required label="设备使用前状态" field="beforeUseStatus" :rules="[{ required: true, message: '必填' }]" >
-					<!-- <tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.preUseEquipmentStatus" :transprent="true" :showBottomBotder="false"> </tm-input> -->
-					<tm-radio-group v-model="sysEquipMain.beforeUseStatus">
-						<tm-radio label="正常" value="正常"></tm-radio>
-						<tm-radio label="异常" value="异常"></tm-radio>
-					</tm-radio-group>
-				</tm-form-item>
 				<tm-form-item label="设备维护保养状态" field="maintenanceStatus" :rules="[{}]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
@@ -145,7 +138,6 @@
 	  equipmentCode?: string;
 	  equipmentName?: string | null;
 	  maintenanceDate?: string;
-	  beforeUseStatus?: string;
 	  maintenanceStatus?: string;
 	  remarks?: string;
 	}
@@ -198,7 +190,6 @@
 		employeeCode :'',
 		equipmentCode :'',
 		maintenanceDate :'',
-		beforeUseStatus :'',
 		maintenanceStatus :'',
 		remarks :'',
 	})
@@ -216,7 +207,6 @@
 	          { name: 'maintenanceDate', label: '保养日期' },
 	          { name: 'employeeCode', label: '保养人编号' },
 	          { name: 'employeeName', label: '保养人姓名',sorter:true },
-	          { name: 'beforeUseStatus', label: '设备使用前状态' },
 	          { name: 'maintenanceStatus', label: '设备维护保养状态' },
 			  { name: 'remarks', label: '备注'},
 	          { name: 'operation', type:'operation',label: '操作',renders:[
@@ -449,6 +439,8 @@
 	}
 	
 	// 在组件实例创建时立即调用,获取数据
+	// 初始化时，以当前用户编号作为查询条件
+	searchObj.value.keyword = mainStore.username
 	fetchData();
 
 

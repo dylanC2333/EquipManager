@@ -14,7 +14,7 @@ import java.util.List;
 */
 public interface SysDetectionService extends IService<SysDetection> {
 
-    ViewDetectionNameQuery getLastOne(String employeeCode);
+    SysDetection getLastOne(String employeeCode);
 
     boolean dateBatchSupplement(SysDetectionDateBatchSaveVo sysDetectionDateBatchSaveVo);
 }

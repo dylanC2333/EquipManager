@@ -75,7 +75,6 @@
       <el-table-column prop="equipmentCode" label="设备编号" sortable="custom"/>
       <el-table-column prop="equipmentName" label="设备名称" sortable="custom"/>
       <el-table-column prop="maintenanceDate" label="保养日期" sortable="custom"/>
-      <el-table-column prop="beforeUseStatus" label="设备使用前状态" sortable="custom"/>
       <el-table-column prop="maintenanceStatus" label="设备维护保养状态" />
       <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
@@ -134,10 +133,6 @@
             @input="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="设备使用前状态" prop="beforeUseStatus">
-          <el-radio v-model="sysEquipMain.beforeUseStatus" label="正常">正常</el-radio>
-          <el-radio v-model="sysEquipMain.beforeUseStatus" label="异常">异常</el-radio>
-        </el-form-item>
         <el-form-item label="设备维护保养状态" prop="maintenanceStatus">
           <el-input v-model="sysEquipMain.maintenanceStatus" />
         </el-form-item>
@@ -192,9 +187,6 @@ export default {
           { required : true , message : "必填" },
         ],
         maintenanceDate : [
-          { required : true , message : "必填" },
-        ],
-        beforeUseStatus : [
           { required : true , message : "必填" },
         ],
         maintenanceStatus : [

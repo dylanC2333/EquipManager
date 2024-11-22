@@ -61,6 +61,7 @@
 
       <el-table-column prop="equipmentName" label="设备名称"  sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号"  sortable="custom"/>
+      <el-table-column prop="specification" label="规格型号"  sortable="custom"/>
       <el-table-column prop="createTime" label="创建时间"  sortable="custom"/>
       <el-table-column prop="status" label="设备状态">
         <template scope="scope">
@@ -115,6 +116,9 @@
         <el-form-item label="设备编号" prop = "equipmentCode">
           <el-input v-model="sysEquip.equipmentCode" />
         </el-form-item>
+        <el-form-item label="规格型号" prop = "specification">
+          <el-input v-model="sysEquip.specification" />
+        </el-form-item>
         <el-form-item label="设备状态" prop="status">
           <el-radio v-model="sysEquip.status" :label="1">正常使用</el-radio>
           <el-radio v-model="sysEquip.status" :label="0">停用</el-radio>
@@ -165,6 +169,9 @@ export default {
         ],
         status:[
           { required : true , message : "必填" },
+        ],
+        specification:[
+        { required : true , message : "必填" },
         ]
       },
     };

@@ -76,7 +76,7 @@
 				</tm-form-item>
 				<tm-form-item required label="检测地点" field="detectionLocation" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
 					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
-					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="province" ></tm-city-picker>
+					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item :border="false">
 					<view class="flex flex-row">
@@ -104,7 +104,8 @@
 		saveDetection,
 		removeId,
 		update,
-		getDetectionById
+		getDetectionById,
+		getLastOneDetection
 	} from '@/api/system/detection'
 	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
@@ -178,7 +179,7 @@
 		limit: 10
 	})
 	const searchObj = ref({// 查询条件
-		keyword: ''
+		keyword :'',
 	})
 	const sortOption = ref({// 排序条件
 		column:'createTime',// 排序字段
@@ -373,32 +374,39 @@
 	}
 
 	// 添加按钮
-	const add = () =>{
+	const add = async () => {
 		showModel.value = true
 		// initialObject(sysDetection.value)
-		sysDetection.value = ({})
-		// 将用户编号设为当前用户的用户编号
-		sysDetection.value.employeeCode = mainStore.username
-
+		
+		initialLocNDate()
 		initialObject(taskCodeParts.value)
+		
+		const res = await getLastOneDetection(mainStore.username)
+		if (res != null){
+			sysDetection.value = res
+			taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
+			cityStr.value = sysDetection.value.detectionLocation!
+		} else {
+			sysDetection.value = ({})
+			// 将用户编号设为当前用户的用户编号
+			sysDetection.value.employeeCode = mainStore.username
+		}
+		
 		console.log("add!")
-
 		console.log(sysDetection.value)
 
-		initialLocNDate()
 		dateStr.value = setToday()
-
 		console.log(dateStr.value)
 	}
 
 	// 修改按钮
 	const buttonEdit = async (item: sysDetectionType,index: number) =>{
 		showModel.value = true
+		initialObject(taskCodeParts.value)
 		//数据回显
 		//(item.id!)表示非空断言
 		sysDetection.value = await getDetectionById(item.id!)
 
-		initialObject(taskCodeParts.value)
 		taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
 
 		dateStr.value = sysDetection.value.startDate!
@@ -453,6 +461,8 @@
 	}
 
 	// 在组件实例创建时立即调用,获取数据
+	// 初始化时，以当前用户编号作为查询条件
+	searchObj.value.keyword = mainStore.username
 	fetchData();
 
 
