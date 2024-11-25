@@ -18,9 +18,6 @@ import lombok.Data;
 @Data
 public class SysEquipment extends BaseEntity implements Serializable {
 
-    // 规格型号
-    private String specification;
-
     /**
      * 设备编码
      */

@@ -154,12 +154,13 @@
               任务编号: item.taskCode,
               设备名称: item.equipmentName,    // 修改字段名称
               设备编号: item.equipmentCode, // 修改字段名称
+              规格型号: item.specification,    // 修改字段名称
               是否为补充记录: item.isAdditional === 1 ? '是': '否', // 修改字段名称
             }));
 
             // 将数据转换为工作表
             const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['任务编号','检测人姓名','检测人编号','是否为补充记录']});
-            const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['任务编号','设备名称','设备编号','是否为补充记录']});
+            const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['任务编号','设备名称','设备编号','规格型号','是否为补充记录']});
 
             // 创建工作簿并添加工作表
             const workbook = XLSX.utils.book_new();
