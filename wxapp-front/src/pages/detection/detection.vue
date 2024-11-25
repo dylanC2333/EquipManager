@@ -90,7 +90,41 @@
 				</tm-form-item>
 			</tm-form>
 		</tm-modal>
-
+	</tm-app>
+	
+	<tm-app ref="detailform" color="grey-5">
+		<tm-modal
+			color="white"
+			okColor="blue"
+			okLinear="left"
+			splitBtn
+			title="记录详情"
+			hideCancel
+			closeable
+			:width="700"
+			:height="1200"
+			v-model:show="showModelDetail"
+			okText="返回"
+		>
+			<tm-form ref="form" :label-width="80" v-model="sysDetection">
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+					<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+					<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测人编号" field="employeeCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysDetection.employeeCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测人姓名" field="employeeName" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysDetection.employeeName" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测日期" field="startDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="dateStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测地点" field="detectionLocation" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="cityStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+			</tm-form>
+		</tm-modal>
 	</tm-app>
 
 
@@ -186,6 +220,7 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
+	const showModelDetail = ref(false) //详情表单显示
 	const sysDetection = ref<sysDetectionType>({
 		employeeCode :'',
 		taskCode :'',
@@ -424,13 +459,36 @@
 	const removeById = async (item: sysDetectionType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
-		const res = await removeId(item.id!)
-		console.log("res: "+res)
-		fetchData()
+		uni.showModal({
+			title: '提示',
+			content: '此操作将永久删除该记录, 是否继续?',
+			success: async function (res) {
+				if (res.confirm) {
+					const response = await removeId(item.id!)
+					console.log('用户点击确定')
+					console.log("response: "+response)
+					uni.showToast({
+						title: '操作成功!',
+						duration: 2000
+					});
+					fetchData()
+				} else if (res.cancel) {
+					console.log('用户点击取消')
+				}
+			}
+		});
 	}
 
 	// 查看详情
-	const detail = async () =>{
+	const detail = async (item: sysDetectionType,index: number) =>{
+		showModelDetail.value = true
+		
+		//显示当前记录的数据
+		sysDetection.value = item
+		taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
+		dateStr.value = sysDetection.value.startDate!
+		cityStr.value = sysDetection.value.detectionLocation!
+
 		console.log("detail!")
 	}
 

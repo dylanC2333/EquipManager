@@ -92,7 +92,7 @@
 						<tm-radio label="异常" value="异常"></tm-radio>
 					</tm-radio-group>
 				</tm-form-item>
-				<tm-form-item required label="设备使用前状态" field="postUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+				<tm-form-item required label="设备使用后状态" field="postUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
 					<tm-radio-group v-model="sysEquipUse.postUseEquipmentStatus">
 						<tm-radio label="正常" value="正常"></tm-radio>
 						<tm-radio label="异常" value="异常"></tm-radio>
@@ -113,7 +113,62 @@
 				</tm-form-item>
 			</tm-form>		
 		</tm-modal>
-
+	</tm-app>
+	
+	<tm-app ref="detailform" color="grey-5">
+		<tm-modal
+			color="white"
+			okColor="blue"
+			okLinear="left"
+			splitBtn
+			title="记录详情"
+			hideCancel
+			closeable
+			:width="700"
+			:height="1200"
+			v-model:show="showModelDetail"
+			okText="返回"
+		>
+			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipUse">
+				<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="设备名称" field="equipmentUseName" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.equipmentUseName" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+					<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+					<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="使用人编号" field="employeeUseCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="使用人姓名" field="employeeUseName" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.employeeUseName" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="dateStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="地点" field="location" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="cityStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				 </tm-form-item>
+				<tm-form-item required label="设备使用前状态" field="preUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+					<tm-radio-group v-model="sysEquipUse.preUseEquipmentStatus">
+						<tm-radio disabled label="正常" value="正常"></tm-radio>
+						<tm-radio disabled label="异常" value="异常"></tm-radio>
+					</tm-radio-group>
+				</tm-form-item>
+				<tm-form-item required label="设备使用后状态" field="postUseEquipmentStatus" :rules="[{ required: true, message: '必填' }]" >
+					<tm-radio-group v-model="sysEquipUse.postUseEquipmentStatus">
+						<tm-radio disabled label="正常" value="正常"></tm-radio>
+						<tm-radio disabled label="异常" value="异常"></tm-radio>
+					</tm-radio-group>
+				</tm-form-item>
+				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+			</tm-form>		
+		</tm-modal>
 	</tm-app>
 			
 
@@ -204,6 +259,7 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
+	const showModelDetail = ref(false) //详情表单显示
 	const sysEquipUse = ref<sysEquipUseType>({
 		equipmentCode :'',
 		taskCode :'',
@@ -487,13 +543,35 @@
 	const removeById = async (item: sysEquipUseType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
-		const res = await removeId(item.id!)
-		console.log("res: "+res)
-		fetchData()
+		uni.showModal({
+			title: '提示',
+			content: '此操作将永久删除该记录, 是否继续?',
+			success: async function (res) {
+				if (res.confirm) {
+					const response = await removeId(item.id!)
+					console.log('用户点击确定')
+					console.log("response: "+response)
+					uni.showToast({
+						title: '操作成功!',
+						duration: 2000
+					});
+					fetchData()
+				} else if (res.cancel) {
+					console.log('用户点击取消')
+				}
+			}
+		});
 	}
 	
 	// 查看详情
-	const detail = async () =>{
+	const detail = async (item: sysEquipUseType,index: number) =>{
+		showModelDetail.value = true
+		
+		//显示当前记录的数据
+		sysEquipUse.value = item
+		taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
+		dateStr.value = sysEquipUse.value.equipmentUseDate!
+		cityStr.value = sysEquipUse.value.location!
 		console.log("detail!")
 	}
 	

@@ -93,7 +93,46 @@
 				</tm-form-item>
 			</tm-form>		
 		</tm-modal>
-
+	</tm-app>
+	
+	<tm-app ref="detailform" color="grey-5">
+		<tm-modal
+			color="white"
+			okColor="blue"
+			okLinear="left"
+			splitBtn
+			title="记录详情"
+			hideCancel
+			closeable
+			:width="700"
+			:height="1200"
+			v-model:show="showModelDetail"
+			okText="返回"
+		>
+			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysEquipMain">
+				<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="设备名称" field="equipmentName" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.equipmentName" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="保养人编号" field="employeeCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.employeeCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="保养人姓名" field="employeeName" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.employeeName" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="保养日期" field="maintenanceDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="dateStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item label="设备维护保养状态" field="maintenanceStatus" :rules="[{}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipMain.remarks" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+			</tm-form>		
+		</tm-modal>
 	</tm-app>
 			
 
@@ -186,6 +225,7 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
+	const showModelDetail = ref(false) //详情表单显示
 	const sysEquipMain = ref<sysEquipMainType>({
 		employeeCode :'',
 		equipmentCode :'',
@@ -402,13 +442,33 @@
 	const removeById = async (item: sysEquipMainType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
-		const res = await removeId(item.id!)
-		console.log("res: "+res)
-		fetchData()
+		uni.showModal({
+			title: '提示',
+			content: '此操作将永久删除该记录, 是否继续?',
+			success: async function (res) {
+				if (res.confirm) {
+					const response = await removeId(item.id!)
+					console.log('用户点击确定')
+					console.log("response: "+response)
+					uni.showToast({
+						title: '操作成功!',
+						duration: 2000
+					});
+					fetchData()
+				} else if (res.cancel) {
+					console.log('用户点击取消')
+				}
+			}
+		});
 	}
 	
 	// 查看详情
-	const detail = async () =>{
+	const detail = async (item: sysEquipMainType,index: number) =>{
+		showModelDetail.value = true
+		
+		//显示当前记录的数据
+		sysEquipMain.value = item
+		dateStr.value = sysEquipMain.value.maintenanceDate!
 		console.log("detail!")
 	}
 	
