@@ -48,7 +48,7 @@
 
     <resultMap id="DeviceMap" type="com.equipment.model.vo.FindEquipByTaskCode" ></resultMap>
     <select id="SearchEquipByTask" resultMap="DeviceMap">
-        SELECT DISTINCT  e.equipment_name,e.equipment_code,u.task_code, u.is_additional
+        SELECT DISTINCT  e.equipment_name,e.equipment_code,u.task_code, u.is_additional, e.specification
         FROM sys_equipment_use u
         JOIN sys_equipment e on u.equipment_code = e.equipment_code
         <where>

@@ -84,6 +84,7 @@
 
         <el-table-column prop="equipmentName" label="设备名称" />
         <el-table-column prop="equipmentCode" label="设备编号" />
+        <el-table-column prop="specification" label="规格型号" />
         <el-table-column prop="taskCode" label="任务编号" />
         <el-table-column prop="isAdditional" label="是否为补充记录" >
           <template scope="scope">

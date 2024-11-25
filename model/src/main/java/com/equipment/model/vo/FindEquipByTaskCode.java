@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class FindEquipByTaskCode {
     private static final long serialVersionUID = 1L;
+    // 规格型号
+    private String specification;
     /**
      * 设备编码
      */
