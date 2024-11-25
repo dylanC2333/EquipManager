@@ -30,16 +30,26 @@ public class SysDetectionServiceImpl extends ServiceImpl<SysDetectionMapper, Sys
     private SysDetectionService sysDetectionService;
 
     @Autowired
-    private ViewDetectionNameQueryMapper viewDetectionNameQueryMapper;
+    private SysDetectionMapper sysDetectionMapper;
+
+//    @Override
+//    public ViewDetectionNameQuery getLastOne(String employeeCode) {
+//        QueryWrapper<ViewDetectionNameQuery> wrapper = new QueryWrapper<>();
+//        wrapper.eq("employee_code", employeeCode)
+//                .orderByDesc("start_date")
+//                .last("limit 1");
+//        // 使用实例调用 selectOne
+//        return viewDetectionNameQueryMapper.selectOne(wrapper);
+//    }
 
     @Override
-    public ViewDetectionNameQuery getLastOne(String employeeCode) {
-        QueryWrapper<ViewDetectionNameQuery> wrapper = new QueryWrapper<>();
+    public SysDetection getLastOne(String employeeCode) {
+        QueryWrapper<SysDetection> wrapper = new QueryWrapper<>();
         wrapper.eq("employee_code", employeeCode)
                 .orderByDesc("start_date")
                 .last("limit 1");
         // 使用实例调用 selectOne
-        return viewDetectionNameQueryMapper.selectOne(wrapper);
+        return sysDetectionMapper.selectOne(wrapper);
     }
 
     @Override

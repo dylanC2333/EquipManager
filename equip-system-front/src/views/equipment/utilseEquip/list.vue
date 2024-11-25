@@ -79,6 +79,7 @@
       <el-table-column prop="employeeUseName" label="使用人姓名"/>
       <el-table-column prop="location" label="地点" />
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前状态" />
+      <el-table-column prop="postUseEquipmentStatus" label="设备使用后状态" />
       <el-table-column prop="maintenanceStatus" label="维护保养情况" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -162,6 +163,10 @@
           <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="正常">正常</el-radio>
           <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="异常">异常</el-radio>
         </el-form-item>
+        <el-form-item label="设备使用后状态"  prop = "postUseEquipmentStatus">
+          <el-radio v-model="sysEquipUse.postUseEquipmentStatus" label="正常">正常</el-radio>
+          <el-radio v-model="sysEquipUse.postUseEquipmentStatus" label="异常">异常</el-radio>
+        </el-form-item>
         <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
           <el-input v-model="sysEquipUse.maintenanceStatus" />
         </el-form-item>
@@ -233,6 +238,9 @@ export default {
           { required : true , message : "必填" },
         ],
         preUseEquipmentStatus : [
+          { required : true , message : "必填" },
+        ],
+        postUseEquipmentStatus :[
           { required : true , message : "必填" },
         ],
       },

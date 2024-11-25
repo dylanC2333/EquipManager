@@ -76,7 +76,7 @@
 				</tm-form-item>
 				<tm-form-item required label="检测地点" field="detectionLocation" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
 					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
-					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="province" ></tm-city-picker>
+					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item :border="false">
 					<view class="flex flex-row">
@@ -90,7 +90,41 @@
 				</tm-form-item>
 			</tm-form>
 		</tm-modal>
-
+	</tm-app>
+	
+	<tm-app ref="detailform" color="grey-5">
+		<tm-modal
+			color="white"
+			okColor="blue"
+			okLinear="left"
+			splitBtn
+			title="记录详情"
+			hideCancel
+			closeable
+			:width="700"
+			:height="1200"
+			v-model:show="showModelDetail"
+			okText="返回"
+		>
+			<tm-form ref="form" :label-width="80" v-model="sysDetection">
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+					<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+					<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测人编号" field="employeeCode" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysDetection.employeeCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测人姓名" field="employeeName" :rules="[{ required: true, message: '必填' }]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysDetection.employeeName" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测日期" field="startDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="dateStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+				<tm-form-item required label="检测地点" field="detectionLocation" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="cityStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
+			</tm-form>
+		</tm-modal>
 	</tm-app>
 
 
@@ -104,7 +138,8 @@
 		saveDetection,
 		removeId,
 		update,
-		getDetectionById
+		getDetectionById,
+		getLastOneDetection
 	} from '@/api/system/detection'
 	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
@@ -178,13 +213,14 @@
 		limit: 10
 	})
 	const searchObj = ref({// 查询条件
-		keyword: ''
+		keyword :'',
 	})
 	const sortOption = ref({// 排序条件
 		column:'createTime',// 排序字段
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
+	const showModelDetail = ref(false) //详情表单显示
 	const sysDetection = ref<sysDetectionType>({
 		employeeCode :'',
 		taskCode :'',
@@ -373,32 +409,39 @@
 	}
 
 	// 添加按钮
-	const add = () =>{
+	const add = async () => {
 		showModel.value = true
 		// initialObject(sysDetection.value)
-		sysDetection.value = ({})
-		// 将用户编号设为当前用户的用户编号
-		sysDetection.value.employeeCode = mainStore.username
-
+		
+		initialLocNDate()
 		initialObject(taskCodeParts.value)
+		
+		const res = await getLastOneDetection(mainStore.username)
+		if (res != null){
+			sysDetection.value = res
+			taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
+			cityStr.value = sysDetection.value.detectionLocation!
+		} else {
+			sysDetection.value = ({})
+			// 将用户编号设为当前用户的用户编号
+			sysDetection.value.employeeCode = mainStore.username
+		}
+		
 		console.log("add!")
-
 		console.log(sysDetection.value)
 
-		initialLocNDate()
 		dateStr.value = setToday()
-
 		console.log(dateStr.value)
 	}
 
 	// 修改按钮
 	const buttonEdit = async (item: sysDetectionType,index: number) =>{
 		showModel.value = true
+		initialObject(taskCodeParts.value)
 		//数据回显
 		//(item.id!)表示非空断言
 		sysDetection.value = await getDetectionById(item.id!)
 
-		initialObject(taskCodeParts.value)
 		taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
 
 		dateStr.value = sysDetection.value.startDate!
@@ -416,13 +459,36 @@
 	const removeById = async (item: sysDetectionType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
-		const res = await removeId(item.id!)
-		console.log("res: "+res)
-		fetchData()
+		uni.showModal({
+			title: '提示',
+			content: '此操作将永久删除该记录, 是否继续?',
+			success: async function (res) {
+				if (res.confirm) {
+					const response = await removeId(item.id!)
+					console.log('用户点击确定')
+					console.log("response: "+response)
+					uni.showToast({
+						title: '操作成功!',
+						duration: 2000
+					});
+					fetchData()
+				} else if (res.cancel) {
+					console.log('用户点击取消')
+				}
+			}
+		});
 	}
 
 	// 查看详情
-	const detail = async () =>{
+	const detail = async (item: sysDetectionType,index: number) =>{
+		showModelDetail.value = true
+		
+		//显示当前记录的数据
+		sysDetection.value = item
+		taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
+		dateStr.value = sysDetection.value.startDate!
+		cityStr.value = sysDetection.value.detectionLocation!
+
 		console.log("detail!")
 	}
 
@@ -453,6 +519,8 @@
 	}
 
 	// 在组件实例创建时立即调用,获取数据
+	// 初始化时，以当前用户编号作为查询条件
+	searchObj.value.keyword = mainStore.username
 	fetchData();
 
 

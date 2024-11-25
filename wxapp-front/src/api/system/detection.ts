@@ -51,3 +51,11 @@ export const update = (detection: object) => {
 		auth: true,
 	})
 }
+
+// 根据employeeCode查询最近一条检测记录
+export const getLastOneDetection = (employeeCode: string) => {
+	const url = `${api_name}/findLastOne/${employeeCode}`
+	return http.get(url,{},{
+		auth: true,
+	})
+}
