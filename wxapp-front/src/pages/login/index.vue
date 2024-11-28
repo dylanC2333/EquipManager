@@ -75,6 +75,11 @@ const hdLogin = async () => {
   const res = await loginToService(status)
   mainStore.setToken(res.token)
   mainStore.username = status.username
+  
+  // 保存用户信息和token
+  uni.setStorageSync('userToken', res.token)  
+  uni.setStorageSync('username', status.username)
+  
   // const detail = await getProjectDetail()
   // const pj = initProjects(detail)
   // mainStore.assignProjInfo(pj)
@@ -82,8 +87,8 @@ const hdLogin = async () => {
     // url: '/pages/tableSelect/index',
   // })
   
-  console.log(mainStore.username)
-  console.log(res.token)
+  //console.log(mainStore.username)
+  //console.log(res.token)
   uni.navigateTo({
     // url: '/pages/tableSelect/index',
     url:'/pages/functionNavigator/functionNavigator'

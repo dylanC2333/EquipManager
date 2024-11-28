@@ -75,4 +75,23 @@ public class IndexController {
     public Result<Void> logout(){
         return Result.ok();
     }
+
+    // 小程序通过拿到token进行登录状态保持。如果传进来的token能解析出用户名和密码，那就是没过期
+    @GetMapping("autoLogin")
+    public Result<Map<String,String>> autoLogin(HttpServletRequest request) {
+        // 获取请求头token字符串
+        String token = request.getHeader("token");
+        System.out.println("token:"+token);
+        //从token字符串获取用户编号（id）
+        String userCode = JwtHelper.getUserCode(token);
+
+        // 判断是否解析成功
+        Map<String,String> map = new HashMap<>();
+        if (userCode != null && !userCode.isEmpty()){
+            map.put("userCode",userCode);
+            return Result.ok(map);
+        }else {
+            return Result.fail(map);
+        }
+    }
 }

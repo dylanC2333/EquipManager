@@ -9,16 +9,31 @@
 				<tm-button block label="设备使用记录填写" url='/pages/equipmentUtilise/equipmentUtilise'></tm-button>
 				<tm-button block label="设备交接记录填写" url='/pages/equipmentTransfer/equipmentTransfer'></tm-button>
 				<tm-button block label="设备保养记录填写" url='/pages/equipmentMaintain/equipmentMaintain'></tm-button>
-				<!-- <tm-divider></tm-divider>
-				<tm-text :font-size="24" _class="text-weight-b" label="空闲查询"></tm-text>
-				<tm-button block label="空闲设备查询" url='/pages/availableEquipment/availableEquipment'></tm-button>
-				<tm-button block label="空闲人员查询" url='/pages/availableEmployee/availableEmployee'></tm-button> -->
+				<tm-divider></tm-divider>
+				<tm-text :font-size="24" _class="text-weight-b" label="登录操作"></tm-text>
+				<tm-button block label="退出登录" @click="logout"></tm-button>
+				
 			</tm-sheet>
 	</tm-app>
 </template>
 
 <script setup lang="ts">
 	import { ref , reactive ,computed } from 'vue'
+	
+	function logout (){
+		uni.removeStorage({
+			key: 'userToken',
+			success: function () {
+				console.log('successfully remove token');
+			},
+			fail() {
+				console.log('fail to remove token');
+			}
+		});
+		uni.switchTab({  
+			url:'/pages/login/index'  
+		});
+	}
 </script>
 
 <style>

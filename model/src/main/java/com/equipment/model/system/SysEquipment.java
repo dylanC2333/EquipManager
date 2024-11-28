@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 public class SysEquipment extends BaseEntity implements Serializable {
 
-    /**
+        /**
      * 设备编码
      */
     private String equipmentCode;
