@@ -1,5 +1,6 @@
 package com.equipment.system.config;
 
+import com.equipment.common.utils.UserInfoHelperService;
 import com.equipment.system.custom.CustomMd5PasswordEncoder;
 import com.equipment.system.filter.TokenAuthenticationFilter;
 import com.equipment.system.filter.TokenLoginFilter;
@@ -33,6 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private UserInfoHelperService userInfoHelperService;
+
     @Bean
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
@@ -54,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 //TokenAuthenticationFilter放到UsernamePasswordAuthenticationFilter的前面，这样做就是为了除了登录的时候去查询数据库外，其他时候都用token进行认证。
-                .addFilterBefore(new TokenAuthenticationFilter(redisTemplate), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new TokenAuthenticationFilter(redisTemplate,userInfoHelperService), UsernamePasswordAuthenticationFilter.class)
                 .addFilter(new TokenLoginFilter(authenticationManager(), redisTemplate));
 
         //禁用session
