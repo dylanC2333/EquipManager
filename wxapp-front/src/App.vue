@@ -47,6 +47,9 @@ function validateUser() {
 		});
     }).catch(error => {  
         console.error('无法自动登录，需重新输入账号密码', error);  
+		uni.switchTab({
+			url:'/pages/login/index'  
+		});
     });  
 }
 </script>
