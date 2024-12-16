@@ -62,6 +62,11 @@ public class ViewUseNameQuery implements Serializable {
     private String maintenanceStatus;
 
     /**
+     * 备注
+     */
+    private String remarks;
+
+    /**
      * 数据创建时间
      */
     private Date createTime;

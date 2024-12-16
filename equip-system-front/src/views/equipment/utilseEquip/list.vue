@@ -81,6 +81,7 @@
       <el-table-column prop="preUseEquipmentStatus" label="设备使用前状态" />
       <el-table-column prop="postUseEquipmentStatus" label="设备使用后状态" />
       <el-table-column prop="maintenanceStatus" label="维护保养情况" />
+      <el-table-column prop="remarks" label="备注" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -169,6 +170,9 @@
         </el-form-item>
         <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
           <el-input v-model="sysEquipUse.maintenanceStatus" />
+        </el-form-item>
+        <el-form-item label="备注"  prop = "remarks">
+          <el-input v-model="sysEquipUse.remarks" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

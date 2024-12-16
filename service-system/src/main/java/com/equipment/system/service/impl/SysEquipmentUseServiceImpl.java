@@ -57,7 +57,9 @@ public class SysEquipmentUseServiceImpl extends ServiceImpl<SysEquipmentUseMappe
             sysEquipmentUse.setEmployeeUseCode(batchSaveVo.getEmployeeUseCode());
             sysEquipmentUse.setLocation(batchSaveVo.getLocation());
             sysEquipmentUse.setPreUseEquipmentStatus(batchSaveVo.getPreUseEquipmentStatus());
+            sysEquipmentUse.setPostUseEquipmentStatus(batchSaveVo.getPostUseEquipmentStatus());
             sysEquipmentUse.setMaintenanceStatus(batchSaveVo.getMaintenanceStatus());
+            sysEquipmentUse.setRemarks(batchSaveVo.getRemarks());
             sysEquipmentUse.setIsAdditional(batchSaveVo.getIsAdditional());
             // 使用系统默认时区将 LocalDate 转回 Date 类型
             sysEquipmentUse.setEquipmentUseDate(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));

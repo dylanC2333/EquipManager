@@ -267,8 +267,8 @@
             <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="异常">异常</el-radio>
           </el-form-item>
           <el-form-item label="设备使用后状态"  prop = "postUseEquipmentStatus">
-            <el-radio v-model="sysEquipUse.postUseEquipmentStatus" label="正常">正常</el-radio>
-            <el-radio v-model="sysEquipUse.postUseEquipmentStatus" label="异常">异常</el-radio>
+            <el-radio v-model="batchDateUsage.postUseEquipmentStatus" label="正常">正常</el-radio>
+            <el-radio v-model="batchDateUsage.postUseEquipmentStatus" label="异常">异常</el-radio>
           </el-form-item>
           <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
             <el-input v-model="batchDateUsage.maintenanceStatus" />

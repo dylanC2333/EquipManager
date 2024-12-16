@@ -101,6 +101,9 @@
 				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
+				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
+					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.remarks" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
 				<tm-form-item :border="false">
 					<view class="flex flex-row">
 						<view class="flex-1 mr-32">
@@ -167,6 +170,9 @@
 				<tm-form-item label="维护保养情况" field="maintenanceStatus" :rules="[{}]" >
 					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.maintenanceStatus" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
+				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
+					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipUse.remarks" :transprent="true" :showBottomBotder="false"> </tm-input>
+				</tm-form-item>
 			</tm-form>		
 		</tm-modal>
 	</tm-app>
@@ -207,6 +213,7 @@
 	  maintenanceStatus?: string;
 	  preUseEquipmentStatus?: string;
 	  postUseEquipmentStatus?: string;
+	  remarks?: string;
 	  taskCode?: string;
 	}
 	interface validateResultType{
@@ -295,6 +302,7 @@
 	          { name: 'location', label: '地点' },
 	          { name: 'preUseEquipmentStatus', label: '设备使用前状态' },
 	          { name: 'postUseEquipmentStatus', label: '设备使用前状态' },
+	          { name: 'remarks', label: '备注' },
 	          { name: 'maintenanceStatus', label: '维护保养情况' },
 	          { name: 'operation', type:'operation',label: '操作',renders:[
 	              {
