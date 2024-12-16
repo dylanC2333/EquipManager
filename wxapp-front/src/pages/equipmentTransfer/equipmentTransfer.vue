@@ -4,11 +4,12 @@
 		<tm-text :font-size="30" _class="text-weight-b" label="请输入搜索关键字"></tm-text>
 		<tm-input v-model="searchObj.keyword" placeholder="旧任务编号/新任务编号/设备编号/交付人编号/接收人编号"></tm-input>
 		<view class="flex flex-row flex-wrap">
-			<tm-button  :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
-			<tm-button  :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
+			<tm-button :font-size="35" :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
+			<tm-button :font-size="35" :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
 		</view>
-		<tm-button  :margin="[10]" @click="add" size="normal">添加 </tm-button>
+		<tm-button color="green" :font-size="35" :margin="[10]" @click="add" size="normal">添加 </tm-button>
 	</tm-sheet>
+	
 	<tm-sheet>
 		<view class="recordTable" style="height: 500px">
 			<zb-table
@@ -536,6 +537,7 @@
 		console.log(sysEquipTransfer.value)
 
 		initialLocNDate()
+		citydata.value = ["陕西省","西安市"]
 		dateStr.value = setToday()
 
 		console.log(dateStr.value)
