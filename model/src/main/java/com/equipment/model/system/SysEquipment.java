@@ -34,6 +34,11 @@ public class SysEquipment extends BaseEntity implements Serializable {
     private String specification;
 
     /**
+     * 规格型号
+     */
+    private Integer isMovable;
+
+    /**
      * 状态（1：正常 0：停用）
      */
     private Integer status;

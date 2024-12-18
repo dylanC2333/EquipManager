@@ -62,7 +62,12 @@
       <el-table-column prop="equipmentName" label="设备名称"  sortable="custom"/>
       <el-table-column prop="equipmentCode" label="设备编号"  sortable="custom"/>
       <el-table-column prop="specification" label="规格型号"  sortable="custom"/>
-      <el-table-column prop="createTime" label="创建时间"  sortable="custom"/>
+      <el-table-column prop="isMovable" label="能否移动">
+        <template scope="scope">
+          <span v-if="scope.row.isMovable === 1">移动</span>
+          <span v-else-if="scope.row.isMovable === 0">固定</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="设备状态">
         <template scope="scope">
           <span v-if="scope.row.status === 1">正常使用</span>
@@ -119,6 +124,10 @@
         <el-form-item label="规格型号" prop = "specification">
           <el-input v-model="sysEquip.specification" />
         </el-form-item>
+        <el-form-item label="能否移动" prop = "isMovable">
+          <el-radio v-model="sysEquip.isMovable" :label="1">移动</el-radio>
+          <el-radio v-model="sysEquip.isMovable" :label="0">固定</el-radio>
+        </el-form-item>
         <el-form-item label="设备状态" prop="status">
           <el-radio v-model="sysEquip.status" :label="1">正常使用</el-radio>
           <el-radio v-model="sysEquip.status" :label="0">停用</el-radio>
@@ -171,7 +180,10 @@ export default {
           { required : true , message : "必填" },
         ],
         specification:[
-        { required : true , message : "必填" },
+          { required : true , message : "必填" },
+        ],
+        isMovable:[
+          { required : true , message : "必填" },
         ]
       },
     };
@@ -331,7 +343,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
-          // console.log(this.list);
+          console.log(this.list);
         });
     },
   },
