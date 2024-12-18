@@ -390,7 +390,6 @@
       this.fetchData();
     },
     mounted() {
-        this.loadUserQuery();
     },
     methods: {
 

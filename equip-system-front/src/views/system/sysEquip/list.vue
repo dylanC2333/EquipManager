@@ -68,10 +68,11 @@
           <span v-else-if="scope.row.isMovable === 0">固定</span>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="设备状态">
+      <el-table-column prop="status" label="设备状态"  sortable="custom">
         <template scope="scope">
           <span v-if="scope.row.status === 1">正常使用</span>
           <span v-else-if="scope.row.status === 0">停用</span>
+          <span v-else-if="scope.row.status === 2">异常</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="200" align="center">
@@ -131,6 +132,7 @@
         <el-form-item label="设备状态" prop="status">
           <el-radio v-model="sysEquip.status" :label="1">正常使用</el-radio>
           <el-radio v-model="sysEquip.status" :label="0">停用</el-radio>
+          <el-radio v-model="sysEquip.status" :label="2">异常</el-radio>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -343,7 +345,7 @@ export default {
         .then((response) => {
           this.list = response.data.records;
           this.total = response.data.total;
-          console.log(this.list);
+          // console.log(this.list);
         });
     },
   },

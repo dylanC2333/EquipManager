@@ -259,7 +259,6 @@ export default {
     this.fetchData();
   },
   mounted() {
-      this.loadUserQuery();
   },
   methods: {
 

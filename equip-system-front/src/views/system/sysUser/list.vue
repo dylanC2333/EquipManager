@@ -39,7 +39,6 @@
       <el-table-column prop="userCode" label="用户编号" sortable="custom" />
       <el-table-column prop="userName" label="用户姓名" sortable="custom" />
       <el-table-column prop="description" label="用户详情" />
-      <el-table-column prop="phone" label="电话号码" />
       <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom" />
       <el-table-column prop="status" label="在职状态">
         <template scope="scope">
@@ -80,9 +79,6 @@
         </el-form-item>
         <el-form-item label="用户详情" prop="description">
           <el-input v-model="sysUser.description" />
-        </el-form-item>
-        <el-form-item label="电话号码" prop="phone">
-          <el-input v-model="sysUser.phone" />
         </el-form-item>
         <el-form-item label="在职状态" prop="status">
           <el-radio v-model="sysUser.status" :label="1">在职</el-radio>
