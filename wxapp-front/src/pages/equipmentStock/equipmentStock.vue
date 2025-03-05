@@ -7,7 +7,7 @@
 			<tm-button :font-size="35" :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
 			<tm-button :font-size="35" :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
 		</view>
-		<tm-button  color="green" :margin="[10]" @click="add" size="normal">添加 </tm-button>
+		<tm-button  color="green" :font-size="35" :margin="[10]" @click="add" size="normal">添加 </tm-button>
 	</tm-sheet>
 	<tm-sheet>
 		<view class="recordTable" style="height: 500px">
