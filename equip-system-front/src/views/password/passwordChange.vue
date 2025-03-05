@@ -104,7 +104,7 @@ export default{
         handlepasswordChange(){
             // console.log("new:"+this.dataForm.newpassword)
             // console.log("check:"+this.dataForm.checkpassword)
-            // this.sysUser.password = this.dataForm.newpassword;
+            this.sysUser.password = this.dataForm.newpassword;
             // console.log(this.sysUser);
             this.$refs.dataForm.validate((valid) => {
               if (valid){
