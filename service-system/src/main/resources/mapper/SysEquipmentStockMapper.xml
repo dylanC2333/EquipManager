@@ -37,8 +37,9 @@
         select distinct <include refid="equipmentFindercolumns" />
         from sys_equipment e
         <where>
+            e.status = 1
             <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
-                e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
+                and e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
             </if>
             AND NOT EXISTS(
             SELECT 1
@@ -87,8 +88,9 @@
         select e.equipment_code,e.equipment_name
         from sys_equipment e
         <where>
+            e.status = 1
             <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
-                e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
+                and e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
             </if>
             AND NOT EXISTS(
             SELECT 1

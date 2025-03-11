@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class JwtHelper {
 
-    private static long tokenExpiration = 24 * 60 * 60 * 1000;
+    private static long tokenExpiration = 24L * 60 * 60 * 1000 * 30; // 1个月
     private static String tokenSignKey = "654321";
 
     public static String createToken(String userId, String usercode) {

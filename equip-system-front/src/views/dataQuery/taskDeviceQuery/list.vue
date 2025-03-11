@@ -103,7 +103,7 @@
         :page-size="limit"
         style="padding: 30px 0; text-align: center;"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total"/>
+        :total="total_eq"/>
     </div>
   </template>
   <script>
