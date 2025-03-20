@@ -268,15 +268,15 @@ export default {
 
     //旧任务编号校验
     validateOldTaskCode(rule, value ,callback){
-      const yearPattern = /^\d{4}$/; // 4位数字
-      const numberPattern = /^\d{3}$/; // 3位数字
+      // const yearPattern = /^\d{4}$/; // 4位数字
+      // const numberPattern = /^\d{3}$/; // 3位数字
       
       if (!this.oldTaskCodeParts.year || !this.oldTaskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
-      } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
-        callback(new Error("年份必须为4位数字"));
-      } else if (!numberPattern.test(this.oldTaskCodeParts.number)) {
-        callback(new Error("序列号必须为3位数字"));
+      // } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
+      //   callback(new Error("年份必须为4位数字"));
+      // } else if (!numberPattern.test(this.oldTaskCodeParts.number)) {
+      //   callback(new Error("序列号必须为3位数字"));
       } else {
         this.sysEquipTransfer.oldTaskCode = this.taskCodeConcat(this.oldTaskCodeParts);
         callback();
@@ -285,15 +285,15 @@ export default {
     
     //新任务编号校验
     validateNewTaskCode(rule, value ,callback){
-      const yearPattern = /^\d{4}$/; // 4位数字
-      const numberPattern = /^\d{3}$/; // 3位数字
+      // const yearPattern = /^\d{4}$/; // 4位数字
+      // const numberPattern = /^\d{3}$/; // 3位数字
       
       if (!this.newTaskCodeParts.year || !this.newTaskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
-      } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
-        callback(new Error("年份必须为4位数字"));
-      } else if (!numberPattern.test(this.newTaskCodeParts.number)) {
-        callback(new Error("序列号必须为3位数字"));
+      // } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
+      //   callback(new Error("年份必须为4位数字"));
+      // } else if (!numberPattern.test(this.newTaskCodeParts.number)) {
+      //   callback(new Error("序列号必须为3位数字"));
       } else {
         this.sysEquipTransfer.newTaskCode = this.taskCodeConcat(this.newTaskCodeParts);
         callback();
@@ -302,8 +302,11 @@ export default {
 
     // 任务编号分割显示
     taskCodeSplit(fullCode){
-      // 使用正则表达式匹配并提取年份和序列号
-      const regex = /^RW-(\d{4})-(\d{3})$/;
+      // // 使用正则表达式匹配并提取年份和序列号
+      // const regex = /^RW-(\d{4})-(\d{3})$/;
+      
+      // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
+      const regex = /^RW-(.+?)-(.+)$/;
       const matches = fullCode.match(regex);
       if (matches) {
         return {

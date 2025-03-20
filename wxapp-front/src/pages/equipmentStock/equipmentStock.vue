@@ -53,7 +53,7 @@
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="small" outlined label="扫码获取" :disabled="needScan"></tm-button>
 				</tm-form-item>
-				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
@@ -130,7 +130,7 @@
 					<tm-form-item required label="设备名称" field="equipmentName" :rules="[{ required: true, message: '必填' }]" >
 						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.equipmentName" :transprent="true" :showBottomBotder="false"> </tm-input>
 					</tm-form-item>
-					<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+					<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateTaskCode}]" >
 						<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 						<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 					</tm-form-item>
@@ -421,15 +421,15 @@
 
 	//任务编号校验
 	const  validateTaskCode = () =>{
-		const yearPattern = /^\d{4}$/; // 4位数字
-		const numberPattern = /^\d{3}$/; // 3位数字
+		// const yearPattern = /^\d{4}$/; // 4位数字
+		// const numberPattern = /^\d{3}$/; // 3位数字
 
 		if (!taskCodeParts.value.year || !taskCodeParts.value.number) {
 		return false
-		} else if (!yearPattern.test(taskCodeParts.value.year)) {
-		return false
-		} else if (!numberPattern.test(taskCodeParts.value.number)) {
-		return false
+		// } else if (!yearPattern.test(taskCodeParts.value.year)) {
+		// return false
+		// } else if (!numberPattern.test(taskCodeParts.value.number)) {
+		// return false
 		} else {
 		return true
 		}

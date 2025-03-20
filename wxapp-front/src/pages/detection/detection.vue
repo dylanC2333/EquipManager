@@ -48,7 +48,7 @@
 			okText="返回"
 		>
 			<tm-form ref="form" :label-width="80" @submit="confirm" v-model="sysDetection">
-				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
@@ -107,7 +107,7 @@
 			okText="返回"
 		>
 			<tm-form ref="form" :label-width="80" v-model="sysDetection">
-				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateTaskCode}]" >
 					<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
@@ -326,15 +326,15 @@
 
 	//任务编号校验
 	const  validateTaskCode = () =>{
-	      const yearPattern = /^\d{4}$/; // 4位数字
-	      const numberPattern = /^\d{3}$/; // 3位数字
+	      // const yearPattern = /^\d{4}$/; // 4位数字
+	      // const numberPattern = /^\d{3}$/; // 3位数字
 
 	      if (!taskCodeParts.value.year || !taskCodeParts.value.number) {
 	        return false
-	      } else if (!yearPattern.test(taskCodeParts.value.year)) {
-	        return false
-	      } else if (!numberPattern.test(taskCodeParts.value.number)) {
-	        return false
+	      // } else if (!yearPattern.test(taskCodeParts.value.year)) {
+	      //   return false
+	      // } else if (!numberPattern.test(taskCodeParts.value.number)) {
+	      //   return false
 	      } else {
 	        return true
 	      }

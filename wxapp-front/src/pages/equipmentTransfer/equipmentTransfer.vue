@@ -55,11 +55,11 @@
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipTransfer.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="small" outlined label="扫码获取" :disabled="needScan"></tm-button>
 				</tm-form-item>
-				<tm-form-item required label="旧任务编号" field="oldTaskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateOldTaskCode}]" >
+				<tm-form-item required label="旧任务编号" field="oldTaskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateOldTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="oldtaskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="oldtaskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="新任务编号" field="newTaskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateNewTaskCode}]" >
+				<tm-form-item required label="新任务编号" field="newTaskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateNewTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="newtaskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="newtaskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
@@ -129,11 +129,11 @@
 				<tm-form-item required label="设备名称" field="equipmentName" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipTransfer.equipmentName" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="旧任务编号" field="oldTaskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateOldTaskCode}]" >
+				<tm-form-item required label="旧任务编号" field="oldTaskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateOldTaskCode}]" >
 					<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="oldtaskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="oldtaskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="新任务编号" field="newTaskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateNewTaskCode}]" >
+				<tm-form-item required label="新任务编号" field="newTaskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateNewTaskCode}]" >
 					<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="newtaskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="newtaskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
@@ -463,30 +463,30 @@
 
 	//旧任务编号校验
 	const  validateOldTaskCode = () =>{
-	      const yearPattern = /^\d{4}$/; // 4位数字
-	      const numberPattern = /^\d{3}$/; // 3位数字
+	      // const yearPattern = /^\d{4}$/; // 4位数字
+	      // const numberPattern = /^\d{3}$/; // 3位数字
 
 	      if (!oldtaskCodeParts.value.year || !oldtaskCodeParts.value.number) {
 	        return false
-	      } else if (!yearPattern.test(oldtaskCodeParts.value.year)) {
-	        return false
-	      } else if (!numberPattern.test(oldtaskCodeParts.value.number)) {
-	        return false
+	      // } else if (!yearPattern.test(oldtaskCodeParts.value.year)) {
+	      //   return false
+	      // } else if (!numberPattern.test(oldtaskCodeParts.value.number)) {
+	      //   return false
 	      } else {
 	        return true
 	      }
 	    }
 	//旧任务编号校验
 	const  validateNewTaskCode = () =>{
-		  const yearPattern = /^\d{4}$/; // 4位数字
-		  const numberPattern = /^\d{3}$/; // 3位数字
+		  // const yearPattern = /^\d{4}$/; // 4位数字
+		  // const numberPattern = /^\d{3}$/; // 3位数字
 	
 		  if (!newtaskCodeParts.value.year || !newtaskCodeParts.value.number) {
 			return false
-		  } else if (!yearPattern.test(newtaskCodeParts.value.year)) {
-			return false
-		  } else if (!numberPattern.test(newtaskCodeParts.value.number)) {
-			return false
+		 //  } else if (!yearPattern.test(newtaskCodeParts.value.year)) {
+			// return false
+		 //  } else if (!numberPattern.test(newtaskCodeParts.value.number)) {
+			// return false
 		  } else {
 			return true
 		  }
