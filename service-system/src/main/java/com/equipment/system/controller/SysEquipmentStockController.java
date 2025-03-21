@@ -135,6 +135,8 @@ public class SysEquipmentStockController {
         Page<ViewStockNameQuery> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<ViewStockNameQuery> queryWrapper = new QueryWrapper<>();
+        // 首先过滤is_transfer=0，虚拟出入库的记录，使其不显示。
+        queryWrapper.ne("is_transfer", 0);
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
             queryWrapper.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
