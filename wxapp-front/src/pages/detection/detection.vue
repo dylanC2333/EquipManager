@@ -76,7 +76,7 @@
 				</tm-form-item>
 				<tm-form-item required label="检测地点" field="detectionLocation" :rules="[{ required: true, message: '必填' , validator: validateLocation}]" >
 					<tm-cell @click="handleCityPicker"  :right-text="cityStr || '请选择地点'"></tm-cell>
-					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="city" ></tm-city-picker>
+					<tm-city-picker selectedModel="name" v-model="citydata" v-model:show="showcitydata" v-model:model-str="cityStr" cityLevel="province" ></tm-city-picker>
 				 </tm-form-item>
 				<tm-form-item :border="false">
 					<view class="flex flex-row">
@@ -418,13 +418,19 @@
 		
 		const res = await getLastOneDetection(mainStore.username)
 		if (res != null){
-			sysDetection.value = res
+			sysDetection.value = ({})
+			sysDetection.value.taskCode = res.taskCode
+			sysDetection.value.employeeCode = res.employeeCode
+			sysDetection.value.detectionLocation = res.detectionLocation
+			sysDetection.value.id = null
+			
 			taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
 			cityStr.value = sysDetection.value.detectionLocation!
 		} else {
 			sysDetection.value = ({})
 			// 将用户编号设为当前用户的用户编号
 			sysDetection.value.employeeCode = mainStore.username
+			citydata.value = ["陕西省"]
 		}
 		
 		console.log("add!")

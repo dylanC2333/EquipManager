@@ -384,7 +384,7 @@ export default {
         this.sysEquipUse = response.data;
         //获取任务单号以后进行分割。
         this.taskCodeParts = this.taskCodeSplit(this.sysEquipUse.taskCode);
-        //获取地址信息以后尽心分割
+        //获取地址信息以后进行分割
         this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
       });
     },
@@ -483,8 +483,11 @@ export default {
       this.sysEquipUse = {};
       this.selectedLocations = [];
       this.taskCodeParts = { year: '', number: '' },
+
       this.sysEquipUse.equipmentUseDate =  new Date();
       this.sysEquipUse.employeeUseCode = this.name;
+      this.sysEquipUse.location = '陕西省西安市';
+      this.selectedLocations = this.locationSplit(this.sysEquipUse.location);
     },
 
      // 根据id删除数据

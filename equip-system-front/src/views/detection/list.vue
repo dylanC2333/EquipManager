@@ -390,18 +390,25 @@ export default {
       api.getLastOneDetection(this.name).then((response) => {
         console.log(response.data);
         if (response.data != null) {
-          this.sysEquipDetection = response.data;
+          this.sysEquipDetection = {};
           //任务编号组件置空
+          this.sysEquipDetection.taskCode = response.data.taskCode;
+          // this.sysEquipDetection.detectionLocation = response.data.detectionLocation;
+          this.$set(this.sysEquipDetection,'detectionLocation',response.data.detectionLocation);
+          // 根据属性分开赋值，避免createtime不正确。
+
           this.taskCodeParts = this.taskCodeSplit(this.sysEquipDetection.taskCode);
         } else {
           this.sysEquipDetection = {};
           //任务编号组件置空
           this.taskCodeParts = { year: '', number: '' };
+          this.$set(this.sysEquipDetection,'detectionLocation','陕西省');
         }
         this.sysEquipDetection.id = null;
         this.sysEquipDetection.startDate = new Date();
         // this.sysEquipDetection.endDate = new Date();
         this.sysEquipDetection.employeeCode = this.name;
+        console.log(this.sysEquipDetection)
       })
     },
 

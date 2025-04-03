@@ -205,6 +205,15 @@ import api from "@/api/system/task";
 import {  pcTextArr } from "element-china-area-data";
 export default {
   data() {
+    // 默认模板对象
+    const sysTaskDefault = {
+      taskCode: '',       // 任务编号
+      startDate: null,    // 开始时间（根据组件类型可调整为''）
+      endDate: null,      // 结束时间
+      location: '',       // 地区（如果组件是级联选择器则初始化为[]）
+      // 其他可能存在的字段（根据实际rules和表单补充）
+      // description: '',  
+    };
     return {
       listLoading: false, // 数据是否正在加载
       list: [], // 设备列表
@@ -357,6 +366,7 @@ export default {
       this.taskCodeParts = { year: '', number: '' };
       this.sysTask.startDate =  new Date();
       this.sysTask.endDate = new Date();
+      this.$set(this.sysTask,'location','陕西省');
     },
 
     //添加或修改

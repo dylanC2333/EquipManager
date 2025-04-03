@@ -508,8 +508,11 @@ export default {
       this.selectedLocations = [];
       this.oldTaskCodeParts = { year: '', number: '' },
       this.newTaskCodeParts = { year: '', number: '' },
+
       this.sysEquipTransfer.transferDate =  new Date();
       this.sysEquipTransfer.deliverEmployeeCode = this.name;
+      this.sysEquipTransfer.transferLocation = '陕西省西安市';
+      this.selectedLocations = this.locationSplit(this.sysEquipTransfer.transferLocation);
     },
 
     // 根据id删除数据
