@@ -508,6 +508,8 @@
 		sysEquipStock.value = ({})
 		// 将用户编号设为当前用户的用户编号
 		sysEquipStock.value.userCode = mainStore.username
+		// 将仓库管理员编号设置为：18229097903，余坛会，作为默认值。
+		sysEquipStock.value.warehouseManagerCode = '18229097903'
 
 		initialObject(taskCodeParts.value)
 		console.log("add!")

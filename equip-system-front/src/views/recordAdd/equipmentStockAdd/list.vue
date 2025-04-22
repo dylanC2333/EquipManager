@@ -410,6 +410,7 @@
         this.sysEquipStock = {};
         this.taskCodeParts = { year: '', number: '' },
         this.sysEquipStock.equipmentDate =  new Date();
+        this.$set(this.sysEquipStock,'warehouseManagerCode','18229097903');
       },
   
        // 根据id删除数据
