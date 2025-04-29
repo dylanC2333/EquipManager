@@ -9,6 +9,7 @@
 				<tm-button block :font-size="32" label="设备使用记录填写" url='/pages/equipmentUtilise/equipmentUtilise'></tm-button>
 				<tm-button block :font-size="32" label="设备交接记录填写" url='/pages/equipmentTransfer/equipmentTransfer'></tm-button>
 				<tm-button block :font-size="32" label="设备保养记录填写" url='/pages/equipmentMaintain/equipmentMaintain'></tm-button>
+				<tm-button block outlined :font-size="32" label="送检/维修/练习出入库填写" url='/pages/equipmentSpecialStock/equipmentSpecialStock'></tm-button>
 				<tm-divider></tm-divider>
 				<tm-text :font-size="40" _class="text-weight-b" label="登录操作"></tm-text>
 				<tm-button block :font-size="32" color="red" label="退出登录" @click="logout"></tm-button>

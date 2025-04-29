@@ -117,6 +117,13 @@
     	{
     		"navigationBarTitleText" : "检测记录"
     	}
+    },
+    {
+    	"path" : "pages/equipmentSpecialStock/equipmentSpecialStock",
+    	"style" : 
+    	{
+    		"navigationBarTitleText" : ""
+    	}
     }
 
   ],
