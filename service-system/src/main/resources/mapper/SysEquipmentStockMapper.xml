@@ -83,40 +83,50 @@
 
     </select>
 
-
     <select id="idleEquipmentFinder2" resultMap="SysEquipmentFinderMap">
-        select e.equipment_code,e.equipment_name
-        from sys_equipment e
+        SELECT
+        e.equipment_code,
+        e.equipment_name
+        FROM sys_equipment e
         <where>
             e.status = 1
+            AND e.is_deleted = 0  <!-- 主表逻辑删除条件 -->
             <if test="equipFinderVo.keyword != null and equipFinderVo.keyword != ''">
-                and e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
+                AND e.equipment_name LIKE CONCAT('%', #{equipFinderVo.keyword}, '%')
             </if>
+            <!-- 排除时间段内的库存记录 -->
             AND NOT EXISTS(
             SELECT 1
             FROM sys_equipment_stock s
             <where>
                 s.equipment_code = e.equipment_code
+                AND s.is_deleted = 0  <!-- 子表逻辑删除条件 -->
                 <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
                     <if test="equipFinderVo.endTime != null and equipFinderVo.endTime !=''">
-                        and s.equipment_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
+                        AND s.equipment_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
                     </if>
                 </if>
             </where>
             )
+            <!-- 验证最后一次出库记录 -->
             AND EXISTS(
             SELECT 1
             FROM (
-            SELECT s.*, t.location
+            SELECT
+            s.type,
+            t.location,
+            s.equipment_code,
+            s.is_transfer
             FROM sys_equipment_stock s
             LEFT JOIN sys_task t ON s.task_code = t.task_code
-            LEFT JOIN sys_equipment e2 ON s.equipment_code = e2.equipment_code
             <where>
                 <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
-                    and s.equipment_date &lt; #{equipFinderVo.startTime}
+                    AND s.equipment_date &lt; #{equipFinderVo.startTime}
                 </if>
+                AND s.is_deleted = 0  <!-- 子表逻辑删除条件 -->
             </where>
-            ORDER BY s.equipment_date DESC,
+            ORDER BY
+            s.equipment_date DESC,
             CASE
             WHEN s.type = '出库' THEN 1
             ELSE 0
@@ -125,25 +135,28 @@
             ) as last_record
             <where>
                 <if test="equipFinderVo.location != null and equipFinderVo.location !=''">
-                    and last_record.location = #{equipFinderVo.location}
+                    AND last_record.location = #{equipFinderVo.location}
                 </if>
-                AND last_record.type = '出库' and last_record.equipment_code = e.equipment_code
+                AND last_record.type = '出库'
+                AND last_record.equipment_code = e.equipment_code
+                AND last_record.is_transfer != 2
             </where>
             )
+            <!-- 排除时间段内的使用记录 -->
             AND NOT EXISTS(
             SELECT 1
             FROM sys_equipment_use u
             <where>
                 u.equipment_code = e.equipment_code
+                AND u.is_deleted = 0  <!-- 子表逻辑删除条件 -->
                 <if test="equipFinderVo.startTime != null and equipFinderVo.startTime !=''">
                     <if test="equipFinderVo.endTime != null and equipFinderVo.endTime !=''">
-                        and u.equipment_use_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
+                        AND u.equipment_use_date BETWEEN #{equipFinderVo.startTime} AND #{equipFinderVo.endTime}
                     </if>
                 </if>
             </where>
             )
         </where>
     </select>
-
 
 </mapper>
