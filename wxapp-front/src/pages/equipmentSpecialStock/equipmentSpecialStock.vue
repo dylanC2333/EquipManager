@@ -13,7 +13,7 @@
 		<tm-button  color="green" :font-size="35" :margin="[20]" @click="add('practise')" size="normal">练习 </tm-button>
 	</tm-sheet>
 	<tm-sheet>
-		<tm-text :font-size="30" _class="text-weight-b" label="全部出入库记录"></tm-text>
+		<tm-text :font-size="30" _class="text-weight-b" label="本用户出入库记录"></tm-text>
 		<view class="recordTable" style="height: 500px">
 			<zb-table
 						:show-header="true"
