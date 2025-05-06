@@ -207,6 +207,7 @@
         sysEquipStock: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
         createTimes: [],
+        isYearSpecialTask: true,
 
         taskCodeParts: { year: '', number: '' },    
         
@@ -358,6 +359,11 @@
 
       //添加或修改
       saveOrUpdate() {
+        // 根据year的格式，非'2025'或'2025检测'类似的格式，则isTransfer = 1，否则是2。
+        this.isYearSpecialTask = /^\d+(检测)?$/.test(this.taskCodeParts.year || '')
+        this.sysEquipStock.isTransfer =  this.isYearSpecialTask ? 1 : 2 
+        console.log("isTranfer = ", this.sysEquipStock.isTransfer)
+
         //任务编号拼接
         this.sysEquipStock.taskCode = this.taskCodeConcat(this.taskCodeParts);
         //表单校验

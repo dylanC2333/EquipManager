@@ -197,6 +197,7 @@
 	  id?: number;
 	  createTime?: string;
 	  updateTime?: string;
+	  isTransfer?: number;
 	  isAdditional?: number;
 	  isDeleted?: number;
 	  taskCode?: string;
@@ -469,7 +470,12 @@
 
 	// 提交验证后的表单数据
 	const saveorUpdate = async() =>{
-		//任务编号拼接
+		// 根据year的格式，非'2025'或'2025检测'类似的格式，则isTransfer = 1，否则是2。
+		const isYearSpecialTask = /^\d+(检测)?$/.test(taskCodeParts.value.year || '')
+		sysEquipStock.value.isTransfer =  isYearSpecialTask ? 1 : 2 
+	    console.log("isTranfer = ", sysEquipStock.value.isTransfer)
+		
+		// 任务编号拼接
 		sysEquipStock.value.taskCode = taskCodeConcat(taskCodeParts.value)
 		console.log("form submit!")
 		// 时间赋值
