@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
 
-    当前用户：
-    {{ this.name }}
+    <!-- 当前用户显示用户编号。 -->
+    当前用户：{{ this.name }}
     <div class="tools-div">
     <el-button icon="el-icon-refresh" size="medium" @click="passwordUpdate"
             >修改密码</el-button
@@ -94,9 +94,9 @@ export default{
             this.searchObj.keyword = this.name;
             // console.log("keyword "+this.searchObj.keyword);
             userapi.getPageList(1,1,this.searchObj,'user_code','descending').then(response =>{
-                  console.log(response);
+                  // console.log(response);
                   this.sysUser = response.data.records[0];
-                  console.log(this.sysUser);
+                  // console.log(this.sysUser);
             })
         },
 
