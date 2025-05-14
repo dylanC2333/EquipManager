@@ -4,7 +4,7 @@
     <!-- 当前用户显示用户编号。 -->
     当前用户：{{ this.name }}
     <div class="tools-div">
-    <el-button icon="el-icon-refresh" size="medium" @click="passwordUpdate"
+    <el-button icon="el-icon-edit" size="medium" @click="passwordUpdate"
             >修改密码</el-button
           >
     </div>
@@ -114,9 +114,11 @@ export default{
                         this.$message.success(res.message)
                         this.dialogVisible = false;
                         this.$refs.dataForm.resetFields();
-                        setTimeout(function () {
-                            that.quitHander()
-                        }, 1000)
+                        setTimeout(() => {
+                            this.dialogVisible = false;
+                            this.$refs.dataForm.resetFields();
+                            this.sysUser = {};
+                        }, 1000);
                     } else {
                         this.$message.error(res.message)
                     }
