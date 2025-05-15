@@ -416,20 +416,20 @@
 		initialLocNDate()
 		initialObject(taskCodeParts.value)
 		
+		
+		sysDetection.value = ({})
+		// 将用户编号设为当前用户的用户编号
+		sysDetection.value.employeeCode = mainStore.username
+		// 获取最新一条记录
 		const res = await getLastOneDetection(mainStore.username)
 		if (res != null){
-			sysDetection.value = ({})
+			
 			sysDetection.value.taskCode = res.taskCode
-			sysDetection.value.employeeCode = res.employeeCode
 			sysDetection.value.detectionLocation = res.detectionLocation
-			sysDetection.value.id = null
 			
 			taskCodeParts.value = taskCodeSplit(sysDetection.value.taskCode!)
 			cityStr.value = sysDetection.value.detectionLocation!
 		} else {
-			sysDetection.value = ({})
-			// 将用户编号设为当前用户的用户编号
-			sysDetection.value.employeeCode = mainStore.username
 			citydata.value = ["陕西省"]
 		}
 		

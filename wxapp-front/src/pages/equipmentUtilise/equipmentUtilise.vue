@@ -188,7 +188,8 @@
 		saveEquipUtilise,
 		removeId,
 		update,
-		getEquipUtiliseById
+		getEquipUtiliseById,
+		getLastOneUse
 	} from '@/api/system/equipmentUtilise'
 	import { ref , reactive } from 'vue'
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
@@ -543,26 +544,36 @@
 	}
 	
 	// 添加按钮
-	const add = () =>{
+	const add = async () =>{
 		showModel.value = true
 		// initialObject(sysEquipUse.value)
 		sysEquipUse.value = ({})
 		// 将用户编号设为当前用户的用户编号
 		sysEquipUse.value.employeeUseCode = mainStore.username
 
+		initialLocNDate()
 		initialObject(taskCodeParts.value)
 		console.log("add!")
 
+		// 获取最新一条记录
+		const res = await getLastOneUse(mainStore.username)
+		if (res != null){
+			
+			sysEquipUse.value.taskCode = res.taskCode
+			sysEquipUse.value.location = res.location
+			
+			taskCodeParts.value = taskCodeSplit(sysEquipUse.value.taskCode!)
+			cityStr.value = sysEquipUse.value.location!
+		} else {
+			citydata.value = ["陕西省","西安市"]
+		}
+		
 		// 打开扫码按钮
 		needScan.value = false;
 		//console.log(needScan.value)
-		console.log(sysEquipUse.value)
-
-		initialLocNDate()
-		citydata.value = ["陕西省","西安市"]
+		
 		dateStr.value = setToday()
-
-		console.log(dateStr.value)
+		// console.log(dateStr.value)
 	}
 	
 	// 修改按钮

@@ -20,4 +20,6 @@ public interface SysEquipmentUseService extends IService<SysEquipmentUse> {
     IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo);
 
     boolean dateBatchSupplement(SysEquipmentUsageDateBatchSaveVo sysDetectionDateBatchSaveVo);
+
+    SysEquipmentUse getLastOne(String employeeUseCode);
 }

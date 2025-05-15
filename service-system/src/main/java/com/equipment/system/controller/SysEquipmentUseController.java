@@ -4,6 +4,7 @@ package com.equipment.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
+import com.equipment.model.system.SysDetection;
 import com.equipment.model.view.ViewUseNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.equipment.model.vo.SysEquipmentUsageDateBatchSaveVo;
@@ -261,5 +262,15 @@ public class SysEquipmentUseController {
     public Result<Void> batchSaveDate(@RequestBody SysEquipmentUsageDateBatchSaveVo sysDetectionDateBatchSaveVo) {
         return sysEquipmentUseService.dateBatchSupplement(sysDetectionDateBatchSaveVo) ? Result.ok() : Result.fail();
     }
+
+    // 10 查询用户日期最新的一条设备使用记录
+    @ApiOperation("根据用户编号查询日期最新的一条设备使用记录")
+    @GetMapping("findLastOne/{employeeUseCode}")
+    public Result<SysEquipmentUse> findLastOne(@PathVariable String employeeUseCode) {
+        SysEquipmentUse lastOne =  sysEquipmentUseService.getLastOne(employeeUseCode);
+        return Result.ok(lastOne);
+    }
 }
+
+
 
