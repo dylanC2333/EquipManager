@@ -17,10 +17,10 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="8">
-            <el-form-item label="操作时间">
+            <el-form-item label="查询日期">
               <el-date-picker
                 v-model="createTimes"
-                type="datetimerange"
+                type="daterange"
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"

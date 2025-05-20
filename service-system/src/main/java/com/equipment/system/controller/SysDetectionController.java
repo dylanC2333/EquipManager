@@ -91,10 +91,15 @@ public class SysDetectionController {
         Page<SysDetection> pageParam = new Page<>(page,limit);
         //构造查询条件
         QueryWrapper<SysDetection> queryWrapper = new QueryWrapper<>();
-        if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
-            queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword());
+        if(sysEquipmentDetectionQueryVo.getStartTime()!=null && sysEquipmentDetectionQueryVo.getEndTime()!=null){
+            queryWrapper.between("start_date",sysEquipmentDetectionQueryVo.getStartTime(),sysEquipmentDetectionQueryVo.getEndTime());
+        }
+        if(sysEquipmentDetectionQueryVo.getKeyword() !=null) {
+            queryWrapper.and(wrapper ->
+                    wrapper.like("employee_code", sysEquipmentDetectionQueryVo.getKeyword())
+                            .or().like("detection_location", sysEquipmentDetectionQueryVo.getKeyword())
+                            .or().like("task_code", sysEquipmentDetectionQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -123,7 +128,7 @@ public class SysDetectionController {
             @ApiParam(name = "limit", value = "每页记录数量", required = true)
             @PathVariable int limit,
 
-            @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
+            @ApiParam(name = "sysEquipmentDetectionQueryVo", value = "查询对象", required = false)
             SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo,
 
             @ApiParam(name = "column", value = "字段", required = false)
@@ -136,11 +141,16 @@ public class SysDetectionController {
         Page<ViewDetectionNameQuery> pageParam = new Page<>(page,limit);
         //构造查询条件
         QueryWrapper<ViewDetectionNameQuery> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentDetectionQueryVo.getStartTime()!=null && sysEquipmentDetectionQueryVo.getEndTime()!=null){
+            queryWrapper.between("start_date",sysEquipmentDetectionQueryVo.getStartTime(),sysEquipmentDetectionQueryVo.getEndTime());
+        }
         if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
-            queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
+            queryWrapper.and(wrapper->
+                    wrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("employee_name",sysEquipmentDetectionQueryVo.getKeyword());
+                    .or().like("employee_name",sysEquipmentDetectionQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
