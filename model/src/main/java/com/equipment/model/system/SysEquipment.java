@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 public class SysEquipment extends BaseEntity implements Serializable {
 
-    /**
+        /**
      * 设备编码
      */
     private String equipmentCode;
@@ -27,6 +27,16 @@ public class SysEquipment extends BaseEntity implements Serializable {
      * 设备名称
      */
     private String equipmentName;
+
+    /**
+     * 规格型号
+     */
+    private String specification;
+
+    /**
+     * 规格型号
+     */
+    private Integer isMovable;
 
     /**
      * 状态（1：正常 0：停用）

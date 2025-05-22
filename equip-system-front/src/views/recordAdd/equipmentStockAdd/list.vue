@@ -10,15 +10,15 @@
                 <el-input
                   style="width: 100%"
                   v-model="searchObj.keyword"
-                  placeholder="设备编号/任务编号/出入库日期/员工编号"
+                  placeholder="设备编号/任务编号/员工编号/出入库类型/员工姓名/设备名称"
                 ></el-input>
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="8">
-              <el-form-item label="操作时间">
+            <el-col :span="8">
+              <el-form-item label="查询日期">
                 <el-date-picker
-                  v-model="createTimes"
-                  type="datetimerange"
+                  v-model="equipmentDates"
+                  type="daterange"
                   range-separator="至"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
@@ -26,7 +26,7 @@
                   style="margin-right: 10px; width: 100%"
                 />
               </el-form-item>
-            </el-col> -->
+            </el-col>
           </el-row>
           <el-row style="display: flex">
             <el-button
@@ -206,7 +206,8 @@
         dialogVisible: false, //弹框
         sysEquipStock: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
-        createTimes: [],
+        equipmentDates: [],// 查询日期范围
+        isYearSpecialTask: true,
 
         taskCodeParts: { year: '', number: '' },    
         
@@ -245,15 +246,15 @@
       
       //任务编号校验
       validateTaskCode(rule, value ,callback){
-        const yearPattern = /^\d{4}$/; // 4位数字
-        const numberPattern = /^\d{3}$/; // 3位数字
+        // const yearPattern = /^\d{4}$/; // 4位数字
+        // const numberPattern = /^\d{3}$/; // 3位数字
         
         if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
           callback(new Error("年份和序列号为必填项"));
-        } else if (!yearPattern.test(this.taskCodeParts.year)) {
-          callback(new Error("年份必须为4位数字"));
-        } else if (!numberPattern.test(this.taskCodeParts.number)) {
-          callback(new Error("序列号必须为3位数字"));
+        // } else if (!yearPattern.test(this.taskCodeParts.year)) {
+        //   callback(new Error("年份必须为4位数字"));
+        // } else if (!numberPattern.test(this.taskCodeParts.number)) {
+        //   callback(new Error("序列号必须为3位数字"));
         } else {
           this.sysEquipStock.taskCode = this.taskCodeConcat(this.taskCodeParts);
           callback();
@@ -262,8 +263,11 @@
 
       // 任务编号分割显示
       taskCodeSplit(fullCode){
-        // 使用正则表达式匹配并提取年份和序列号
-        const regex = /^RW-(\d{4})-(\d{3})$/;
+        // // 使用正则表达式匹配并提取年份和序列号
+        // const regex = /^RW-(\d{4})-(\d{3})$/;
+      
+        // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
+        const regex = /^RW-(.+?)-(.+)$/;
         const matches = fullCode.match(regex);
         if (matches) {
           return {
@@ -355,6 +359,11 @@
 
       //添加或修改
       saveOrUpdate() {
+        // 根据year的格式，非'2025'或'2025检测'类似的格式，则isTransfer = 1，否则是2。
+        this.isYearSpecialTask = /^\d+(检测)?$/.test(this.taskCodeParts.year || '')
+        this.sysEquipStock.isTransfer =  this.isYearSpecialTask ? 1 : 2 
+        console.log("isTranfer = ", this.sysEquipStock.isTransfer)
+
         //任务编号拼接
         this.sysEquipStock.taskCode = this.taskCodeConcat(this.taskCodeParts);
         //表单校验
@@ -407,6 +416,7 @@
         this.sysEquipStock = {};
         this.taskCodeParts = { year: '', number: '' },
         this.sysEquipStock.equipmentDate =  new Date();
+        this.$set(this.sysEquipStock,'warehouseManagerCode','18229097903');
       },
   
        // 根据id删除数据
@@ -433,7 +443,7 @@
       resetData() {
         console.log("重置查询表单");
         this.searchObj = {};
-        this.createTimes = [];
+        this.equipmentDates = [];
         this.column = 'createTime';
         this.sortorder = 'descending';
         this.fetchData();
@@ -442,9 +452,9 @@
       //条件分页查询
       fetchData(pageNum = 1) {
         this.page = pageNum;
-        if (this.createTimes && this.createTimes.length == 2) {
-          this.searchObj.startTime = this.createTimes[0];
-          this.searchObj.endTime = this.createTimes[1];
+        if (this.equipmentDates && this.equipmentDates.length == 2) {
+          this.searchObj.startTime = this.equipmentDates[0];
+          this.searchObj.endTime = this.equipmentDates[1];
         }
         // 调用api
         api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)

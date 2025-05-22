@@ -45,9 +45,9 @@
         </view>
       </view>
     </view>
-    <view class="bottom-btn">
+<!--    <view class="bottom-btn">
       <tm-button label="测试页面" @click="toTest"></tm-button>
-    </view>
+    </view> -->
   </tm-app>
 </template>
 
@@ -75,17 +75,15 @@ const hdLogin = async () => {
   const res = await loginToService(status)
   mainStore.setToken(res.token)
   mainStore.username = status.username
-  // const detail = await getProjectDetail()
-  // const pj = initProjects(detail)
-  // mainStore.assignProjInfo(pj)
-  // uni.navigateTo({
-    // url: '/pages/tableSelect/index',
-  // })
   
-  console.log(mainStore.username)
-  console.log(res.token)
+  // 保存用户信息和token
+  uni.setStorageSync('userToken', res.token)  
+  uni.setStorageSync('username', status.username)
+  
+  
+  //console.log(mainStore.username)
+  //console.log(res.token)
   uni.navigateTo({
-    // url: '/pages/tableSelect/index',
     url:'/pages/functionNavigator/functionNavigator'
   })
 }
@@ -93,14 +91,13 @@ const hdLogin = async () => {
 const toTest = async () => {
   if (mainStore.getToken().length !== 0) {
     uni.navigateTo({
-      // url: '/pages/tableSelect/index',
 		url:'/pages/equipmentUtilise/equipmentUtilise'
     })
     return
   }
   const res = await loginToService({
-    username: 'admin',
-    password: '111111',
+    username: '',
+    password: '',
   })
   mainStore.setToken(res.token)
   mainStore.username = status.username
@@ -108,7 +105,7 @@ const toTest = async () => {
   // const pj = initProjects(detail)
   // mainStore.assignProjInfo(pj)
   uni.navigateTo({
-    url: '/pages/tableSelect/index',
+    url: '/pages/functionNavigator/functionNavigator',
   })
 }
 </script>

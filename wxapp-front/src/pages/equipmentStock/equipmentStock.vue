@@ -4,10 +4,10 @@
 		<tm-text :font-size="30" _class="text-weight-b" label="请输入搜索关键字"></tm-text>
 		<tm-input v-model="searchObj.keyword" placeholder="设备编号/任务编号/出入库日期/员工编号"></tm-input>
 		<view class="flex flex-row flex-wrap">
-			<tm-button  :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
-			<tm-button  :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
+			<tm-button :font-size="35" :margin="[10]" @click="fetchData()" size="normal">搜索</tm-button>
+			<tm-button :font-size="35" :margin="[10]" @click="resetData()" size="normal"  outlined >重置</tm-button>
 		</view>
-		<tm-button  :margin="[10]" @click="add" size="normal">添加 </tm-button>
+		<tm-button  color="green" :font-size="35" :margin="[10]" @click="add" size="normal">添加 </tm-button>
 	</tm-sheet>
 	<tm-sheet>
 		<view class="recordTable" style="height: 500px">
@@ -53,14 +53,14 @@
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 					<tm-button @click="scanCode" :margin="[10]" :shadow="0" text size="small" outlined label="扫码获取" :disabled="needScan"></tm-button>
 				</tm-form-item>
-				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号格式', validator: validateTaskCode}]" >
+				<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateTaskCode}]" >
 					<tm-input :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
 					<tm-input :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
 				</tm-form-item>
 				<tm-form-item required label="出入库人编号" field="userCode" :rules="[{ required: true, message: '必填' }]" >
 					<tm-input :disabled="true" :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.userCode" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item required label="使用日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+				<tm-form-item required label="出入库日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
 					<tm-cell @click="handleTimePicker"  :right-text="dateStr || '请选择日期'"></tm-cell>
 					<tm-time-picker
 								:showDetail="{
@@ -91,22 +91,76 @@
 				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.remarks" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item :border="false">
+				<tm-form-item v-if = "!sysEquipStock.id":border="false">
+					<view class="flex flex-row">
+						<view class="flex-1 mr-32">
+							<tm-button form-type="submit" label="提交并继续添加" block></tm-button>
+						</view>
+					</view>
+				</tm-form-item>
+				<tm-form-item v-if = "sysEquipStock.id":border="false">
 					<view class="flex flex-row">
 						<view class="flex-1 mr-32">
 							<tm-button form-type="submit" label="提交表单" block></tm-button>
 						</view>
-<!-- 						<view class="flex-1">
-							<tm-button :shadow="0" text form-type="reset" label="重置表单" block></tm-button>
-						</view> -->
 					</view>
 				</tm-form-item>
 			</tm-form>		
 		</tm-modal>
-
 	</tm-app>
-			
-
+	
+	<tm-app ref="detailform" color="grey-5">
+			<tm-modal
+				color="white"
+				okColor="blue"
+				okLinear="left"
+				splitBtn
+				title="记录详情"
+				hideCancel
+				closeable
+				:width="700"
+				:height="1200"
+				v-model:show="showModelDetail"
+				okText="返回"
+			>
+				<tm-form ref="form" :label-width="80" v-model="sysEquipStock">
+					<tm-form-item required label="设备编号" field="equipmentCode" :rules="[{ required: true, message: '必填' }]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.equipmentCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="设备名称" field="equipmentName" :rules="[{ required: true, message: '必填' }]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.equipmentName" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="任务编号" field="taskCode" :rules="[{ required: true, message: '请正确填写任务编号', validator: validateTaskCode}]" >
+						<tm-input disabled :inputPadding="[0, 0]"  v-model.lazy="taskCodeParts.year" :transprent="true" prefixLabel='RW-' placeholder="请输入年份"> </tm-input>
+						<tm-input disabled :inputPadding="[49, 0]" v-model.lazy="taskCodeParts.number" :transprent="true" prefixLabel='-' placeholder="请输入序号"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="出入库人编号" field="userCode" :rules="[{ required: true, message: '必填' }]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.userCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="出入库人姓名" field="userName" :rules="[{ required: true, message: '必填' }]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.userName" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="出入库日期" field="equipmentUseDate" :rules="[{ required: true, message: '必填' , validator: validateDate}]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="dateStr" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="仓库管理员编号" field="warehouseManagerCode" :rules="[{ required: true, message: '必填' }]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.warehouseManagerCode" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="仓库管理员姓名" field="warehouseManagerName" :rules="[{ required: true, message: '必填' }]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.warehouseManagerName" :transprent="true" :showBottomBotder="false"> </tm-input>
+					</tm-form-item>
+					<tm-form-item required label="出入库类型" field="type" :rules="[{ required: true, message: '必填' }]" >
+						<tm-radio-group v-model="sysEquipStock.type">
+							<tm-radio disabled label="出库" value="出库"></tm-radio>
+							<tm-radio disabled label="入库" value="入库"></tm-radio>
+						</tm-radio-group>
+					</tm-form-item>
+					<tm-form-item label="备注" field="remarks" :rules="[{}]" >
+						<tm-input disabled :inputPadding="[0, 0]" v-model.lazy="sysEquipStock.remarks" :transprent="true" :showBottomBotder="false" > </tm-input>
+					</tm-form-item>
+				</tm-form>		
+			</tm-modal>
+		</tm-app>
 	
 </template>
 
@@ -143,6 +197,7 @@
 	  id?: number;
 	  createTime?: string;
 	  updateTime?: string;
+	  isTransfer?: number;
 	  isAdditional?: number;
 	  isDeleted?: number;
 	  taskCode?: string;
@@ -201,6 +256,7 @@
 		sortorder:'descending'// 升降序条件
 	})
 	const showModel = ref(false)// 表单显示控制
+	const showModelDetail = ref(false) //详情表单显示
 	const sysEquipStock = ref<sysEquipStockType>({
 		taskCode :'',
 		equipmentCode :'',
@@ -288,50 +344,93 @@
 	}
 	
 	// 扫码处理函数
-	const scanCode = () =>  {
-	    uni.scanCode({
-	        success: function (res: { scanType: string; result: string }): void{
-	            console.log('条码类型：' + res.scanType);
-	            console.log('条码内容：' + res.result);
-
-	            uni.request({
-	                url: res.result, //仅为示例，并非真实接口地址
-	                success(requestRes) {
-	                    const resData = requestRes.data;
-	                    console.log(typeof resData);
-	                    // 处理resData,在里面查找想要的内容，并打印出来
-	                    // 使用 cheerio 加载 HTML 字符串
-	                    const $ = cheerio.load(resData as string); // 虽然本来就是string, 但是不转换会报错。也许是因为允许的参数中不全部一样
-
-	                    // 查找设备编号对应的 <span> 内容
-	                    const deviceNumber = $('div.lr-form-item-title:contains("设备编号")').next('span').text();
-	                    sysEquipStock.value.equipmentCode = deviceNumber;
-	                    // 输出设备编号
-	                    console.log(sysEquipStock.value.equipmentCode);
-	                    // buttonText = deviceNumber; // Assuming buttonText is declared elsewhere
-	                },
-	                fail(err) {
-	                    console.error('请求失败:', err);
-	                },
-	            });
-	        },
-	        fail: (err: any) => {
-	            console.error('扫码失败:', err);
-	        }
-	    });
+	const scanCode = () => {
+	  uni.scanCode({
+	    success: (res: { scanType: string; result: string }) => {
+	      console.log('条码类型：' + res.scanType);
+	      console.log('条码内容：' + res.result);
+	
+	      try {
+			  // 确保 URL 包含协议头（如 https://）
+			  let url = res.result;
+			  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+				url = 'https://' + url; // 假设默认使用 HTTPS
+			  }
+	  
+			  // 手动解析域名和参数
+			  const [protocolHost, ...rest] = url.split('/app/'); // 分割域名和路径
+			  const baseUrl = protocolHost || ''; // 获取 https://jc.sxjkgcjs.com:9103
+			  const queryIndex = url.indexOf('?');
+			  const queryParams = queryIndex !== -1 ? url.slice(queryIndex + 1) : '';
+			  const id = queryParams.split('id=')[1]?.split('&')[0]; // 提取 id
+	  
+			  if (!id) {
+				uni.showToast({ title: 'URL中缺少ID参数', icon: 'none' });
+				return;
+			  }
+	  
+			  // 拼接新 API 地址（注意：POST 请求一般不需要在 URL 中带参数）
+			  const apiUrl = `${baseUrl}/detectionserver/pmtapi/foundation_App/getInstrument?id=` + id;
+			  console.log('新API地址:', apiUrl);
+	
+	        // 4. 发起请求
+	        uni.request({
+	          url: apiUrl,
+			  method:'POST',// 指定为 POST 方法
+			  data: {},
+			  header: {
+                'Content-Type': 'application/json', // 根据 API 要求调整（如 'application/x-www-form-urlencoded'）
+				'Origin': 'https://jc.sxjkgcjs.com:9103',       // 强制声明来源
+				'Referer': 'https://jc.sxjkgcjs.com:9103/app/Instrument/index.html?id=' + id,
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0'
+			  },
+	          success: (requestRes) => {
+	            // 直接解析 JSON 数据
+				console.log(requestRes);
+	            const resData = requestRes.data as {
+	              manage?: string;  // 声明字段类型（可选防止未定义报错）
+	              [key: string]: any; // 其他字段不强制声明
+	            };
+	
+	            // 检查必要字段
+	            if (!resData?.manage) {
+	              uni.showToast({ title: '数据中缺少设备编号', icon: 'none' });
+	              return;
+	            }
+	
+	            // 直接提取 manage 字段
+	            sysEquipStock.value.equipmentCode = resData.manage;
+	            console.log('设备编号:', sysEquipStock.value.equipmentCode);
+	            
+	          },
+	          fail: (err) => {
+	            console.error('请求失败:', err);
+	            uni.showToast({ title: '请求失败', icon: 'none' });
+	          }
+	        });
+	      } catch (error) {
+	        console.error('URL解析失败:', error);
+	        uni.showToast({ title: '无效的二维码链接', icon: 'none' });
+	      }
+	    },
+	    fail: (err: any) => {
+	      console.error('扫码失败:', err);
+	      uni.showToast({ title: '扫码失败', icon: 'none' });
+	    }
+	  });
 	};
 
 	//任务编号校验
 	const  validateTaskCode = () =>{
-		const yearPattern = /^\d{4}$/; // 4位数字
-		const numberPattern = /^\d{3}$/; // 3位数字
+		// const yearPattern = /^\d{4}$/; // 4位数字
+		// const numberPattern = /^\d{3}$/; // 3位数字
 
 		if (!taskCodeParts.value.year || !taskCodeParts.value.number) {
 		return false
-		} else if (!yearPattern.test(taskCodeParts.value.year)) {
-		return false
-		} else if (!numberPattern.test(taskCodeParts.value.number)) {
-		return false
+		// } else if (!yearPattern.test(taskCodeParts.value.year)) {
+		// return false
+		// } else if (!numberPattern.test(taskCodeParts.value.number)) {
+		// return false
 		} else {
 		return true
 		}
@@ -357,7 +456,8 @@
 		if(validateResult.isPass){
 			console.log(validateResult.data)
 			await saveorUpdate()
-			showModel.value = false
+			// showModel.value = false
+			// 继续添加，关闭弹窗放在saveorUpdate中
 		} else {
 			console.log("请完善表单相关信息！")
 			uni.showToast({
@@ -370,7 +470,12 @@
 
 	// 提交验证后的表单数据
 	const saveorUpdate = async() =>{
-		//任务编号拼接
+		// 根据year的格式，非'2025'或'2025检测'类似的格式，则isTransfer = 1，否则是2。
+		const isYearSpecialTask = /^\d+(检测)?$/.test(taskCodeParts.value.year || '')
+		sysEquipStock.value.isTransfer =  isYearSpecialTask ? 1 : 2 
+	    console.log("isTranfer = ", sysEquipStock.value.isTransfer)
+		
+		// 任务编号拼接
 		sysEquipStock.value.taskCode = taskCodeConcat(taskCodeParts.value)
 		console.log("form submit!")
 		// 时间赋值
@@ -379,23 +484,24 @@
 		if(!sysEquipStock.value.id){
 			console.log("add processing!")
 			console.log(sysEquipStock.value)
-			const res = await saveEquipStock(sysEquipStock.value).then(() =>{
-				uni.showToast({
-					title: '操作成功!',
-					duration: 2000
-				});
-				console.log("操作成功!")
-			})
+			const res = await saveEquipStock(sysEquipStock.value)
+			uni.showToast({
+				title: '操作成功!',
+				duration: 2000
+			});
+			console.log("操作成功!")
+			sysEquipStock.value.equipmentCode = ''
 		} else {
 			console.log("edit processing!")
 			console.log(sysEquipStock.value)
-			const res = await update(sysEquipStock.value).then(() =>{
-				uni.showToast({
-					title: '操作成功!',
-					duration: 2000
-				});
-				console.log("操作成功!")
-			})
+			const res = await update(sysEquipStock.value)
+			uni.showToast({
+				title: '操作成功!',
+				duration: 2000
+			});
+			console.log("操作成功!")
+			// 修改时提交完成关闭弹窗
+			showModel.value = false
 			console.log(res)
 		}
 		fetchData()
@@ -408,6 +514,8 @@
 		sysEquipStock.value = ({})
 		// 将用户编号设为当前用户的用户编号
 		sysEquipStock.value.userCode = mainStore.username
+		// 将仓库管理员编号设置为：18229097903，余坛会，作为默认值。
+		sysEquipStock.value.warehouseManagerCode = '18229097903'
 
 		initialObject(taskCodeParts.value)
 		console.log("add!")
@@ -449,13 +557,35 @@
 	const removeById = async (item: sysEquipStockType,index: number) =>{
 		console.log("delete!")
 		console.log(item.id)
-		const res = await removeId(item.id!)
-		console.log("res: "+res)
-		fetchData()
+		uni.showModal({
+			title: '提示',
+			content: '此操作将永久删除该记录, 是否继续?',
+			success: async function (res) {
+				if (res.confirm) {
+					const response = await removeId(item.id!)
+					console.log('用户点击确定')
+					console.log("response: "+response)
+					uni.showToast({
+						title: '操作成功!',
+						duration: 2000
+					});
+					fetchData()
+				} else if (res.cancel) {
+					console.log('用户点击取消')
+				}
+			}
+		});
 	}
 	
 	// 查看详情
-	const detail = async () =>{
+	const detail = async (item: sysEquipStockType,index: number) =>{
+		showModelDetail.value = true
+		
+		//显示当前记录的数据
+		sysEquipStock.value = item
+		taskCodeParts.value = taskCodeSplit(sysEquipStock.value.taskCode!)
+		dateStr.value = sysEquipStock.value.equipmentDate!
+
 		console.log("detail!")
 	}
 	
@@ -486,6 +616,8 @@
 	}
 	
 	// 在组件实例创建时立即调用,获取数据
+	// 初始化时，以当前用户编号作为查询条件
+	searchObj.value.keyword = mainStore.username
 	fetchData();
 
 

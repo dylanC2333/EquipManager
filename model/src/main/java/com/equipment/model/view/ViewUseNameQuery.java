@@ -52,9 +52,19 @@ public class ViewUseNameQuery implements Serializable {
     private String preUseEquipmentStatus;
 
     /**
+     * 设备使用后状态
+     */
+    private String postUseEquipmentStatus;
+
+    /**
      * 维护保养情况
      */
     private String maintenanceStatus;
+
+    /**
+     * 备注
+     */
+    private String remarks;
 
     /**
      * 数据创建时间

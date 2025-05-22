@@ -13,11 +13,11 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="8">
-            <el-form-item label="操作时间">
+          <el-col :span="8">
+            <el-form-item label="查询日期">
               <el-date-picker
-                v-model="createTimes"
-                type="datetimerange"
+                v-model="transferDates"
+                type="daterange"
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
@@ -25,7 +25,7 @@
                 style="margin-right: 10px; width: 100%"
               />
             </el-form-item>
-          </el-col> -->
+          </el-col>
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -219,7 +219,7 @@ export default {
       dialogVisible: false, //弹框
       sysEquipTransfer: {}, //封装添加表单数据
       multipleSelection: [], // 批量删除选中的记录列表
-      createTimes: [],
+      transferDates: [], //查询日期范围
 
       pcTextArr,//省市二级地址，纯汉字
       selectedLocations:[],// 选中的省市地址数据
@@ -268,15 +268,15 @@ export default {
 
     //旧任务编号校验
     validateOldTaskCode(rule, value ,callback){
-      const yearPattern = /^\d{4}$/; // 4位数字
-      const numberPattern = /^\d{3}$/; // 3位数字
+      // const yearPattern = /^\d{4}$/; // 4位数字
+      // const numberPattern = /^\d{3}$/; // 3位数字
       
       if (!this.oldTaskCodeParts.year || !this.oldTaskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
-      } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
-        callback(new Error("年份必须为4位数字"));
-      } else if (!numberPattern.test(this.oldTaskCodeParts.number)) {
-        callback(new Error("序列号必须为3位数字"));
+      // } else if (!yearPattern.test(this.oldTaskCodeParts.year)) {
+      //   callback(new Error("年份必须为4位数字"));
+      // } else if (!numberPattern.test(this.oldTaskCodeParts.number)) {
+      //   callback(new Error("序列号必须为3位数字"));
       } else {
         this.sysEquipTransfer.oldTaskCode = this.taskCodeConcat(this.oldTaskCodeParts);
         callback();
@@ -285,15 +285,15 @@ export default {
     
     //新任务编号校验
     validateNewTaskCode(rule, value ,callback){
-      const yearPattern = /^\d{4}$/; // 4位数字
-      const numberPattern = /^\d{3}$/; // 3位数字
+      // const yearPattern = /^\d{4}$/; // 4位数字
+      // const numberPattern = /^\d{3}$/; // 3位数字
       
       if (!this.newTaskCodeParts.year || !this.newTaskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
-      } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
-        callback(new Error("年份必须为4位数字"));
-      } else if (!numberPattern.test(this.newTaskCodeParts.number)) {
-        callback(new Error("序列号必须为3位数字"));
+      // } else if (!yearPattern.test(this.newTaskCodeParts.year)) {
+      //   callback(new Error("年份必须为4位数字"));
+      // } else if (!numberPattern.test(this.newTaskCodeParts.number)) {
+      //   callback(new Error("序列号必须为3位数字"));
       } else {
         this.sysEquipTransfer.newTaskCode = this.taskCodeConcat(this.newTaskCodeParts);
         callback();
@@ -302,8 +302,11 @@ export default {
 
     // 任务编号分割显示
     taskCodeSplit(fullCode){
-      // 使用正则表达式匹配并提取年份和序列号
-      const regex = /^RW-(\d{4})-(\d{3})$/;
+      // // 使用正则表达式匹配并提取年份和序列号
+      // const regex = /^RW-(\d{4})-(\d{3})$/;
+      
+      // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
+      const regex = /^RW-(.+?)-(.+)$/;
       const matches = fullCode.match(regex);
       if (matches) {
         return {
@@ -505,8 +508,11 @@ export default {
       this.selectedLocations = [];
       this.oldTaskCodeParts = { year: '', number: '' },
       this.newTaskCodeParts = { year: '', number: '' },
+
       this.sysEquipTransfer.transferDate =  new Date();
       this.sysEquipTransfer.deliverEmployeeCode = this.name;
+      this.sysEquipTransfer.transferLocation = '陕西省西安市';
+      this.selectedLocations = this.locationSplit(this.sysEquipTransfer.transferLocation);
     },
 
     // 根据id删除数据
@@ -533,7 +539,7 @@ export default {
     resetData() {
       console.log("重置查询表单");
       this.searchObj = {};
-      this.createTimes = [];
+      this.transferDates = [];
       this.column = 'createTime';
       this.sortorder = 'descending';
       this.fetchData();
@@ -542,9 +548,9 @@ export default {
     //条件分页查询
     fetchData(pageNum = 1) {
       this.page = pageNum;
-      if (this.createTimes && this.createTimes.length == 2) {
-        this.searchObj.startTime = this.createTimes[0];
-        this.searchObj.endTime = this.createTimes[1] ;
+      if (this.transferDates && this.transferDates.length == 2) {
+        this.searchObj.startTime = this.transferDates[0];
+        this.searchObj.endTime = this.transferDates[1] ;
       }
       // 调用api
       api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)

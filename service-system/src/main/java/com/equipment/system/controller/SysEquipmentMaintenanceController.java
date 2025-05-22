@@ -82,10 +82,15 @@ public class SysEquipmentMaintenanceController {
         Page<SysEquipmentMaintenance> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<SysEquipmentMaintenance> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentMaintenanceQueryVo.getStartTime()!=null && sysEquipmentMaintenanceQueryVo.getEndTime()!=null){
+            queryWrapper.between("maintenance_date",sysEquipmentMaintenanceQueryVo.getStartTime(),sysEquipmentMaintenanceQueryVo.getEndTime());
+        }
         if(sysEquipmentMaintenanceQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("employee_code",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("before_use_status",sysEquipmentMaintenanceQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code",sysEquipmentMaintenanceQueryVo.getKeyword())
+                            .or().like("employee_code",sysEquipmentMaintenanceQueryVo.getKeyword())
+                            .or().like("maintenance_status",sysEquipmentMaintenanceQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -102,7 +107,7 @@ public class SysEquipmentMaintenanceController {
         return  Result.ok(pageModel);
     }
 
-    //4 带姓名条件分页排序查询
+    //4 条件分页排序查询带姓名
     @ApiOperation("条件排序分页查询带姓名")
     @GetMapping("name/{page}/{limit}/{column}/{order}")
     public Result<IPage<ViewMaintenanceNameQuery>> findPageQueryEquipMaintenanceName(
@@ -125,12 +130,17 @@ public class SysEquipmentMaintenanceController {
         Page<ViewMaintenanceNameQuery> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<ViewMaintenanceNameQuery> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentMaintenanceQueryVo.getStartTime()!=null && sysEquipmentMaintenanceQueryVo.getEndTime()!=null){
+            queryWrapper.between("maintenance_date",sysEquipmentMaintenanceQueryVo.getStartTime(),sysEquipmentMaintenanceQueryVo.getEndTime());
+        }
         if(sysEquipmentMaintenanceQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("employee_code",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("before_use_status",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("employee_name",sysEquipmentMaintenanceQueryVo.getKeyword())
-                    .or().like("equipment_name",sysEquipmentMaintenanceQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code",sysEquipmentMaintenanceQueryVo.getKeyword())
+                            .or().like("employee_code",sysEquipmentMaintenanceQueryVo.getKeyword())
+                            .or().like("maintenance_status",sysEquipmentMaintenanceQueryVo.getKeyword())
+                            .or().like("employee_name",sysEquipmentMaintenanceQueryVo.getKeyword())
+                            .or().like("equipment_name",sysEquipmentMaintenanceQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {

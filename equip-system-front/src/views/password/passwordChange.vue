@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
 
-    当前用户：
-    {{ this.name }}
+    <!-- 当前用户显示用户编号。 -->
+    当前用户：{{ this.name }}
     <div class="tools-div">
-    <el-button icon="el-icon-refresh" size="medium" @click="passwordUpdate"
+    <el-button icon="el-icon-edit" size="medium" @click="passwordUpdate"
             >修改密码</el-button
           >
     </div>
@@ -94,9 +94,9 @@ export default{
             this.searchObj.keyword = this.name;
             // console.log("keyword "+this.searchObj.keyword);
             userapi.getPageList(1,1,this.searchObj,'user_code','descending').then(response =>{
-                  console.log(response);
+                  // console.log(response);
                   this.sysUser = response.data.records[0];
-                  console.log(this.sysUser);
+                  // console.log(this.sysUser);
             })
         },
 
@@ -104,7 +104,7 @@ export default{
         handlepasswordChange(){
             // console.log("new:"+this.dataForm.newpassword)
             // console.log("check:"+this.dataForm.checkpassword)
-            // this.sysUser.password = this.dataForm.newpassword;
+            this.sysUser.password = this.dataForm.newpassword;
             // console.log(this.sysUser);
             this.$refs.dataForm.validate((valid) => {
               if (valid){
@@ -114,9 +114,11 @@ export default{
                         this.$message.success(res.message)
                         this.dialogVisible = false;
                         this.$refs.dataForm.resetFields();
-                        setTimeout(function () {
-                            that.quitHander()
-                        }, 1000)
+                        setTimeout(() => {
+                            this.dialogVisible = false;
+                            this.$refs.dataForm.resetFields();
+                            this.sysUser = {};
+                        }, 1000);
                     } else {
                         this.$message.error(res.message)
                     }

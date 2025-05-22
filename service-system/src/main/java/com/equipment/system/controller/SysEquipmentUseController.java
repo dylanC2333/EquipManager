@@ -4,6 +4,7 @@ package com.equipment.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
+import com.equipment.model.system.SysDetection;
 import com.equipment.model.view.ViewUseNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.equipment.model.vo.SysEquipmentUsageDateBatchSaveVo;
@@ -92,11 +93,16 @@ public class SysEquipmentUseController {
         Page<SysEquipmentUse> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<SysEquipmentUse> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentUseQueryVo.getStartTime()!=null && sysEquipmentUseQueryVo.getEndTime()!=null){
+            queryWrapper.between("equipment_use_date",sysEquipmentUseQueryVo.getStartTime(),sysEquipmentUseQueryVo.getEndTime());
+        }
         if(sysEquipmentUseQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("employee_use_code",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("location",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentUseQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("employee_use_code",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("location",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("task_code",sysEquipmentUseQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -138,13 +144,18 @@ public class SysEquipmentUseController {
         Page<ViewUseNameQuery> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<ViewUseNameQuery> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentUseQueryVo.getStartTime()!=null && sysEquipmentUseQueryVo.getEndTime()!=null){
+            queryWrapper.between("equipment_use_date",sysEquipmentUseQueryVo.getStartTime(),sysEquipmentUseQueryVo.getEndTime());
+        }
         if(sysEquipmentUseQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("employee_use_code",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("location",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("employee_use_name",sysEquipmentUseQueryVo.getKeyword())
-                    .or().like("equipment_use_name",sysEquipmentUseQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("employee_use_code",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("location",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("task_code",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("employee_use_name",sysEquipmentUseQueryVo.getKeyword())
+                            .or().like("equipment_use_name",sysEquipmentUseQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -261,5 +272,15 @@ public class SysEquipmentUseController {
     public Result<Void> batchSaveDate(@RequestBody SysEquipmentUsageDateBatchSaveVo sysDetectionDateBatchSaveVo) {
         return sysEquipmentUseService.dateBatchSupplement(sysDetectionDateBatchSaveVo) ? Result.ok() : Result.fail();
     }
+
+    // 10 查询用户日期最新的一条设备使用记录
+    @ApiOperation("根据用户编号查询日期最新的一条设备使用记录")
+    @GetMapping("findLastOne/{employeeUseCode}")
+    public Result<SysEquipmentUse> findLastOne(@PathVariable String employeeUseCode) {
+        SysEquipmentUse lastOne =  sysEquipmentUseService.getLastOne(employeeUseCode);
+        return Result.ok(lastOne);
+    }
 }
+
+
 

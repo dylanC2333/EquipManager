@@ -84,6 +84,7 @@
 
         <el-table-column prop="equipmentName" label="设备名称" />
         <el-table-column prop="equipmentCode" label="设备编号" />
+        <el-table-column prop="specification" label="规格型号" />
         <el-table-column prop="taskCode" label="任务编号" />
         <el-table-column prop="isAdditional" label="是否为补充记录" >
           <template scope="scope">
@@ -102,7 +103,7 @@
         :page-size="limit"
         style="padding: 30px 0; text-align: center;"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total"/>
+        :total="total_eq"/>
     </div>
   </template>
   <script>
@@ -153,12 +154,13 @@
               任务编号: item.taskCode,
               设备名称: item.equipmentName,    // 修改字段名称
               设备编号: item.equipmentCode, // 修改字段名称
+              规格型号: item.specification,    // 修改字段名称
               是否为补充记录: item.isAdditional === 1 ? '是': '否', // 修改字段名称
             }));
 
             // 将数据转换为工作表
             const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['任务编号','检测人姓名','检测人编号','是否为补充记录']});
-            const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['任务编号','设备名称','设备编号','是否为补充记录']});
+            const equipmentworksheet = XLSX.utils.json_to_sheet(equipmentFilteredData,{header:['任务编号','设备名称','设备编号','规格型号','是否为补充记录']});
 
             // 创建工作簿并添加工作表
             const workbook = XLSX.utils.book_new();

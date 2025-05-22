@@ -1,5 +1,6 @@
 package com.equipment.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -30,6 +31,9 @@ public class SysEquipmentUseServiceImpl extends ServiceImpl<SysEquipmentUseMappe
     @Autowired
     private SysEquipmentUseService sysEquipmentUseService;
 
+    @Autowired
+    private SysEquipmentUseMapper sysEquipmentUseMapper;
+
     @Override
     public IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
         return baseMapper.taskDevice(pageParam,sysTaskDeviceQueryVo);
@@ -57,7 +61,9 @@ public class SysEquipmentUseServiceImpl extends ServiceImpl<SysEquipmentUseMappe
             sysEquipmentUse.setEmployeeUseCode(batchSaveVo.getEmployeeUseCode());
             sysEquipmentUse.setLocation(batchSaveVo.getLocation());
             sysEquipmentUse.setPreUseEquipmentStatus(batchSaveVo.getPreUseEquipmentStatus());
+            sysEquipmentUse.setPostUseEquipmentStatus(batchSaveVo.getPostUseEquipmentStatus());
             sysEquipmentUse.setMaintenanceStatus(batchSaveVo.getMaintenanceStatus());
+            sysEquipmentUse.setRemarks(batchSaveVo.getRemarks());
             sysEquipmentUse.setIsAdditional(batchSaveVo.getIsAdditional());
             // 使用系统默认时区将 LocalDate 转回 Date 类型
             sysEquipmentUse.setEquipmentUseDate(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -65,6 +71,16 @@ public class SysEquipmentUseServiceImpl extends ServiceImpl<SysEquipmentUseMappe
             sysEquipmentUseList.add(sysEquipmentUse);
         }
         return sysEquipmentUseService.saveBatch(sysEquipmentUseList);
+    }
+
+    @Override
+    public SysEquipmentUse getLastOne(String employeeUseCode) {
+        QueryWrapper<SysEquipmentUse> wrapper = new QueryWrapper<>();
+        wrapper.eq("employee_use_code", employeeUseCode)
+                .orderByDesc("equipment_use_date")
+                .last("limit 1");
+        // 使用实例调用 selectOne
+        return sysEquipmentUseMapper.selectOne(wrapper);
     }
 }
 

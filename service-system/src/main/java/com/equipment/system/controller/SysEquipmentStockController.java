@@ -86,6 +86,9 @@ public class SysEquipmentStockController {
         Page<SysEquipmentStock> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<SysEquipmentStock> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentStockQueryVo.getStartTime()!=null && sysEquipmentStockQueryVo.getEndTime()!=null){
+            queryWrapper.between("equipment_date",sysEquipmentStockQueryVo.getStartTime(),sysEquipmentStockQueryVo.getEndTime());
+        }
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
             queryWrapper.and(i -> i.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
                     .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
@@ -135,16 +138,22 @@ public class SysEquipmentStockController {
         Page<ViewStockNameQuery> pageParam = new Page<>(page,limit);
         // 构造查询条件
         QueryWrapper<ViewStockNameQuery> queryWrapper = new QueryWrapper<>();
+        // 首先过滤is_transfer=0，虚拟出入库的记录，使其不显示。
+        queryWrapper.ne("is_transfer", 0);
+        if(sysEquipmentStockQueryVo.getStartTime()!=null && sysEquipmentStockQueryVo.getEndTime()!=null){
+            queryWrapper.between("equipment_date",sysEquipmentStockQueryVo.getStartTime(),sysEquipmentStockQueryVo.getEndTime());
+        }
         if(sysEquipmentStockQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("equipment_date", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
-                    .or().eq("type", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("user_name", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("warehouse_manager_name", sysEquipmentStockQueryVo.getKeyword())
-                    .or().like("equipment_name", sysEquipmentStockQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("user_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("task_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("warehouse_manager_code", sysEquipmentStockQueryVo.getKeyword())
+                            .or().eq("type", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("user_name", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("warehouse_manager_name", sysEquipmentStockQueryVo.getKeyword())
+                            .or().like("equipment_name", sysEquipmentStockQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {

@@ -50,9 +50,19 @@ public class SysEquipmentUse extends BaseEntity implements Serializable {
     private String preUseEquipmentStatus;
 
     /**
+     * 设备使用后状态
+     */
+    private String postUseEquipmentStatus;
+
+    /**
      * 维护保养情况
      */
     private String maintenanceStatus;
+
+    /**
+     * 备注
+     */
+    private String remarks;
 
     /**
      * 是否补充记录（0:否，真实 1:是，后续补充）

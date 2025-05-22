@@ -10,15 +10,15 @@
                 <el-input
                   style="width: 100%"
                   v-model="searchObj.keyword"
-                  placeholder="设备编号/使用人编号/任务编号"
+                  placeholder="设备编号/使用人编号/任务编号/地点/使用人姓名/设备名称"
                 ></el-input>
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="8">
-              <el-form-item label="操作时间">
+            <el-col :span="8">
+              <el-form-item label="查询日期">
                 <el-date-picker
-                  v-model="createTimes"
-                  type="datetimerange"
+                  v-model="equipmentUseDates"
+                  type="daterange"
                   range-separator="至"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
@@ -26,7 +26,7 @@
                   style="margin-right: 10px; width: 100%"
                 />
               </el-form-item>
-            </el-col> -->
+            </el-col>
           </el-row>
           <el-row style="display: flex">
             <el-button
@@ -82,6 +82,7 @@
         <el-table-column prop="employeeUseName" label="使用人姓名"/>
         <el-table-column prop="location" label="地点" />
         <el-table-column prop="preUseEquipmentStatus" label="设备使用前状态" />
+        <el-table-column prop="postUseEquipmentStatus" label="设备使用后状态" />
         <el-table-column prop="maintenanceStatus" label="维护保养情况" />
         <el-table-column prop="remarks" label="备注" />
         <el-table-column prop="isAdditional" label="是否补充记录" >
@@ -172,6 +173,10 @@
             <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="正常">正常</el-radio>
             <el-radio v-model="sysEquipUse.preUseEquipmentStatus" label="异常">异常</el-radio>
           </el-form-item>
+          <el-form-item label="设备使用后状态"  prop = "postUseEquipmentStatus">
+            <el-radio v-model="sysEquipUse.postUseEquipmentStatus" label="正常">正常</el-radio>
+            <el-radio v-model="sysEquipUse.postUseEquipmentStatus" label="异常">异常</el-radio>
+          </el-form-item>
           <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
             <el-input v-model="sysEquipUse.maintenanceStatus" />
           </el-form-item>
@@ -261,6 +266,10 @@
             <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="正常">正常</el-radio>
             <el-radio v-model="batchDateUsage.preUseEquipmentStatus" label="异常">异常</el-radio>
           </el-form-item>
+          <el-form-item label="设备使用后状态"  prop = "postUseEquipmentStatus">
+            <el-radio v-model="batchDateUsage.postUseEquipmentStatus" label="正常">正常</el-radio>
+            <el-radio v-model="batchDateUsage.postUseEquipmentStatus" label="异常">异常</el-radio>
+          </el-form-item>
           <el-form-item label="维护保养情况"  prop = "maintenanceStatus">
             <el-input v-model="batchDateUsage.maintenanceStatus" />
           </el-form-item>
@@ -323,7 +332,7 @@
         dialogVisible: false, //弹框
         sysEquipUse: {}, //封装添加表单数据
         multipleSelection: [], // 批量删除选中的记录列表
-        createTimes: [],
+        equipmentUseDates: [],
 
         dialogBatchVisible: false, //填充日期批量添加弹框
         batchDateUsage: defaultBatchForm,//批量添加数据
@@ -368,6 +377,9 @@
           preUseEquipmentStatus : [
             { required : true , message : "必填" },
           ],
+          postUseEquipmentStatus :[
+            { required : true , message : "必填" },
+          ],
           isAdditional:[
             { required : true , message : "必填" },
           ],
@@ -378,21 +390,20 @@
       this.fetchData();
     },
     mounted() {
-        this.loadUserQuery();
     },
     methods: {
 
       //任务编号校验
       validateTaskCode(rule, value ,callback){
-        const yearPattern = /^\d{4}$/; // 4位数字
-        const numberPattern = /^\d{3}$/; // 3位数字
+        // const yearPattern = /^\d{4}$/; // 4位数字
+        // const numberPattern = /^\d{3}$/; // 3位数字
         
         if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
           callback(new Error("年份和序列号为必填项"));
-        } else if (!yearPattern.test(this.taskCodeParts.year)) {
-          callback(new Error("年份必须为4位数字"));
-        } else if (!numberPattern.test(this.taskCodeParts.number)) {
-          callback(new Error("序列号必须为3位数字"));
+        // } else if (!yearPattern.test(this.taskCodeParts.year)) {
+        //   callback(new Error("年份必须为4位数字"));
+        // } else if (!numberPattern.test(this.taskCodeParts.number)) {
+        //   callback(new Error("序列号必须为3位数字"));
         } else {
           this.sysEquipUse.taskCode = this.taskCodeConcat(this.taskCodeParts);
           callback();
@@ -401,8 +412,11 @@
 
       // 任务编号分割显示
       taskCodeSplit(fullCode){
-        // 使用正则表达式匹配并提取年份和序列号
-        const regex = /^RW-(\d{4})-(\d{3})$/;
+        // // 使用正则表达式匹配并提取年份和序列号
+        // const regex = /^RW-(\d{4})-(\d{3})$/;
+      
+        // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
+        const regex = /^RW-(.+?)-(.+)$/;
         const matches = fullCode.match(regex);
         if (matches) {
           return {
@@ -672,7 +686,7 @@
       resetData() {
         console.log("重置查询表单");
         this.searchObj = {};
-        this.createTimes = [];
+        this.equipmentUseDates = [];
         this.column = 'createTime';
         this.sortorder = 'descending';
         this.fetchData();
@@ -681,9 +695,9 @@
       //条件分页查询
       fetchData(pageNum = 1) {
         this.page = pageNum;
-        if (this.createTimes && this.createTimes.length == 2) {
-          this.searchObj.startTime = this.createTimes[0];
-          this.searchObj.endTime = this.createTimes[1];
+        if (this.equipmentUseDates && this.equipmentUseDates.length == 2) {
+          this.searchObj.startTime = this.equipmentUseDates[0];
+          this.searchObj.endTime = this.equipmentUseDates[1];
         }
         // 调用api
         api.getPageList(this.page,this.limit,this.searchObj,this.column,this.sortorder)

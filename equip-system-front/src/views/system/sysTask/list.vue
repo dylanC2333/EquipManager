@@ -205,6 +205,15 @@ import api from "@/api/system/task";
 import {  pcTextArr } from "element-china-area-data";
 export default {
   data() {
+    // 默认模板对象
+    const sysTaskDefault = {
+      taskCode: '',       // 任务编号
+      startDate: null,    // 开始时间（根据组件类型可调整为''）
+      endDate: null,      // 结束时间
+      location: '',       // 地区（如果组件是级联选择器则初始化为[]）
+      // 其他可能存在的字段（根据实际rules和表单补充）
+      // description: '',  
+    };
     return {
       listLoading: false, // 数据是否正在加载
       list: [], // 设备列表
@@ -224,7 +233,7 @@ export default {
       pcTextArr,//省市二级数据纯文字
 
       rules:{// 表单校验规则
-        //任务编号自定义验证规则，验证两个组件。
+        //任务编号自定义验证规则，验证两个组件。在20250320需求中进行取消位数校验，仅保留非空校验。
         taskCode:[
           { validator: this.validateTaskCode, trigger:'blur'},
         ],
@@ -247,15 +256,15 @@ export default {
 
     //任务编号校验
     validateTaskCode(rule, value ,callback){
-      const yearPattern = /^\d{4}$/; // 4位数字
-      const numberPattern = /^\d{3}$/; // 3位数字
+      // const yearPattern = /^\d{4}$/; // 4位数字
+      // const numberPattern = /^\d{3}$/; // 3位数字
       
       if (!this.taskCodeParts.year || !this.taskCodeParts.number) {
         callback(new Error("年份和序列号为必填项"));
-      } else if (!yearPattern.test(this.taskCodeParts.year)) {
-        callback(new Error("年份必须为4位数字"));
-      } else if (!numberPattern.test(this.taskCodeParts.number)) {
-        callback(new Error("序列号必须为3位数字"));
+      // } else if (!yearPattern.test(this.taskCodeParts.year)) {
+      //   callback(new Error("年份必须为4位数字"));
+      // } else if (!numberPattern.test(this.taskCodeParts.number)) {
+      //   callback(new Error("序列号必须为3位数字"));
       } else {
         this.sysTask.taskCode = this.taskCodeConcat(this.taskCodeParts);
         callback();
@@ -264,8 +273,12 @@ export default {
 
     // 任务编号分割显示
     taskCodeSplit(fullCode){
-      // 使用正则表达式匹配并提取年份和序列号
-      const regex = /^RW-(\d{4})-(\d{3})$/;
+      // // 使用正则表达式匹配并提取年份和序列号
+      // const regex = /^RW-(\d{4})-(\d{3})$/;
+      
+      // 正则表达式：匹配 "RW-xxx-yyy"，xxx 和 yyy 可为任意字符
+      const regex = /^RW-(.+?)-(.+)$/;
+      
       const matches = fullCode.match(regex);
       if (matches) {
         return {
@@ -353,6 +366,7 @@ export default {
       this.taskCodeParts = { year: '', number: '' };
       this.sysTask.startDate =  new Date();
       this.sysTask.endDate = new Date();
+      this.$set(this.sysTask,'location','陕西省');
     },
 
     //添加或修改

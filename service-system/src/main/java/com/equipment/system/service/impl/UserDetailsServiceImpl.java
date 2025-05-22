@@ -29,10 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String userCode) throws UsernameNotFoundException {
         SysUser sysUser = sysUserService.getUserInfoByUserCode(userCode);
         if (sysUser == null) {
-            throw new UsernameNotFoundException("用户不存在");
+            throw new UsernameNotFoundException("账号不存在");
         }
         if(sysUser.getStatus()== 0){
-            throw new RuntimeException("用户被禁用");
+            throw new RuntimeException("账号已停用");
         }
         List<String> userPermsList = sysMenuService.getUserButtonList(sysUser.getId());
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();

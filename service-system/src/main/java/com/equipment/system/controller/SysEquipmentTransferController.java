@@ -86,14 +86,19 @@ public class SysEquipmentTransferController {
         Page<SysEquipmentTransfer> pageParam = new Page<>(page,limit);
         //构造查询条件
         QueryWrapper<SysEquipmentTransfer> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentTransferQueryVo.getStartTime()!=null && sysEquipmentTransferQueryVo.getEndTime()!=null){
+            queryWrapper.between("transfer_date",sysEquipmentTransferQueryVo.getStartTime(),sysEquipmentTransferQueryVo.getEndTime());
+        }
         if(sysEquipmentTransferQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("transfer_location",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("transfer_date",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("deliver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("receiver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("old_task_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("new_task_code",sysEquipmentTransferQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("transfer_location",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("transfer_date",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("deliver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("receiver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("old_task_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("new_task_code",sysEquipmentTransferQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -134,17 +139,22 @@ public class SysEquipmentTransferController {
         Page<ViewTransferNameQuery> pageParam = new Page<>(page,limit);
         //构造查询条件
         QueryWrapper<ViewTransferNameQuery> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentTransferQueryVo.getStartTime()!=null && sysEquipmentTransferQueryVo.getEndTime()!=null){
+            queryWrapper.between("transfer_date",sysEquipmentTransferQueryVo.getStartTime(),sysEquipmentTransferQueryVo.getEndTime());
+        }
         if(sysEquipmentTransferQueryVo.getKeyword() !=null){
-            queryWrapper.like("equipment_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("transfer_location",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("transfer_date",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("deliver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("receiver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("old_task_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("new_task_code",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("deliver_employee_name",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("receiver_employee_name",sysEquipmentTransferQueryVo.getKeyword())
-                    .or().like("equipment_name",sysEquipmentTransferQueryVo.getKeyword());
+            queryWrapper.and(wrapper->
+                    wrapper.like("equipment_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("transfer_location",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("transfer_date",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("deliver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("receiver_employee_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("old_task_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("new_task_code",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("deliver_employee_name",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("receiver_employee_name",sysEquipmentTransferQueryVo.getKeyword())
+                            .or().like("equipment_name",sysEquipmentTransferQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {

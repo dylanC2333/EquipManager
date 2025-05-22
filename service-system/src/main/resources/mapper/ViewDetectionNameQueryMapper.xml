@@ -27,22 +27,22 @@
 
     <resultMap id="countTaskAndDetctionMap" type="com.equipment.model.vo.StatisticTaskAndDetection"></resultMap>
     <select id="findUserDetectionCountForBoss" resultMap="countTaskAndDetctionMap">
-        SELECT d.employee_name, d.employee_code, COUNT(DISTINCT d.task_code) as task_num, COUNT(d.task_code) as detection_num
+        SELECT u.user_name as employee_name, u.user_code as employee_code, COUNT(DISTINCT d.task_code) as task_num, COUNT(d.task_code) as detection_num
         FROM view_detection_name_query d
+        RIGHT JOIN sys_user u on d.employee_code = u.user_code
         <where>
-            d.is_deleted = 0
-            and d.is_additional = 0
+            u.is_deleted = 0 AND (d.is_deleted is NULL OR d.is_deleted = 0)
             <if test="taskAndDetectionVo.keyword != null and taskAndDetectionVo.keyword != ''">
-                and (d.employee_code = #{taskAndDetectionVo.keyword})
+                and (u.user_code = #{taskAndDetectionVo.keyword})
             </if>
             <if test="taskAndDetectionVo.start != null and taskAndDetectionVo.start != ''">
                 and (d.start_date >= #{taskAndDetectionVo.start})
             </if>
             <if test="taskAndDetectionVo.end != null and taskAndDetectionVo.end != ''">
-                and (d.start_date &lt;= #{taskAndDetectionVo.end})
+                and (d.start_date &lt;=  #{taskAndDetectionVo.end})
             </if>
-
         </where>
-        GROUP BY d.employee_name , d.employee_code
+        GROUP BY u.user_name , u.user_code
+        ORDER BY detection_num DESC
     </select>
 </mapper>

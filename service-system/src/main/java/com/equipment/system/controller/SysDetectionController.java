@@ -91,10 +91,15 @@ public class SysDetectionController {
         Page<SysDetection> pageParam = new Page<>(page,limit);
         //构造查询条件
         QueryWrapper<SysDetection> queryWrapper = new QueryWrapper<>();
-        if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
-            queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword());
+        if(sysEquipmentDetectionQueryVo.getStartTime()!=null && sysEquipmentDetectionQueryVo.getEndTime()!=null){
+            queryWrapper.between("start_date",sysEquipmentDetectionQueryVo.getStartTime(),sysEquipmentDetectionQueryVo.getEndTime());
+        }
+        if(sysEquipmentDetectionQueryVo.getKeyword() !=null) {
+            queryWrapper.and(wrapper ->
+                    wrapper.like("employee_code", sysEquipmentDetectionQueryVo.getKeyword())
+                            .or().like("detection_location", sysEquipmentDetectionQueryVo.getKeyword())
+                            .or().like("task_code", sysEquipmentDetectionQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -123,7 +128,7 @@ public class SysDetectionController {
             @ApiParam(name = "limit", value = "每页记录数量", required = true)
             @PathVariable int limit,
 
-            @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = false)
+            @ApiParam(name = "sysEquipmentDetectionQueryVo", value = "查询对象", required = false)
             SysEquipmentDetectionQueryVo sysEquipmentDetectionQueryVo,
 
             @ApiParam(name = "column", value = "字段", required = false)
@@ -136,11 +141,16 @@ public class SysDetectionController {
         Page<ViewDetectionNameQuery> pageParam = new Page<>(page,limit);
         //构造查询条件
         QueryWrapper<ViewDetectionNameQuery> queryWrapper = new QueryWrapper<>();
+        if(sysEquipmentDetectionQueryVo.getStartTime()!=null && sysEquipmentDetectionQueryVo.getEndTime()!=null){
+            queryWrapper.between("start_date",sysEquipmentDetectionQueryVo.getStartTime(),sysEquipmentDetectionQueryVo.getEndTime());
+        }
         if(sysEquipmentDetectionQueryVo.getKeyword() !=null){
-            queryWrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
+            queryWrapper.and(wrapper->
+                    wrapper.like("employee_code",sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like("detection_location",sysEquipmentDetectionQueryVo.getKeyword())
                     .or().like("task_code",sysEquipmentDetectionQueryVo.getKeyword())
-                    .or().like("employee_name",sysEquipmentDetectionQueryVo.getKeyword());
+                    .or().like("employee_name",sysEquipmentDetectionQueryVo.getKeyword())
+            );
         }
         //构造排序条件
         if (column != null && order != null) {
@@ -257,11 +267,11 @@ public class SysDetectionController {
         return  Result.ok(pageModel);
     }
 
-    // 10 查询用户编号最近的一条检测记录
-    @ApiOperation("根据用户编号查询最近的一条检测记录")
+    // 10 查询用户日期最新的一条检测记录
+    @ApiOperation("根据用户编号查询日期最新的一条检测记录")
     @GetMapping("findLastOne/{employeeCode}")
-    public Result<ViewDetectionNameQuery> findLastOne(@PathVariable String employeeCode) {
-        ViewDetectionNameQuery lastOne =  sysDetectionService.getLastOne(employeeCode);
+    public Result<SysDetection> findLastOne(@PathVariable String employeeCode) {
+        SysDetection lastOne =  sysDetectionService.getLastOne(employeeCode);
         return Result.ok(lastOne);
     }
 

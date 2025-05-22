@@ -20,20 +20,22 @@
 
     <resultMap id="EquipmentUseDaysCountMap" type="com.equipment.model.vo.EquipmentUseDayCount"></resultMap>
     <select id="EquipmentUseDaysCount_Mapper" resultMap="EquipmentUseDaysCountMap">
-        SELECT e.equipment_use_name as equipmentName, e.equipment_code as equipmentCode, COUNT(DISTINCT e.equipment_use_date) AS useDayCount
-        FROM view_use_name_query e
+        SELECT e.equipment_name as equipmentName, e.equipment_code as equipmentCode, COUNT(DISTINCT u.equipment_use_date) AS useDayCount
+        FROM sys_equipment e
+        LEFT JOIN sys_equipment_use u ON e.equipment_code = u.equipment_code
         <where>
-            e.is_deleted = 0
+            e.is_deleted = 0 AND (u.is_deleted is NULL OR u.is_deleted = 0)
             <if test="CountEquipmentUseDaysVo.keyword != null and CountEquipmentUseDaysVo.keyword != ''">
                 and (e.equipment_code = #{CountEquipmentUseDaysVo.keyword})
             </if>
             <if test="CountEquipmentUseDaysVo.start != null and CountEquipmentUseDaysVo.start != ''">
-                and (e.equipment_use_date >= #{CountEquipmentUseDaysVo.start})
+                and (u.equipment_use_date >= #{CountEquipmentUseDaysVo.start})
             </if>
             <if test="CountEquipmentUseDaysVo.end != null and CountEquipmentUseDaysVo.end != ''">
-                and (e.equipment_use_date &lt;= #{CountEquipmentUseDaysVo.end})
+                and (u.equipment_use_date &lt;= #{CountEquipmentUseDaysVo.end})
             </if>
         </where>
-        GROUP BY e.equipment_use_name, e.equipment_code
+        GROUP BY e.equipment_name, e.equipment_code
+        ORDER BY useDayCount DESC
     </select>
 </mapper>

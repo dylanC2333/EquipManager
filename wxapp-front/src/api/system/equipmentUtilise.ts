@@ -51,3 +51,11 @@ export const update = (equipUtilise: object) => {
 		auth: true,
 	})
 }
+
+// 根据employeeUseCode查询日期最新一条设备使用记录
+export const getLastOneUse = (employeeUseCode: string) => {
+	const url = `${api_name}/findLastOne/${employeeUseCode}`
+	return http.get(url,{},{
+		auth: true,
+	})
+}
