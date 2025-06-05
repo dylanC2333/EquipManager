@@ -4,6 +4,7 @@ package com.equipment.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
+import com.equipment.model.query.TaskDateRangeQuery;
 import com.equipment.model.system.SysDetection;
 import com.equipment.model.view.ViewUseNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
@@ -224,6 +225,17 @@ public class SysEquipmentUseController {
         IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryService.SearchUserDeviceByTaskcode(pageParam,sysTaskDeviceQueryVo);
         //返回
         return  Result.ok(pageModel);
+    }
+
+    //8、 任务检测记录起止日期查询
+    @ApiOperation("任务检测记录起止日期查询")
+    @GetMapping("taskDateRangeFinder")
+    public Result<TaskDateRangeQuery> taskDateRangeFinder(
+            @ApiParam(name = "sysTaskDeviceQueryVo", value = "查询对象", required = false)
+            SysTaskDeviceQueryVo sysTaskDeviceQueryVo){
+        TaskDateRangeQuery taskDateRange = viewTaskUserEquipQueryService.SearchDateRangeByTaskcode(sysTaskDeviceQueryVo);
+        //返回
+        return  Result.ok(taskDateRange);
     }
 
     //8、 任务所使用设备查询列表

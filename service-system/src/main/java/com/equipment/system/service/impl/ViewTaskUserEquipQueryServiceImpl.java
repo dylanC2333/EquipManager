@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import com.equipment.model.system.SysEquipmentUse;
+import com.equipment.model.query.TaskDateRangeQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.equipment.model.vo.FindEquipByTaskCode;
 import com.equipment.model.vo.SysTaskDeviceQueryVo;
@@ -23,12 +23,17 @@ public class ViewTaskUserEquipQueryServiceImpl extends ServiceImpl<ViewTaskUserE
 
     @Override
     public IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
-        return baseMapper.SearchUserDeviceByTaskcode(pageParam, sysTaskDeviceQueryVo);
+        return baseMapper.SearchUserDeviceByTaskCode(pageParam, sysTaskDeviceQueryVo);
     }
 
     @Override
     public IPage<FindEquipByTaskCode> SearchEquipByTaskcode(Page<FindEquipByTaskCode> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
         return baseMapper.SearchEquipByTask(pageParam, sysTaskDeviceQueryVo);
+    }
+
+    @Override
+    public TaskDateRangeQuery SearchDateRangeByTaskcode(SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
+        return baseMapper.SearchDateRangeByTaskCode(sysTaskDeviceQueryVo);
     }
 }
 

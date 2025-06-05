@@ -18,7 +18,7 @@
     </sql>
 
 <!--    <resultMap id="userDeviceMap" type="com.equipment.model.view.ViewTaskUserEquipQuery" ></resultMap>-->
-<!--    <select id="SearchUserDeviceByTaskcode" resultMap="userDeviceMap">-->
+<!--    <select id="SearchUserDeviceByTaskCode" resultMap="userDeviceMap">-->
 <!--        SELECT v.user_name, v.employee_code, v.equipment_code, v.task_code, v.is_additional-->
 <!--        FROM view_task_user_equip_query v-->
 <!--        <where>-->
@@ -34,7 +34,7 @@
         <result property="taskCode" column="task_code"/>
         <result property="isAdditional" column="is_additional"/>
     </resultMap>
-    <select id="SearchUserDeviceByTaskcode" resultMap="ViewTaskUserEquipQueryMap">
+    <select id="SearchUserDeviceByTaskCode" resultMap="ViewTaskUserEquipQueryMap">
         SELECT DISTINCT u.user_name, u.user_code, d.task_code, d.is_additional
         FROM sys_detection d
         JOIN sys_user u ON d.employee_code = u.user_code
@@ -46,7 +46,13 @@
         </where>
     </select>
 
-    <resultMap id="DeviceMap" type="com.equipment.model.vo.FindEquipByTaskCode" ></resultMap>
+    <resultMap id="DeviceMap" type="com.equipment.model.vo.FindEquipByTaskCode" >
+        <result property="equipmentName" column="equipment_name"/>
+        <result property="equipmentCode" column="equipment_code"/>
+        <result property="taskCode" column="task_code"/>
+        <result property="isAdditional" column="is_additional"/>
+        <result property="specification" column="specification"/>
+    </resultMap>
     <select id="SearchEquipByTask" resultMap="DeviceMap">
         SELECT DISTINCT  e.equipment_name,e.equipment_code,u.task_code, u.is_additional, e.specification
         FROM sys_equipment_use u
@@ -55,6 +61,24 @@
             u.is_deleted = 0
             <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
                 and u.task_code = #{sysTaskDeviceQuery.keyword}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="DataRangeResultMap" type="com.equipment.model.query.TaskDateRangeQuery">
+        <result property="taskStartDate" column="task_start_date" jdbcType="DATE"/>
+        <result property="taskEndDate" column="task_end_date" jdbcType="DATE"/>
+    </resultMap>
+    <select id="SearchDateRangeByTaskCode" resultMap="DataRangeResultMap">
+        SELECT
+            MIN(start_date) AS task_start_date,
+            MAX(start_date) AS task_end_date
+        FROM
+            sys_detection d
+        <where>
+            is_deleted = 0
+            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
+                AND task_code = #{sysTaskDeviceQuery.keyword}
             </if>
         </where>
     </select>

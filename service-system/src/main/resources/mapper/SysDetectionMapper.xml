@@ -9,7 +9,6 @@
             <result property="employeeCode" column="employee_code" jdbcType="CHAR"/>
             <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
             <result property="startDate" column="start_date" jdbcType="DATE"/>
-            <result property="endDate" column="end_date" jdbcType="DATE"/>
             <result property="detectionLocation" column="detection_location" jdbcType="VARCHAR"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -18,7 +17,7 @@
 
     <sql id="Base_Column_List">
         id,employee_code,task_code,
-        start_date,end_date,detection_location,
+        start_date,detection_location,
         is_deleted,create_time,update_time
     </sql>
 </mapper>

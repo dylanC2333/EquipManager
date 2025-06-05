@@ -2,6 +2,7 @@ package com.equipment.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.equipment.model.query.TaskDateRangeQuery;
 import com.equipment.model.system.SysEquipmentUse;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -18,4 +19,6 @@ public interface ViewTaskUserEquipQueryService extends IService<ViewTaskUserEqui
     IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 
     IPage<FindEquipByTaskCode> SearchEquipByTaskcode(Page<FindEquipByTaskCode> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+
+    TaskDateRangeQuery SearchDateRangeByTaskcode(SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }

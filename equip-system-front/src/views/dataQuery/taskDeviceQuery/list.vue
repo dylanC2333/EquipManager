@@ -19,7 +19,7 @@
               type="primary"
               icon="el-icon-search"
               size="mini"
-              @click="fetchData()"
+              @click="search()"
               >搜索</el-button
             >
             <el-button icon="el-icon-refresh" size="mini" @click="resetData"
@@ -28,6 +28,18 @@
             <el-button type="primary" icon="el-icon-download" size="mini" @click="exportCurrent"
               >导出当前表格为Excel</el-button
             >
+            <el-col
+              v-if="searchObj.keyword && taskStartDate && taskEndDate"
+              :span="12"
+              style="display: flex; align-items: center; gap: 10px; margin-left: 40px;"
+            >
+              <el-tag type="info" size="small" effect="plain">任务编号：</el-tag>
+              <span>{{ searchObj.keyword }}</span>
+              <el-tag type="success" size="small" effect="plain">初次打卡：</el-tag>
+              <span>{{ taskStartDate }}</span>
+              <el-tag type="warning" size="small" effect="plain">最新打卡：</el-tag>
+              <span>{{ taskEndDate }}</span>
+            </el-col>
           </el-row>
         </el-form>
       </div>
@@ -120,14 +132,19 @@
         page: 1, // 默认页码
         limit: 10, // 每页记录数
         searchObj: {}, // 查询表单对象
-        dialogVisible: false,
-        sysTaskDevice: {},
+        dialogVisible: false,//弹窗可见控制
+        taskStartDate: null, //任务首次打卡日期
+        taskEndDate: null, //任务末次打卡日期
       };
     },
     created() {
       this.fetchData();
     },
     methods: {
+
+      search(){
+        this.fetchData();//获取数据
+      },
 
       //导出当前表格为Excel
       exportCurrent(){
@@ -181,6 +198,9 @@
         console.log("重置查询表单");
         this.searchObj = {};
         this.fetchData();
+        this.false = false;
+        this.taskStartDate = null; //任务首次打卡日期
+        this.taskEndDate = null; //任务末次打卡日期
       },
 
       // 每页显示记录数改变
@@ -204,6 +224,15 @@
             console.log(response);
             this.list_eq = response.data.records;
             this.total_eq = response.data.total;
+          });
+        // 清空旧日期，避免展示旧数据
+        this.taskStartDate = null;
+        this.taskEndDate = null;
+        api.taskDateRangeFinder(this.searchObj)
+          .then((response) => {
+            console.log(response);
+            this.taskStartDate = response.data.taskStartDate;
+            this.taskEndDate = response.data.taskEndDate;
           });
       },
     },
