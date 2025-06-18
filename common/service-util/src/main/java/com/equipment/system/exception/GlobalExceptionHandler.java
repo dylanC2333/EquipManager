@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,9 +25,19 @@ public class GlobalExceptionHandler {
     // 2 数据库触发器等异常
     @ExceptionHandler(value = UncategorizedSQLException.class)
     @ResponseBody
-    public Result<Object> error(UncategorizedSQLException e){
+    public Result<Object> error(UncategorizedSQLException e) {
         e.printStackTrace();
-        return Result.fail().message("数据输入不合法");
+        // 默认提示
+        String userMessage = "数据输入不合法";
+        // 提取根异常中的 message
+        Throwable rootCause = e.getRootCause();
+        if (rootCause != null) {
+            String dbMessage = rootCause.getMessage();
+            if (dbMessage != null && !dbMessage.trim().isEmpty()) {
+                userMessage = dbMessage;
+            }
+        }
+        return Result.fail().message(userMessage);
     }
 
 
@@ -38,7 +46,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<Object> error(DuplicateKeyException e){
         e.printStackTrace();
-        return Result.fail().message("数据输入不合法，违反数据库完整性约束");
+        return Result.fail().message("存在重复记录，请检查输入是否有误");
     }
 
 
