@@ -78,6 +78,7 @@
         <el-table-column prop="taskCode" label="任务编号" sortable="custom"/>
         <el-table-column prop="startDate" label="开始日期" sortable="custom"/>
         <el-table-column prop="detectionLocation" label="检测地点" sortable="custom"/>
+        <el-table-column prop="remarks" label="备注" sortable="custom"/>
         <el-table-column prop="isAdditional" label="是否补充记录" >
           <template scope="scope">
             <span v-if="scope.row.isAdditional === 1">是</span>
@@ -159,6 +160,9 @@
               :value="item.value">
             </el-option>
           </el-select>
+          </el-form-item>
+          <el-form-item label="备注"  prop = "remarks">
+            <el-input v-model="sysEquipDetection.remarks" />
           </el-form-item>
           <el-form-item label="是否为补充记录" prop="isAdditional">
             <el-radio v-model="sysEquipDetection.isAdditional" :label="1">是</el-radio>
