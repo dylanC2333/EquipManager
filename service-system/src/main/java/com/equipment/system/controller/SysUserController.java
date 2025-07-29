@@ -147,7 +147,7 @@ public class SysUserController {
         return Result.ok(pageModel);
     }
 
-    // 9 修改密码
+    // 10 修改密码
     @ApiOperation("修改用户密码")
     @PutMapping("passwordChange")
     public Result<Void> passwordChange(@RequestBody SysUser sysUser) {

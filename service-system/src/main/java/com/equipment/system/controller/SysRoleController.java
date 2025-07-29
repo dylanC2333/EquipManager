@@ -136,8 +136,8 @@ public class SysRoleController {
 
     // 9 根据用户分配角色
     @ApiOperation("根据用户分配角色")
-    @PostMapping("toAssign")
-    public Result<Void> toAssign(@RequestBody AssignRoleVo assignRoleVo){
+    @PostMapping("doAssign")
+    public Result<Void> doAssign(@RequestBody AssignRoleVo assignRoleVo){
         sysRoleService.doAssign(assignRoleVo);
         return Result.ok();
     }
