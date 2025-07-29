@@ -21,6 +21,7 @@
     <div class="tools-div">
       <el-button type="success" icon="el-icon-plus" size="mini" @click="add">添 加</el-button>
       <el-button class="btn-add" size="mini" @click="batchRemove()"> 批量删除</el-button>
+      <el-button type="normal" size="mini" @click="cetificateClassManage()"> 证书类别管理</el-button>
     </div>
 
     <!-- 表格 -->
@@ -38,6 +39,7 @@
 
       <el-table-column prop="userCode" label="用户编号" sortable="custom" />
       <el-table-column prop="userName" label="用户姓名" sortable="custom" />
+      <el-table-column prop="title" label="职称" />
       <el-table-column prop="description" label="用户详情" />
       <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom" />
       <el-table-column prop="status" label="在职状态">
@@ -46,15 +48,12 @@
           <span v-else-if="scope.row.status === 0">离职</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200" align="center">
+      <el-table-column label="操作" width="250" align="center">
         <template slot-scope="scope">
-
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(scope.row.id)" title="修改" />
           <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeDataById(scope.row.id)" title="删除" />
-          <el-button type="warning" icon="el-icon-baseball" size="mini" @click="showAssignRole(scope.row)"
-            title="分配角色" />
-
-
+          <el-button type="warning" icon="el-icon-baseball" size="mini" @click="showAssignRole(scope.row)" title="分配角色" />
+          <el-button type="info" icon="el-icon-s-claim" size="mini" @click="manageUserCertificate(scope.row.id)" title="证书编号管理" />
         </template>
       </el-table-column>
     </el-table>
@@ -76,6 +75,9 @@
         </el-form-item>
         <el-form-item label="密码" v-if="!sysUser.id" prop="password">
           <el-input v-model="sysUser.password" type="password" />
+        </el-form-item>
+        <el-form-item label="职称" prop="title">
+          <el-input v-model="sysUser.title" />
         </el-form-item>
         <el-form-item label="用户详情" prop="description">
           <el-input v-model="sysUser.description" />
@@ -116,10 +118,88 @@
       </div>
     </el-dialog>
 
+    <!-- 证书类别管理弹框 -->
+    <el-dialog title="证书类别管理" :visible.sync="dialogCertificateClassVisible" width="80%">
+      <!-- 添加按钮 -->
+      <el-button type="success" size="mini" icon="el-icon-plus" @click="openAddCertificateClassDialog">新增类别</el-button>
+      <!-- 表格 -->
+      <el-table :data="certificateClassList" style="margin-top: 10px" size="small" border>
+        <el-table-column label="序号" type="index" width="50"  align="center"/>
+        <el-table-column prop="name" label="类别名称" />
+        <el-table-column prop="description" label="描述" />
+        <el-table-column label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" icon="el-icon-edit" @click="editCertificateClass(scope.row.id)">编辑</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteCertificateClass(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 添加/编辑证书类别表单弹框 -->
+      <el-dialog title="证书类别" :visible.sync="dialogEditCertificateClassVisible" width="50%">
+        <el-form :model="certificateClass" label-width="80px" :rules="certificateClassRules" ref="certificateClass">
+          <el-form-item label="类别名称" prop="name">
+            <el-input v-model="certificateClass.name" />
+          </el-form-item>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="certificateClass.description" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogEditCertificateClassVisible = false">取 消</el-button>
+          <el-button type="primary" @click="saveOrUpdateCertificateClass">确 定</el-button>
+        </div>
+      </el-dialog>
+    </el-dialog>
+
+    <!-- 用户证书管理弹框 -->
+    <el-dialog title="用户证书管理" :visible.sync="dialogUserCerVisible" width="80%">
+      <!-- 添加按钮 -->
+      <el-button type="success" size="mini" icon="el-icon-plus" @click="openAddUserCertificateDialog">新增用户证书</el-button>
+      <!-- 表格 -->
+      <el-table :data="userCertificateList" style="margin-top: 10px" size="small" border>
+        <el-table-column label="序号" type="index" width="50"  align="center"/>
+        <el-table-column prop="userName" label="用户姓名" />
+        <el-table-column prop="certificateName" label="证书类别" />
+        <el-table-column prop="certificateNumber" label="证书编号" />
+        <el-table-column label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" icon="el-icon-edit" @click="editUserCertificate(scope.row.id)">编辑</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteUserCertificate(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 添加/编辑用户证书表单弹框 -->
+      <el-dialog title="用户证书" :visible.sync="dialogEditUserCertificateVisible" width="50%">
+        <el-form :model="userCertificate" label-width="80px" :rules="userCertificateRules" ref="userCertificate">
+          <el-form-item label="证书类别" prop="classId" >
+            <el-select v-model="userCertificate.classId" clearable placeholder="请选择">
+              <el-option
+                v-for="item in certificateClassList"
+                :key="item.name"
+                :value="item.id"
+                :label="item.name">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="证书编号" prop="certificateNumber">
+            <el-input v-model="userCertificate.certificateNumber" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogEditUserCertificateVisible = false">取 消</el-button>
+          <el-button type="primary" @click="saveOrUpdateUserCertificate">确 定</el-button>
+        </div>
+      </el-dialog>
+    </el-dialog>
 
   </div>
 </template>
 <script>
+import userCertificateApi from '@/api/system/userCertificate'
+import certificateClassApi from '@/api/system/certificateClass'
 import roleApi from '@/api/system/role'
 import api from '@/api/system/user'
 export default {
@@ -148,29 +228,166 @@ export default {
       isIndeterminate: false,// 是否是不确定的
       checkAll: false, // 是否全选
 
+      certificateClass: {}, //证书类别对象
+      dialogCertificateClassVisible: false, // 证书列表弹窗显示
+      dialogEditCertificateClassVisible: false, // 证书新增修改弹窗显示
+      certificateClassList: [], // 证书类别列表数据
+
+      cerUserId : "", // 添加修改用户证书时存用户id
+      userCertificateList: [], //  用户证书列表
+      dialogUserCerVisible : false, // 用户证书弹窗
+      userCertificate: {},// 用户证书数据模型
+      dialogEditUserCertificateVisible: false, // 用户证书编辑弹窗
+
       rules: {// 表单校验规则
-        userName: [
-          { required: true, message: "必填" },
-        ],
-        userCode: [
-          { required: true, message: "必填" },
-        ],
+        userName: [{ required: true, message: "必填" }],
+        userCode: [{ required: true, message: "必填" }],
         password: [
           { required: true, message: "必填" },
           { min: 8, message: "密码长度不少于8个字符", trigger: 'blur' },
         ],
-        status: [
-          { required: true, message: "必填" },
-        ],
-        phone: [
-        ],
+        status: [{ required: true, message: "必填" }],
+        phone: []
       },
+      certificateClassRules: {
+        name: [{ required: true, message: "请输入类别名称", trigger: "blur" }],
+        description: [{ required: true, message: "请输入描述", trigger: "blur" }]
+      },
+      userCertificateRules: {
+        classId: [{ required: true, message: "请选择证书类别", trigger: "blur" }],
+        certificateNumber: [{ required: true, message: "请输入证书编号", trigger: "blur" }]
+      }
     };
   },
   created() {
     this.fetchData()
   },
   methods: {
+    // 打开用户证书弹窗时加载数据
+    manageUserCertificate(userid){
+      this.cerUserId = userid;
+      this.dialogUserCerVisible = true;
+      this.fetchUserCertificate();
+    },
+
+    // 获取用户证书列表
+    fetchUserCertificate() {
+      userCertificateApi.getAllRecord(this.cerUserId).then(res => {
+        this.userCertificateList = res.data;
+      });
+    },
+
+    // 打开添加窗口
+    openAddUserCertificateDialog() {
+      this.userCertificate = {};
+      this.userCertificate.userId = this.cerUserId
+      this.dialogEditUserCertificateVisible = true;
+      // 获取证书类别作为选项
+      certificateClassApi.getAllRecord().then(res => {
+        this.certificateClassList = res.data;
+      });
+    },
+
+    // 编辑证书类别
+    editUserCertificate(cerId) {
+      this.dialogEditUserCertificateVisible = true;
+      userCertificateApi.getUserCertificateById(cerId).then(res =>{
+        this.userCertificate = res.data;
+        // console.log(this.userCertificate);
+      })
+      // 获取证书类别作为选项
+      certificateClassApi.getAllRecord().then(res => {
+        this.certificateClassList = res.data;
+      });
+    },
+    
+    // 新增或更新用户证书
+    saveOrUpdateUserCertificate() {
+      this.$refs.userCertificate.validate(valid => {
+        if (!valid) return;
+        const isUpdate = !!this.userCertificate.id;
+        const req = isUpdate ? userCertificateApi.updateUserCertificate : userCertificateApi.saveUserCertificate;
+        console.log(this.userCertificate);
+        req(this.userCertificate).then(() => {
+          this.$message.success(isUpdate ? "更新成功" : "添加成功");
+          this.dialogEditUserCertificateVisible = false;
+          this.fetchUserCertificate();
+        });
+      });
+    },
+
+    // 删除用户证书
+    deleteUserCertificate(cerId) {
+      this.$confirm("确定删除该证书，此操作不可撤销。", "提示", {
+        type: "warning"
+      }).then(() => {
+        userCertificateApi.removeId(cerId).then(() => {
+          this.$message.success("删除成功");
+          this.fetchUserCertificate();
+        });
+      });
+    },
+
+//----------------------------------------
+    // 打开证书类别弹窗时加载数据
+    cetificateClassManage() {
+      this.dialogCertificateClassVisible = true;
+      this.fetchCertificateClassList();
+    },
+
+    // 获取类别列表
+    fetchCertificateClassList() {
+      certificateClassApi.getAllRecord().then(res => {
+        this.certificateClassList = res.data;
+        // console.log("res :" );
+        // console.log(res);
+        // console.log("certificateClassList :");
+        // console.log(this.certificateClassList);
+      });
+    },
+
+    // 打开添加窗口
+    openAddCertificateClassDialog() {
+      this.certificateClass = {};
+      this.dialogEditCertificateClassVisible = true;
+    },
+
+    // 编辑证书类别
+    editCertificateClass(id) {
+      this.dialogEditCertificateClassVisible = true;
+      certificateClassApi.getcertificateClassId(id).then(res =>{
+        this.certificateClass = res.data;
+        console.log(this.certificateClass);
+      })
+    },
+
+    // 新增或更新证书类别
+    saveOrUpdateCertificateClass() {
+      this.$refs.certificateClass.validate(valid => {
+        if (!valid) return;
+        const isUpdate = !!this.certificateClass.id;
+        const req = isUpdate ? certificateClassApi.updateCertificateClass : certificateClassApi.saveCertificateClass;
+        req(this.certificateClass).then(() => {
+          this.$message.success(isUpdate ? "更新成功" : "添加成功");
+          this.dialogEditCertificateClassVisible = false;
+          this.fetchCertificateClassList();
+        });
+      });
+    },
+
+    // 删除证书类别
+    deleteCertificateClass(id) {
+      this.$confirm("确定删除该类别？所有用户的此类别证书将丢失，此操作不可撤销。", "提示", {
+        type: "warning"
+      }).then(() => {
+        certificateClassApi.removeId(id).then(() => {
+          this.$message.success("删除成功");
+          this.fetchCertificateClassList();
+        });
+      });
+    },
+
+//-------------------------------
     //展示分配角色
     showAssignRole(row) {
       this.sysUser = row
@@ -217,6 +434,8 @@ export default {
         this.fetchData(this.page)
       })
     },
+
+//-------------------------------
     // 多选变化方法
     handleSelectionChange() {
 
