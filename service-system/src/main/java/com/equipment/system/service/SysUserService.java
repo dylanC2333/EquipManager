@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.model.system.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.equipment.model.vo.SysDetectionEmployeeQueryVo;
+import com.equipment.model.vo.SysIdleEmployeeQueryVo;
 
 import java.util.List;
 import java.util.Map;
@@ -21,5 +21,5 @@ public interface SysUserService extends IService<SysUser> {
 
     List<SysUser> getUserListByRoleName(String roleName);
 
-    IPage<SysUser> idleEmployeesFinder(Page<SysUser> pageParam, SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo);
+    IPage<SysUser> idleEmployeesFinder(Page<SysUser> pageParam, SysIdleEmployeeQueryVo sysIdleEmployeeQueryVo);
 }

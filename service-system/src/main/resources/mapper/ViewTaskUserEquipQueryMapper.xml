@@ -8,7 +8,7 @@
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
             <result property="employeeCode" column="employee_code" jdbcType="VARCHAR"/>
             <result property="taskCode" column="task_code" jdbcType="VARCHAR"/>
-            <result property="equipmentCode" column="equipment_code" jdbcType="VARCHAR"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="isAdditional" column="is_additional" jdbcType="TINYINT"/>
     </resultMap>
 

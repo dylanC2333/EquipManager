@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.equipment.model.system.SysUser;
 import com.equipment.model.vo.RouterVo;
-import com.equipment.model.vo.SysDetectionEmployeeQueryVo;
+import com.equipment.model.vo.SysIdleEmployeeQueryVo;
 import com.equipment.system.mapper.SysUserMapper;
 import com.equipment.system.service.SysMenuService;
 import com.equipment.system.service.SysUserService;
@@ -68,8 +68,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         return sysUserList;
     }
 
-    public IPage<SysUser> idleEmployeesFinder(Page<SysUser> pageParam, SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo) {
-        return baseMapper.idleEmployees(pageParam,sysDetectionEmployeeQueryVo);
+    public IPage<SysUser> idleEmployeesFinder(Page<SysUser> pageParam, SysIdleEmployeeQueryVo sysIdleEmployeeQueryVo) {
+        return baseMapper.idleEmployees(pageParam, sysIdleEmployeeQueryVo);
     }
 
 }
