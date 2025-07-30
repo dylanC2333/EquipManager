@@ -143,7 +143,7 @@ public class SysUserController {
         //创建page对象
         Page<SysUser> pageParam = new Page<>(page, limit);
         //调用service方法
-        IPage<SysUser> pageModel = sysUserService.sysDetectionEmployeesMap(pageParam,sysDetectionEmployeeQueryVo);
+        IPage<SysUser> pageModel = sysUserService.idleEmployeesFinder(pageParam,sysDetectionEmployeeQueryVo);
         return Result.ok(pageModel);
     }
 

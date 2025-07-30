@@ -68,9 +68,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         return sysUserList;
     }
 
-    @Override
-    public IPage<SysUser> sysDetectionEmployeesMap(Page<SysUser> pageParam, SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo) {
-        return baseMapper.sysDetectionEmployeesMap(pageParam,sysDetectionEmployeeQueryVo);
+    public IPage<SysUser> idleEmployeesFinder(Page<SysUser> pageParam, SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo) {
+        return baseMapper.idleEmployees(pageParam,sysDetectionEmployeeQueryVo);
     }
 
 }

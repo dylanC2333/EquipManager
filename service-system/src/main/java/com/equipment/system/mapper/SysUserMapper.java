@@ -19,7 +19,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<SysUser> getUserListByRoleName(@Param("roleName") String roleName);
 
-    IPage<SysUser> sysDetectionEmployeesMap(Page<SysUser> pageParam, @Param("detVo")SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo);
+    IPage<SysUser> idleEmployees(Page<SysUser> pageParam, @Param("detVo")SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo);
 }
 
 

@@ -208,7 +208,7 @@ public class SysEquipmentStockController {
     //8、查询空闲设备列表: 在库设备
     @ApiOperation("查询空闲设备列表: 在库设备")
     @GetMapping("idleEquipmentFinder/{page}/{limit}")
-    public Result idleEquipmentFinder(
+    public Result<IPage<SysEquipmentStock>> idleEquipmentFinder(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
 

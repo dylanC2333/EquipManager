@@ -21,5 +21,5 @@ public interface SysUserService extends IService<SysUser> {
 
     List<SysUser> getUserListByRoleName(String roleName);
 
-    IPage<SysUser> sysDetectionEmployeesMap(Page<SysUser> pageParam, SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo);
+    IPage<SysUser> idleEmployeesFinder(Page<SysUser> pageParam, SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo);
 }

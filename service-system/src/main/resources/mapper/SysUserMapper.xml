@@ -38,7 +38,7 @@
 
     <resultMap id="SysDetectionMap" type="com.equipment.model.system.SysUser"  autoMapping="true"></resultMap>
 
-    <select id="sysDetectionEmployeesMap" resultMap="SysDetectionMap" >
+    <select id="idleEmployees" resultMap="SysDetectionMap" >
         SELECT DISTINCT u.user_name as userName, u.user_code as userCode
         FROM sys_detection d
         RIGHT JOIN sys_user u on u.user_code = d.employee_code
