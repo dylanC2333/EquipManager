@@ -55,7 +55,7 @@ public class SysUserMapperTest {
         Page<ViewTaskUserEquipQuery> pageParam = new Page<>(1,3);
         SysTaskDeviceQueryVo s = new SysTaskDeviceQueryVo();
         s.setKeyword("11");
-        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryMapper.SearchUserDeviceByTaskCode(pageParam,s);
+        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryMapper.SearchUserByTaskCode(pageParam,s);
         System.out.print(pageModel.getRecords());
     }
 }
