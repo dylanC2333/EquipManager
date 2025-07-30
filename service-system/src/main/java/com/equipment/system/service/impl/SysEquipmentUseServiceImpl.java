@@ -34,10 +34,6 @@ public class SysEquipmentUseServiceImpl extends ServiceImpl<SysEquipmentUseMappe
     @Autowired
     private SysEquipmentUseMapper sysEquipmentUseMapper;
 
-    @Override
-    public IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo) {
-        return baseMapper.taskDevice(pageParam,sysTaskDeviceQueryVo);
-    }
 
     @Override
     public IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo) {
