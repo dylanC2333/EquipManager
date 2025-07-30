@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.query.TaskDateRangeQuery;
-import com.equipment.model.system.SysDetection;
 import com.equipment.model.view.ViewUseNameQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.equipment.model.vo.SysEquipmentUsageDateBatchSaveVo;
@@ -222,7 +221,7 @@ public class SysEquipmentUseController {
         //创建page对象
         Page<ViewTaskUserEquipQuery> pageParam = new Page<>(page,limit);
         //调用service方法,不用管下面的函数名字，因为后来进行了修改，为了方便没有再修改名字
-        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryService.SearchUserDeviceByTaskcode(pageParam,sysTaskDeviceQueryVo);
+        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryService.SearchUserByTaskcode(pageParam,sysTaskDeviceQueryVo);
         //返回
         return  Result.ok(pageModel);
     }

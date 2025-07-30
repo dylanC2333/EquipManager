@@ -58,6 +58,14 @@ public class GlobalExceptionHandler {
         return Result.fail().message(e.getMessage()).code(e.getCode());
     }
 
+    // 证书解析错误
+    @ExceptionHandler(value = JsonParsingRuntimeException.class)
+    @ResponseBody
+    public Result<Object> error(JsonParsingRuntimeException e){
+        e.printStackTrace();
+        return Result.fail().message(e.getMessage());
+    }
+
     /**
      * spring security异常
      * @param e

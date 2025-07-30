@@ -18,7 +18,7 @@
     </sql>
 
 <!--    <resultMap id="userDeviceMap" type="com.equipment.model.view.ViewTaskUserEquipQuery" ></resultMap>-->
-<!--    <select id="SearchUserDeviceByTaskCode" resultMap="userDeviceMap">-->
+<!--    <select id="SearchUserByTaskCode" resultMap="userDeviceMap">-->
 <!--        SELECT v.user_name, v.employee_code, v.equipment_code, v.task_code, v.is_additional-->
 <!--        FROM view_task_user_equip_query v-->
 <!--        <where>-->
@@ -31,19 +31,44 @@
     <resultMap id="ViewTaskUserEquipQueryMap" type="com.equipment.model.view.ViewTaskUserEquipQuery">
         <result property="userName" column="user_name"/>
         <result property="employeeCode" column="user_code"/>
+        <result property="title" column="title"/>
         <result property="taskCode" column="task_code"/>
         <result property="isAdditional" column="is_additional"/>
+        <result property="certificatesJson" column="certificatesJson"/>
     </resultMap>
-    <select id="SearchUserDeviceByTaskCode" resultMap="ViewTaskUserEquipQueryMap">
-        SELECT DISTINCT u.user_name, u.user_code, d.task_code, d.is_additional
-        FROM sys_detection d
-        JOIN sys_user u ON d.employee_code = u.user_code
+    <select id="SearchUserByTaskCode" resultMap="ViewTaskUserEquipQueryMap">
+        SELECT
+            u.user_name         AS user_name,
+            u.user_code         AS user_code,
+            u.title             AS title,
+            d.task_code         AS task_code,
+            d.is_additional     AS is_additional,
+        COALESCE(
+            CONCAT('[',
+                GROUP_CONCAT(
+                    DISTINCT JSON_OBJECT(
+                        'certificateName', scc.name,
+                        'certificateNumber', suc.certificate_number
+                    )
+                ),
+            ']'),
+        '[]') AS certificatesJson
+        FROM
+            sys_detection d
+        JOIN
+            sys_user u ON d.employee_code = u.user_code
+        LEFT JOIN
+            sys_user_certificate suc ON u.id = suc.user_id
+        LEFT JOIN
+            sys_certificate_class scc ON suc.class_id = scc.id
         <where>
             d.is_deleted = 0
-            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
-                and d.task_code = #{sysTaskDeviceQuery.keyword}
+            <if test="sysTaskDeviceQueryVo.keyword != null and sysTaskDeviceQueryVo.keyword != ''">
+                AND d.task_code = #{sysTaskDeviceQueryVo.keyword}
             </if>
         </where>
+        GROUP BY
+            u.id, u.user_name, u.user_code, d.task_code, d.is_additional
     </select>
 
     <resultMap id="DeviceMap" type="com.equipment.model.vo.FindEquipByTaskCode" >
@@ -59,8 +84,8 @@
         JOIN sys_equipment e on u.equipment_code = e.equipment_code
         <where>
             u.is_deleted = 0
-            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
-                and u.task_code = #{sysTaskDeviceQuery.keyword}
+            <if test="sysTaskDeviceQueryVo.keyword != null and sysTaskDeviceQueryVo.keyword != ''">
+                and u.task_code = #{sysTaskDeviceQueryVo.keyword}
             </if>
         </where>
     </select>
@@ -77,8 +102,8 @@
             sys_detection d
         <where>
             is_deleted = 0
-            <if test="sysTaskDeviceQuery.keyword != null and sysTaskDeviceQuery.keyword != ''">
-                AND task_code = #{sysTaskDeviceQuery.keyword}
+            <if test="sysTaskDeviceQueryVo.keyword != null and sysTaskDeviceQueryVo.keyword != ''">
+                AND task_code = #{sysTaskDeviceQueryVo.keyword}
             </if>
         </where>
     </select>
