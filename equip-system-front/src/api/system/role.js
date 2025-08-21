@@ -74,7 +74,7 @@ export default{
     //分配角色
     assignRoles(assginRoleVo) {
         return request({
-        url: `${api_name}toAssign`,
+        url: `${api_name}doAssign`,
         method: 'post',
         data: assginRoleVo
         })

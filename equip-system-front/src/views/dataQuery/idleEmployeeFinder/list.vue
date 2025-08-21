@@ -29,6 +29,18 @@
               />
             </el-form-item>
           </el-col>
+          <el-col>
+            <el-form-item label="证书类别" prop="certificateClassId" >
+              <el-select v-model="searchObj.certificateClassId" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in certificateClassList"
+                  :key="item.name"
+                  :value="item.id"
+                  :label="item.name">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row style="display: flex">
           <el-button
@@ -78,7 +90,8 @@
   </div>
 </template>
 <script>
-import api from "@/api/system/user";
+import api from '@/api/system/user';
+import certificateClassApi from '@/api/system/certificateClass';
 import * as XLSX from 'xlsx';
 export default {
   data() {
@@ -95,40 +108,70 @@ export default {
       dialogVisible: false,
       sysUser: {},
       saveBtnDisabled: false,
-
+      
+      certificateClassList: [], //  用户证书列表
     };
   },
   created() {
     this.fetchData();
+    this.getCertificateClass();
   },
   methods: {
-
-    //导出当前表格为Excel
     exportCurrent(){
-      console.log("Export to Excel!");
-      this.limit = -1;
-      api.getAvailableInspectionStaffList(this.page, this.limit, this.searchObj)
-        .then((response) => {
-          this.list = response.data.records;
-          this.total = response.data.total;
-          console.log(this.list);
-          const userFilteredData = this.list.map(item => ({
-            检测人姓名: item.userName,    // 修改字段名称
-            检测人编号: item.userCode, // 修改字段名称
-          }));
-          // 将数据转换为工作表
-          const userworksheet = XLSX.utils.json_to_sheet(userFilteredData,{header:['检测人姓名','检测人编号']});
+      console.log("Exporting to Excel!");
 
+      // page为1，limit为-1，通过查询总数负数查询所有记录
+      api.getAvailableInspectionStaffList(1, -1, this.searchObj)
+        .then((response) => {
+          const allRecords = response.data.records || [];
+          if (allRecords.length === 0) {
+            this.$message.warning("没有可导出的数据");
+            return;
+          }
+          // 附加查询条件
+          let certificateClassName = "全部";
+          let dateRange = "全部";
+          if (this.searchObj.certificateClassId) {
+            const selectedClass = this.certificateClassList.find(c => c.id === this.searchObj.certificateClassId);
+            if (selectedClass) {
+              certificateClassName = selectedClass.name;
+            }
+          }
+          if (this.createTimes && this.createTimes.length === 2) {
+              // 通过 substring(0, 10) 从 "YYYY-MM-DD HH:mm:ss" 中截取日期部分
+              const startDate = this.createTimes[0].substring(0, 10);
+              const endDate = this.createTimes[1].substring(0, 10);
+              dateRange = `${startDate} 至 ${endDate}`;
+          }
+          const criteriaHeader = [
+            ["查询日期范围:", dateRange],
+            ["证书类别:", certificateClassName],
+            [] // 设置空行用于分隔
+          ];
+          // 准备数据表格（表头和主体）
+          const tableHeader = ['检测人姓名', '检测人编号'];
+          const tableBody = allRecords.map(item => [
+            item.userName,
+            item.userCode
+          ]);
+          // 合并所有部分为一个二维数组
+          const finalSheetData = [
+            ...criteriaHeader,
+            tableHeader,
+            ...tableBody
+          ];
+
+          // 使用 aoa_to_sheet 生成工作表
+          const worksheet = XLSX.utils.aoa_to_sheet(finalSheetData);
+          worksheet['!cols'] = [
+              { wch: 20 }, // A列
+              { wch: 35 }, // B列
+          ];
           // 创建工作簿并添加工作表
           const workbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(workbook, userworksheet, '空闲检测人员列表');
-
+          XLSX.utils.book_append_sheet(workbook, worksheet, '空闲检测人员列表');
           // 导出Excel文件
-          XLSX.writeFile(workbook, 'data.xlsx');
-        })
-        .finally(() =>{
-          this.limit = 10;
-          this.fetchData();
+          XLSX.writeFile(workbook, '空闲检测人员列表.xlsx');
         });
     },
 
@@ -160,6 +203,13 @@ export default {
           this.list = response.data.records;
           this.total = response.data.total;
         });
+    },
+
+    // 获取全部证书类别作为选项
+    getCertificateClass(){
+      certificateClassApi.getAllRecord().then(res => {
+        this.certificateClassList = res.data;
+      });
     },
   },
 };

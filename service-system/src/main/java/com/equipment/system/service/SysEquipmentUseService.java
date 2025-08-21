@@ -15,8 +15,6 @@ import com.equipment.model.vo.SysTaskDeviceQueryVo;
 */
 public interface SysEquipmentUseService extends IService<SysEquipmentUse> {
 
-    IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
-
     IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo);
 
     boolean dateBatchSupplement(SysEquipmentUsageDateBatchSaveVo sysDetectionDateBatchSaveVo);

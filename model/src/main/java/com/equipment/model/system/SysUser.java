@@ -44,6 +44,11 @@ public class SysUser extends BaseEntity implements Serializable {
     private String description;
 
     /**
+     * 职称
+     */
+    private String title;
+
+    /**
      * 状态（1：在职 0：离职）
      */
     private Integer status;

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.equipment.common.result.Result;
 import com.equipment.common.utils.NamingUtils;
 import com.equipment.model.system.SysUser;
-import com.equipment.model.vo.SysDetectionEmployeeQueryVo;
+import com.equipment.model.vo.SysIdleEmployeeQueryVo;
 import com.equipment.model.vo.SysUserQueryVo;
 import com.equipment.system.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -137,17 +137,17 @@ public class SysUserController {
             @ApiParam(name = "limit", value = "每页记录数量", required = true)
             @PathVariable int limit,
 
-            @ApiParam(name = "sysDetectionEmployeeQueryVo", value = "查询对象", required = false)
-            SysDetectionEmployeeQueryVo sysDetectionEmployeeQueryVo) {
+            @ApiParam(name = "sysIdleEmployeeQueryVo", value = "查询对象", required = false)
+            SysIdleEmployeeQueryVo sysIdleEmployeeQueryVo) {
 
         //创建page对象
         Page<SysUser> pageParam = new Page<>(page, limit);
         //调用service方法
-        IPage<SysUser> pageModel = sysUserService.sysDetectionEmployeesMap(pageParam,sysDetectionEmployeeQueryVo);
+        IPage<SysUser> pageModel = sysUserService.idleEmployeesFinder(pageParam, sysIdleEmployeeQueryVo);
         return Result.ok(pageModel);
     }
 
-    // 9 修改密码
+    // 10 修改密码
     @ApiOperation("修改用户密码")
     @PutMapping("passwordChange")
     public Result<Void> passwordChange(@RequestBody SysUser sysUser) {

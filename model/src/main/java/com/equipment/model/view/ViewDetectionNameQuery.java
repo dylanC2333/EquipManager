@@ -65,6 +65,11 @@ public class ViewDetectionNameQuery implements Serializable {
     private Date updateTime;
 
     /**
+     * 备注
+     */
+    private String remarks;
+
+    /**
      * 是否补充记录（0:否，真实 1:是，后续补充）
      */
     private Integer isAdditional;

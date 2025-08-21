@@ -16,8 +16,6 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface SysEquipmentUseMapper extends BaseMapper<SysEquipmentUse> {
 
-    IPage<SysEquipmentUse> taskDevice(Page<SysEquipmentUse> pageParam, @Param("taskDeviceVo")SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
-
     IPage<SysEquipmentUse> equipmentUsageDays(Page<SysEquipmentUse> pageParam, @Param("equipUseDayVo")SysEquipmentUsageDaysQueryVo sysEquipmentUsageDaysQueryVo);
 }
 

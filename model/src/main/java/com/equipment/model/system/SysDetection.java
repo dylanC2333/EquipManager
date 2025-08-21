@@ -46,6 +46,11 @@ public class SysDetection extends BaseEntity implements Serializable  {
     private String detectionLocation;
 
     /**
+     * 备注
+     */
+    private String remarks;
+
+    /**
      * 是否补充记录（0:否，真实 1:是，后续补充）
      */
     private Integer isAdditional;

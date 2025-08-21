@@ -2,7 +2,7 @@ package com.equipment.system.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.equipment.model.system.SysEquipmentUse;
+import com.equipment.model.query.TaskDateRangeQuery;
 import com.equipment.model.view.ViewTaskUserEquipQuery;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.equipment.model.vo.FindEquipByTaskCode;
@@ -17,9 +17,11 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface ViewTaskUserEquipQueryMapper extends BaseMapper<ViewTaskUserEquipQuery> {
 
-    IPage<ViewTaskUserEquipQuery> SearchUserDeviceByTaskcode(Page<ViewTaskUserEquipQuery> pageParam, @Param("sysTaskDeviceQuery") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+    IPage<ViewTaskUserEquipQuery> SearchUserByTaskCode(Page<ViewTaskUserEquipQuery> pageParam, @Param("sysTaskDeviceQueryVo") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 
-    IPage<FindEquipByTaskCode> SearchEquipByTask(Page<FindEquipByTaskCode> pageParam, @Param("sysTaskDeviceQuery")SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+    IPage<FindEquipByTaskCode> SearchEquipByTask(Page<FindEquipByTaskCode> pageParam, @Param("sysTaskDeviceQueryVo")SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
+
+    TaskDateRangeQuery SearchDateRangeByTaskCode(@Param("sysTaskDeviceQueryVo") SysTaskDeviceQueryVo sysTaskDeviceQueryVo);
 }
 
 

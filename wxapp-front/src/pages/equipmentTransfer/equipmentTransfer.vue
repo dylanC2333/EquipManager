@@ -95,14 +95,25 @@
 				<tm-form-item label="备注" field="remarks" :rules="[{}]" >
 					<tm-input :inputPadding="[0, 0]" v-model.lazy="sysEquipTransfer.remarks" :transprent="true" :showBottomBotder="false"> </tm-input>
 				</tm-form-item>
-				<tm-form-item :border="false">
+				<!-- <tm-form-item :border="false">
 					<view class="flex flex-row">
 						<view class="flex-1 mr-32">
 							<tm-button form-type="submit" label="提交表单" block></tm-button>
 						</view>
-<!-- 						<view class="flex-1">
-							<tm-button :shadow="0" text form-type="reset" label="重置表单" block></tm-button>
-						</view> -->
+					</view>
+				</tm-form-item> -->
+				<tm-form-item v-if = "!sysEquipTransfer.id":border="false">
+					<view class="flex flex-row">
+						<view class="flex-1 mr-32">
+							<tm-button form-type="submit" label="提交并继续添加" block></tm-button>
+						</view>
+					</view>
+				</tm-form-item>
+				<tm-form-item v-if = "sysEquipTransfer.id":border="false">
+					<view class="flex flex-row">
+						<view class="flex-1 mr-32">
+							<tm-button form-type="submit" label="提交表单" block></tm-button>
+						</view>
 					</view>
 				</tm-form-item>
 			</tm-form>		
@@ -179,18 +190,7 @@
 	import { taskCodeSplit,taskCodeConcat } from '@/utils/taskCodeFormat'
 	import { useMainStore } from '@/store'
 
-	// import tmPagination from '@/tmui/components/tm-pagination/tm-pagination.vue'
-	// import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'
-	// import { onShow, onLoad } from '@dcloudio/uni-app'
-	// import tmApp from '@/tmui/components/tm-app/tm-app.vue'
-	// import tmText from '@/tmui/components/tm-text/tm-text.vue'
-	// import tmCell from '@/tmui/components/tm-cell/tm-cell.vue'
-	// import tmTimePicker from '@/tmui/components/tm-time-picker/tm-time-picker.vue'
-	// import tmDivider from '@/tmui/components/tm-divider/tm-divider.vue'
-	// import tmTimeView from '@/tmui/components/tm-time-view/tm-time-view.vue'
-	// import tmCityCascader from '@/tmui/components/tm-city-cascader/tm-city-cascader.vue'
-	// import tmCityPicker from '@/tmui/components/tm-city-picker/tm-city-picker.vue'
-	// import { List } from 'echarts'
+
 	import * as cheerio from 'cheerio'
 	
 	
@@ -514,7 +514,8 @@
 		if(validateResult.isPass){
 			console.log(validateResult.data)
 			await saveorUpdate()
-			showModel.value = false
+			// showModel.value = false
+			// 继续添加，关闭弹窗放在saveorUpdate中
 		} else {
 			console.log("请完善表单相关信息！")
 			uni.showToast({
@@ -545,6 +546,8 @@
 					duration: 2000
 				});
 				console.log("操作成功!")
+				// 仅清空设备编号，不清空其他字段
+				sysEquipTransfer.value.equipmentCode = ''
 			})
 		} else {
 			console.log("edit processing!")
@@ -554,8 +557,11 @@
 					title: '操作成功!',
 					duration: 2000
 				});
-				console.log("操作成功!")
+				console.log("操作成功!")			
+				
 			})
+			// 修改时提交完成关闭弹窗
+			showModel.value = false
 			console.log(res)
 		}
 		fetchData()

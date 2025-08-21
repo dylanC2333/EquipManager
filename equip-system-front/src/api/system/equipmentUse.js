@@ -6,7 +6,7 @@ const api_name = '/admin/equipment/equipmentUse'
 
 export default{
 
-    // 1 分页排序列表查询
+    //分页排序列表查询
     getPageList(page,limit,searchObj,column,sortorder){
         return request({
             url: `${api_name}/name/${page}/${limit}/${column}/${sortorder}`,
@@ -15,7 +15,7 @@ export default{
         })
     },
 
-    //2、删除
+    //删除
     removeId(id) {
         return request({
           url: `${api_name}/remove/${id}`,
@@ -23,7 +23,7 @@ export default{
         })
     },
     
-    //3、添加
+    //添加
     saveEquipUse(equipUse) {
         return request({
           url: `${api_name}/save`,
@@ -32,7 +32,7 @@ export default{
         })
     },
 
-    //4、根据id查询
+    //根据id查询
     getEquipUseId(id) {
         return request({
             url: `${api_name}/findEquipUseById/${id}`,
@@ -40,7 +40,7 @@ export default{
         })
     },
 
-    //5、修改方法
+    //修改方法
     update(equipUse){
         return request({
             url: `${api_name}/update`,
@@ -49,7 +49,7 @@ export default{
         })
     },
 
-    //6、批量删除
+    //批量删除
     batchRemove(idList) {
         return request({
           url: `${api_name}/batchRemove`,
@@ -58,7 +58,7 @@ export default{
         })
     },
 
-    //7、任务所使用设备查询列表
+    //任务所使用设备查询列表
     taskDeviceFinder(page,limit,searchObj){
         return request({
             url: `${api_name}/taskDeviceFinder/${page}/${limit}`,
@@ -67,7 +67,7 @@ export default{
         })
     },
 
-    //8、任务所参与人员查询列表
+    //任务所参与人员查询列表
     taskUserFinder(page,limit,searchObj){
         return request({
             url: `${api_name}/taskUserFinder/${page}/${limit}`,
@@ -75,8 +75,17 @@ export default{
             params:searchObj
         })
     },
+    
+    //任务检测记录起止日期查询
+    taskDateRangeFinder(searchObj){
+        return request({
+            url:`${api_name}/taskDateRangeFinder`,
+            method: 'get',
+            params:searchObj
+        })
+    },
 
-    //9、该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
+    //该设备在日期范围内的所有使用记录和总天数统计。（一次使用记录计一天）
     equipmentUsageDays(page,limit,searchObj){
         return request({
             url: `${api_name}/equipmentUsageDays/${page}/${limit}`,
@@ -85,7 +94,7 @@ export default{
         })
     },
 
-    //10、自动补充日期批量插入检测记录
+    //自动补充日期批量插入检测记录
     saveBatchDateUsage(batchDateUsage) {
         return request({
             url: `${api_name}/batchSaveDate`,

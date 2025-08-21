@@ -25,19 +25,6 @@
         update_time,is_deleted
     </sql>
 
-    <resultMap id="sysTaskDeviceMap" type="com.equipment.model.system.SysEquipmentUse" ></resultMap>
-
-    <select id="taskDevice" resultMap="sysTaskDeviceMap">
-        SELECT e.equipment_name, u.equipment_code,u.equipment_use_date
-        FROM sys_equipment_use u
-        JOIN sys_equipment e ON u.equipment_code = e.equipment_code
-        <where>
-            <if test="taskDeviceVo.keyword != null and taskDeviceVo.keyword != ''">
-                and (u.task_code = #{taskDeviceVo.keyword})
-            </if>
-        </where>
-    </select>
-
     <resultMap id="sysEquipUseDayMap" type="com.equipment.model.system.SysEquipmentUse"></resultMap>
 
     <select id="equipmentUsageDays" resultMap="sysEquipUseDayMap">

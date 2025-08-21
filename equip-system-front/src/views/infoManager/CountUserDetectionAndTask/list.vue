@@ -43,8 +43,15 @@
             <el-button icon="el-icon-refresh" size="mini" @click="resetData"
               >重置</el-button
             >
-            <el-col style="display: flex; justify-content: flex-start; align-items: center; margin-left: 40px;">  
-                <span v-if="isVisible">统 计 结 果： 员工参与了{{ taskNum }}个任务，填写了{{ total }}条检测记录</span>  
+            <el-col
+              v-if="isVisible"
+              :span="12"
+              style="display: flex; align-items: center; gap: 10px; margin-left: 40px;"
+            >
+              <!-- <el-tag type="info" size="small" effect="plain">统计结果：</el-tag> -->
+              <span>统计结果：</span>
+              <el-tag type="primary" size="small" effect="plain">任务数：{{ taskNum }}</el-tag>
+              <el-tag type="success" size="small" effect="plain">检测记录数：{{ total }}</el-tag>
             </el-col>
 
           </el-row>

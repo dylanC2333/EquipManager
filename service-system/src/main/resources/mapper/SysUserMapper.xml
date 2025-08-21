@@ -38,29 +38,46 @@
 
     <resultMap id="SysDetectionMap" type="com.equipment.model.system.SysUser"  autoMapping="true"></resultMap>
 
-    <select id="sysDetectionEmployeesMap" resultMap="SysDetectionMap" >
-        SELECT DISTINCT u.user_name as userName, u.user_code as userCode
-        FROM sys_detection d
-        RIGHT JOIN sys_user u on u.user_code = d.employee_code
+    <select id="idleEmployees" resultMap="SysDetectionMap">
+        SELECT
+            u.id,
+            u.user_name AS userName,
+            u.user_code AS userCode
+            -- 您可以根据需要选择返回 sys_user 的更多字段
+        FROM
+            sys_user u
         <where>
             u.is_deleted = 0
+            <!-- 条件1：只考虑在查询开始时间之前就已创建的用户 -->
             <if test="detVo.startTime != null and detVo.startTime != ''">
                 AND u.create_time &lt;= #{detVo.startTime}
             </if>
 
-        AND NOT EXISTS (
-        SELECT 1 FROM sys_detection sub
-        <where>
-               sub.employee_code = d.employee_code and sub.is_deleted = 0
+            <!-- 条件2：该用户在指定时间段内，不存在任何检测记录 -->
+            AND NOT EXISTS (
+            SELECT 1
+            FROM sys_detection d
+            WHERE d.employee_code = u.user_code
+            AND d.is_deleted = 0
+            <!-- 动态构建时间范围 -->
             <if test="detVo.startTime != null and detVo.startTime != ''">
-                AND sub.start_date >= #{detVo.startTime}
+                AND d.start_date >= #{detVo.startTime}
             </if>
             <if test="detVo.endTime != null and detVo.endTime != ''">
-                AND sub.start_date &lt;= #{detVo.endTime}
+                AND d.start_date &lt;= #{detVo.endTime}
+            </if>
+            )
+            <!-- 筛选包含指定证书类别的用户 -->
+            <if test="detVo.certificateClassId != null">
+                AND EXISTS (
+                SELECT 1
+                FROM sys_user_certificate suc
+                WHERE suc.user_id = u.id
+                AND suc.class_id = #{detVo.certificateClassId}
+                AND suc.is_deleted = 0
+                )
             </if>
         </where>
-        </where>
-        )
     </select>
 
 

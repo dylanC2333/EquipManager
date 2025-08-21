@@ -75,6 +75,7 @@
       <el-table-column prop="taskCode" label="任务编号" sortable="custom"/>
       <el-table-column prop="startDate" label="检测日期" sortable="custom"/>
       <el-table-column prop="detectionLocation" label="检测地点" sortable="custom"/>
+      <el-table-column prop="remarks" label="备注" sortable="custom"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
@@ -150,6 +151,9 @@
             :value="item.value">
           </el-option>
         </el-select>
+        </el-form-item>
+        <el-form-item label="备注"  prop = "remarks">
+          <el-input v-model="sysEquipDetection.remarks" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

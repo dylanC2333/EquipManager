@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @SpringBootTest
 public class SysUserMapperTest {
@@ -57,7 +55,7 @@ public class SysUserMapperTest {
         Page<ViewTaskUserEquipQuery> pageParam = new Page<>(1,3);
         SysTaskDeviceQueryVo s = new SysTaskDeviceQueryVo();
         s.setKeyword("11");
-        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryMapper.SearchUserDeviceByTaskcode(pageParam,s);
+        IPage<ViewTaskUserEquipQuery> pageModel = viewTaskUserEquipQueryMapper.SearchUserByTaskCode(pageParam,s);
         System.out.print(pageModel.getRecords());
     }
 }
